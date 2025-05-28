@@ -1,5 +1,6 @@
 package gameengine.game;
 
+import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
 
 public class Game implements ITickable {
@@ -20,7 +21,7 @@ public class Game implements ITickable {
 		this.worldScene.tick(deltaTime);
 	}
 	
-	public Scene getWorldScene() {
+	public IScene getWorldScene() {
 		return this.worldScene;
 	}
 }

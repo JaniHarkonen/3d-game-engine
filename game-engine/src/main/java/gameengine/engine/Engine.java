@@ -9,22 +9,29 @@ public class Engine {
 	
 	public static final long SECONDS = 1000000000;
 	
+	public static final float DEFAULT_TICK_RATE = 60f;
+	
 	private static Engine INSTANCE;
 	
 	public static Engine createInstance() {
 		if( INSTANCE != null ) {
-			
+			throw new RuntimeException("FATAL ERROR: Trying to create more than one engine instance!");
 		}
 		
 		return INSTANCE = new Engine();
 	}
 	
+	public static Engine getInstance() {
+		return INSTANCE;
+	}
 
 	private boolean willStop;
 	private Window window;
 	private Game game;
 	private Renderer renderer;
 	private Physics physics;
+	private float tickRate;
+	private int tickRateRealized;
 	
 	public Engine() {
 		this.willStop = false;
@@ -32,6 +39,8 @@ public class Engine {
 		this.game = null;
 		this.renderer = null;
 		this.physics = null;
+		this.tickRate = DEFAULT_TICK_RATE;
+		this.tickRateRealized = 0;
 	}
 	
 	public void start() {
@@ -48,12 +57,29 @@ public class Engine {
 		this.game = new Game();
 		this.game.setup();
 		
+		long lastTick = System.nanoTime();
+		long lastPoll = System.nanoTime();
+		
 		while( !this.willStop && !this.window.isClosing() ) {
-			this.window.pollEvents();
-			//this.game.tick();
-			//this.physics.tick();
-			this.renderer.render(this.game, this.window);
-			this.window.update();
+			float deltaTime = (System.nanoTime() - lastTick) / ((float) SECONDS);
+			
+			while( deltaTime >= 1 / this.tickRate ) {
+				lastTick = System.nanoTime();
+				
+				this.window.pollEvents();
+				this.game.tick(1 / this.tickRate);
+				//this.physics.tick();
+				this.renderer.render(this.game, this.window);
+				this.window.update(deltaTime);
+				this.tickRateRealized++;
+				deltaTime -= 1 / this.tickRate;
+			}
+			
+			if( System.nanoTime() - lastPoll >= 1 * SECONDS ) {
+				this.window.changeTitle("TICK RATE: " + this.tickRateRealized + "|" + this.tickRate);
+				this.tickRateRealized = 0;
+				lastPoll = System.nanoTime();
+			}
 		}
 		
 		this.window.destroy();
@@ -64,5 +90,13 @@ public class Engine {
 	
 	public void requestStop() {
 		this.willStop = true;
+	}
+	
+	public void setTickRate(float tickRate) {
+		this.tickRate = tickRate;
+	}
+	
+	public Window getWindow() {
+		return this.window;
 	}
 }

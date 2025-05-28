@@ -7,6 +7,7 @@ public class Window {
 	public static final int DEFAULT_WIDTH = 640;
 	public static final int DEFAULT_HEIGHT = 480;
 	public static final String DEFAULT_TITLE = "3D game engine";
+	public static final int DEFAULT_FPS_MAX = 60;
 	public static final boolean DEFAULT_IS_RESIZEABLE = true;
 
 	public static final long NULL_ID = -1;
@@ -15,6 +16,7 @@ public class Window {
     private String title;
     private int width;
     private int height;
+    private Input input;
     
     private boolean isResizeable;
     
@@ -23,6 +25,7 @@ public class Window {
     	this.width = DEFAULT_WIDTH;
     	this.height = DEFAULT_HEIGHT;
     	this.title = DEFAULT_TITLE;
+    	this.input = null;
     	
     	this.isResizeable = DEFAULT_IS_RESIZEABLE;
     }
@@ -40,15 +43,15 @@ public class Window {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);
 
         this.windowID = GLFW.glfwCreateWindow(this.width, this.height, this.title, 0, 0);
+        
         if( this.windowID == 0 ) {
             throw new RuntimeException("Failed to create the GLFW window!");
         }
         
         GLFW.glfwSetFramebufferSizeCallback(this.windowID, (win, w, h) -> this.onResize(w, h));
-
-        //GLFW.glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
-         //   keyCallBack(key, action);
-        //});
+        
+        this.input = new Input();
+        this.input.bind(this);
 
         GLFW.glfwMakeContextCurrent(this.windowID);
     	GLFW.glfwSwapInterval(0);
@@ -57,40 +60,42 @@ public class Window {
     
     public void pollEvents() {
     	GLFW.glfwPollEvents();
+    	this.input.poll();
     }
     
-    public void update() {
-    	GLFW.glfwSwapBuffers(this.windowID);
+    public void update(float deltaTime) {
+    	this.input.clear(); // Clear the input event queue
+		GLFW.glfwSwapBuffers(this.windowID);
     }
     
     public void requestClose() {
     	GLFW.glfwSetWindowShouldClose(this.windowID, true);
     }
-    /*
-    public void keyCallBack(int key, int action) {
-        if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
-        	GLFW.glfwSetWindowShouldClose(windowHandle, true); // We will detect this in the rendering loop
-        }
-    }
-    */
+    
     public void destroy() {
     	GLFW.glfwDestroyWindow(this.windowID);
     	GLFW.glfwTerminate();
     }
     
-    public Window setDimensions(int width, int height) {
+    Window setDimensions(int width, int height) {
     	this.width = width;
     	this.height = height;
     	return this;
     }
     
-    public long getID() {
-        return this.windowID;
-    }
-    
-    public Window setTitle(String title) {
+    Window setTitle(String title) {
     	this.title = title;
     	return this;
+    }
+    
+    public Window changeTitle(String title) {
+    	this.title = title;
+    	GLFW.glfwSetWindowTitle(this.windowID, title);
+    	return this;
+    }
+    
+    public long getID() {
+        return this.windowID;
     }
     
     public int getWidth() {
@@ -109,13 +114,10 @@ public class Window {
         return GLFW.glfwWindowShouldClose(this.windowID);
     }
     
-    /*
-    public boolean isKeyPressed(int keyCode) {
-        return GLFW.glfwGetKey(windowHandle, keyCode) == GLFW.GLFW_PRESS;
+    public Input getInput() {
+    	return this.input;
     }
-*/
 
-    
     private void onResize(int width, int height) {
     	this.width = width;
     	this.height = height;
