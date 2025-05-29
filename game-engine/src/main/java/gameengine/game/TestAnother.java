@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -124,103 +125,72 @@ public class TestAnother implements IGameObject {
 
 	@Override
 	public void onCreate() {
-		float[] positions = new float[]{
-            // V0
-            -0.5f, 0.5f, 0.5f,
-            // V1
-            -0.5f, -0.5f, 0.5f,
-            // V2
-            0.5f, -0.5f, 0.5f,
-            // V3
-            0.5f, 0.5f, 0.5f,
-            // V4
-            -0.5f, 0.5f, -0.5f,
-            // V5
-            0.5f, 0.5f, -0.5f,
-            // V6
-            -0.5f, -0.5f, -0.5f,
-            // V7
-            0.5f, -0.5f, -0.5f,
+		Vector3f[] vertices = new Vector3f[]{
+            new Vector3f(-0.5f, 0.5f, 0.5f),
+            new Vector3f(-0.5f, -0.5f, 0.5f),
+    		new Vector3f(0.5f, -0.5f, 0.5f),
+			new Vector3f(0.5f, 0.5f, 0.5f),
+			new Vector3f(-0.5f, 0.5f, -0.5f),
+			new Vector3f(0.5f, 0.5f, -0.5f),
+			new Vector3f(-0.5f, -0.5f, -0.5f),
+			new Vector3f(0.5f, -0.5f, -0.5f),
+			
+			new Vector3f(-0.5f, 0.5f, -0.5f),
+			new Vector3f(0.5f, 0.5f, -0.5f),
+			new Vector3f(-0.5f, 0.5f, 0.5f),
+			new Vector3f(0.5f, 0.5f, 0.5f),
 
-            // For text coords in top face
-            // V8: V4 repeated
-            -0.5f, 0.5f, -0.5f,
-            // V9: V5 repeated
-            0.5f, 0.5f, -0.5f,
-            // V10: V0 repeated
-            -0.5f, 0.5f, 0.5f,
-            // V11: V3 repeated
-            0.5f, 0.5f, 0.5f,
+			new Vector3f(0.5f, 0.5f, 0.5f),
+			new Vector3f(0.5f, -0.5f, 0.5f),
 
-            // For text coords in right face
-            // V12: V3 repeated
-            0.5f, 0.5f, 0.5f,
-            // V13: V2 repeated
-            0.5f, -0.5f, 0.5f,
+			new Vector3f(-0.5f, 0.5f, 0.5f),
+			new Vector3f(-0.5f, -0.5f, 0.5f),
 
-            // For text coords in left face
-            // V14: V0 repeated
-            -0.5f, 0.5f, 0.5f,
-            // V15: V1 repeated
-            -0.5f, -0.5f, 0.5f,
-
-            // For text coords in bottom face
-            // V16: V6 repeated
-            -0.5f, -0.5f, -0.5f,
-            // V17: V7 repeated
-            0.5f, -0.5f, -0.5f,
-            // V18: V1 repeated
-            -0.5f, -0.5f, 0.5f,
-            // V19: V2 repeated
-            0.5f, -0.5f, 0.5f,
-        };
-        float[] textCoords = new float[]{
-            0.0f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.5f, 0.0f,
-
-            0.0f, 0.0f,
-            0.5f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-
-            // For text coords in top face
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.0f, 1.0f,
-            0.5f, 1.0f,
-
-            // For text coords in right face
-            0.0f, 0.0f,
-            0.0f, 0.5f,
-
-            // For text coords in left face
-            0.5f, 0.0f,
-            0.5f, 0.5f,
-
-            // For text coords in bottom face
-            0.5f, 0.0f,
-            1.0f, 0.0f,
-            0.5f, 0.5f,
-            1.0f, 0.5f,
-        };
-        int[] indices = new int[]{
-            // Front face
-            0, 1, 3, 3, 1, 2,
-            // Top Face
-            8, 10, 11, 9, 8, 11,
-            // Right face
-            12, 13, 7, 5, 12, 7,
-            // Left face
-            14, 15, 6, 4, 14, 6,
-            // Bottom face
-            16, 18, 19, 17, 16, 19,
-            // Back face
-            4, 6, 7, 5, 4, 7
+			new Vector3f(-0.5f, -0.5f, -0.5f),
+			new Vector3f(0.5f, -0.5f, -0.5f),
+			new Vector3f(-0.5f, -0.5f, 0.5f),
+			new Vector3f(0.5f, -0.5f, 0.5f),
         };
 		
-        Mesh mesh = new Mesh(positions, textCoords, indices);
+        Vector2f[] UVs = new Vector2f[]{
+            new Vector2f(0.0f, 0.0f),
+    		new Vector2f(0.0f, 0.5f),
+			new Vector2f(0.5f, 0.5f),
+			new Vector2f(0.5f, 0.0f),
+
+			new Vector2f(0.0f, 0.0f),
+			new Vector2f(0.5f, 0.0f),
+			new Vector2f(0.0f, 0.5f),
+			new Vector2f(0.5f, 0.5f),
+
+			new Vector2f(0.0f, 0.5f),
+			new Vector2f(0.5f, 0.5f),
+			new Vector2f(0.0f, 1.0f),
+			new Vector2f(0.5f, 1.0f),
+
+			new Vector2f(0.0f, 0.0f),
+			new Vector2f(0.0f, 0.5f),
+
+			new Vector2f(0.5f, 0.0f),
+			new Vector2f(0.5f, 0.5f),
+
+			new Vector2f(0.5f, 0.0f),
+			new Vector2f(1.0f, 0.0f),
+			new Vector2f(0.5f, 0.5f),
+			new Vector2f(1.0f, 0.5f),
+        };
+        
+        Mesh.Face[] faces = new Mesh.Face[]{
+        	new Mesh.Face(0, 1, 3), new Mesh.Face(3, 1, 2),
+        	new Mesh.Face(8, 10, 11), new Mesh.Face(9, 8, 11),
+        	new Mesh.Face(12, 13, 7), new Mesh.Face(5, 12, 7),
+        	new Mesh.Face(14, 15, 6), new Mesh.Face(4, 14, 6),
+        	new Mesh.Face(16, 18, 19), new Mesh.Face(17, 16, 19),
+        	new Mesh.Face(4, 6, 7), new Mesh.Face(5, 4, 7)
+        };
+		
+        Mesh mesh = new Mesh();
+        mesh.populate(vertices, UVs, faces);
         List<Mesh> meshes = new ArrayList<>();
         meshes.add(mesh);
         

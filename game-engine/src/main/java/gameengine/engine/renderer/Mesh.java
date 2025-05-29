@@ -1,114 +1,107 @@
 package gameengine.engine.renderer;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
-import org.lwjgl.system.MemoryUtil;
 
 import gameengine.engine.IRenderable;
+import gameengine.engine.renderer.vo.VAO;
 
 public class Mesh implements IRenderable {
+	
+	public static class Face {
+		public static final int INDICES_PER_FACE = 3;
+		
+		public static int[] facesToIndices(Face[] faces) {
+			int[] indices = new int[faces.length * INDICES_PER_FACE];
+			
+			int index = 0;
+			for( Face f : faces ) {
+				indices[index++] = f.get1();
+				indices[index++] = f.get2();
+				indices[index++] = f.get3();
+			}
+			
+			return indices;
+		}
+		
+		private int[] indices;
+		
+		public Face(int i1, int i2, int i3) {
+			this.indices = new int[3];
+			this.indices[0] = i1;
+			this.indices[1] = i2;
+			this.indices[2] = i3;
+		}
+		
+		public Face(int[] indices) {
+			this.indices = indices;
+		}
+		
+		
+		public int getIndex(int index) {
+			return this.indices[index];
+		}
+		
+		public int get1() {
+			return this.getIndex(0);
+		}
+		
+		public int get2() {
+			return this.getIndex(1);
+		}
+		
+		public int get3() {
+			return this.getIndex(2);
+		}
+	}
+	
+	
+	private VAO vao;
+    private Vector3f[] vertices;
+    private Vector2f[] UVs;
+    private Face[] faces;
 
-    private int numVertices;
-    private int vaoId;
-    private List<Integer> vboIdList;
-
-    public Mesh(float[] positions, float[] textCoords, int[] indices) {
-    	numVertices = indices.length;
-        vboIdList = new ArrayList<>();
-
-        vaoId = GL46.glGenVertexArrays();
-        GL46.glBindVertexArray(vaoId);
-
-        // Positions VBO
-        int vboId = GL46.glGenBuffers();
-        vboIdList.add(vboId);
-        FloatBuffer positionsBuffer = MemoryUtil.memCallocFloat(positions.length);
-        positionsBuffer.put(0, positions);
-        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vboId);
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, positionsBuffer, GL46.GL_STATIC_DRAW);
-        GL46.glEnableVertexAttribArray(0);
-        GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
-
-        // Texture coordinates VBO
-        vboId = GL46.glGenBuffers();
-        vboIdList.add(vboId);
-        FloatBuffer textCoordsBuffer = MemoryUtil.memCallocFloat(textCoords.length);
-        textCoordsBuffer.put(0, textCoords);
-        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vboId);
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, textCoordsBuffer, GL46.GL_STATIC_DRAW);
-        GL46.glEnableVertexAttribArray(1);
-        GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
-
-        // Index VBO
-        vboId = GL46.glGenBuffers();
-        vboIdList.add(vboId);
-        IntBuffer indicesBuffer = MemoryUtil.memCallocInt(indices.length);
-        indicesBuffer.put(0, indices);
-        GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, vboId);
-        GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
-
-        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
-        GL46.glBindVertexArray(0);
-
-        MemoryUtil.memFree(positionsBuffer);
-        MemoryUtil.memFree(textCoordsBuffer);
-        MemoryUtil.memFree(indicesBuffer);
-    	/*
-        this.numVertices = indices.length;
-        vboIdList = new ArrayList<>();
-
-        vaoId = GL46.glGenVertexArrays();
-        GL46.glBindVertexArray(vaoId);
-
-        // Positions VBO
-        int vboId = GL46.glGenBuffers();
-        vboIdList.add(vboId);
-        FloatBuffer positionsBuffer = MemoryUtil.memCallocFloat(positions.length);
-        positionsBuffer.put(0, positions);
-        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vboId);
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, positionsBuffer, GL46.GL_STATIC_DRAW);
-        GL46.glEnableVertexAttribArray(0);
-        GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
-
-        // Index VBO
-        vboId = GL46.glGenBuffers();
-        vboIdList.add(vboId);
-        IntBuffer indicesBuffer = MemoryUtil.memCallocInt(indices.length);
-        indicesBuffer.put(0, indices);
-        GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, vboId);
-        GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
-
-        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
-        GL46.glBindVertexArray(0);
-
-        MemoryUtil.memFree(positionsBuffer);
-        MemoryUtil.memFree(indicesBuffer);
-        */
+    public Mesh() {
+    	this.vao = null;
+    	this.vertices = null;
+    	this.UVs = null;
+    	this.faces = null;
+    }
+    
+    
+    public void populate(Vector3f[] vertices, Vector2f[] UVs, Face[] faces) {
+    	this.vertices = vertices;
+    	this.UVs = UVs;
+    	this.faces = faces;
+    	
+    	this.vao = new VAO(this);
+    	this.vao.generate();
     }
     
 	@Override
 	public void render(IRenderPass renderPass) {
-		GL46.glBindVertexArray(this.vaoId);
-		GL46.glDrawElements(GL46.GL_TRIANGLES, this.numVertices, GL46.GL_UNSIGNED_INT, 0);
+		this.vao.bind();
+		GL46.glDrawElements(GL46.GL_TRIANGLES, this.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
 	}
 
-    public void destroy() {
-        for( Integer vbo : vboIdList ) {
-        	GL46.glDeleteBuffers(vbo);
-        }
-        
-        GL46.glDeleteVertexArrays(vaoId);
+    public void dipose() {
+    	this.vao.dispose();
     }
-
-    public int getNumVertices() {
-        return numVertices;
+    
+    public int getVertexCount() {
+    	return this.vertices.length;
     }
-
-    public final int getVaoId() {
-        return vaoId;
+    
+    public Vector3f[] getVertices() {
+    	return this.vertices;
+    }
+    
+    public Vector2f[] getUVs() {
+    	return this.UVs;
+    }
+    
+    public Face[] getFaces() {
+    	return this.faces;
     }
 }
