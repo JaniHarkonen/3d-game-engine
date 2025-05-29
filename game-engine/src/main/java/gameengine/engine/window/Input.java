@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -108,10 +109,10 @@ public class Input {
 		this.eventQueue.clear();
 	}
 	
-	public void DEBUGmapInput(int keyhash, Runnable action) {
+	public void DEBUGmapInput(int keyhash, Consumer<Event> action) {
 		for( Event e : this.eventQueue ) {
 			if( e.hashCode() == keyhash ) {
-				action.run();
+				action.accept(e);
 			}
 		}
 	}

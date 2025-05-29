@@ -32,7 +32,6 @@ public class Model implements IRenderable {
 				GL46.glActiveTexture(GL46.GL_TEXTURE0 + j);
 				
 				if( this.materialList.get(i).getTextures()[j] == null ) {
-					System.out.println(j);
 					break;
 				}
 				

@@ -66,7 +66,7 @@ public class TestAnother implements IGameObject {
 
 	@Override
 	public void tick(float deltaTime) {
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12315, () -> {
+		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12315, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;
@@ -76,7 +76,7 @@ public class TestAnother implements IGameObject {
 			this.updateModelMatrix();
 		});
 		
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12314, () -> {
+		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12314, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;
@@ -86,7 +86,7 @@ public class TestAnother implements IGameObject {
 			this.updateModelMatrix();
 		});
 		
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12384, () -> {
+		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12384, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;
@@ -96,7 +96,7 @@ public class TestAnother implements IGameObject {
 			this.updateModelMatrix();
 		});
 		
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12383, () -> {
+		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12383, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;

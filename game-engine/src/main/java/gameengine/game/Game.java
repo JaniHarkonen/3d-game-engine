@@ -1,7 +1,9 @@
 package gameengine.game;
 
+import gameengine.engine.Engine;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
+import gameengine.engine.window.Window;
 
 public class Game implements ITickable {
 
@@ -19,6 +21,11 @@ public class Game implements ITickable {
 	
 	public void tick(float deltaTime) {
 		this.worldScene.tick(deltaTime);
+		
+		Window window = Engine.getInstance().getWindow();
+		window.getInput().DEBUGmapInput(11306, (e) -> {
+			window.enableCursor(!window.isCursorEnabled());
+		});
 	}
 	
 	public IScene getWorldScene() {

@@ -9,6 +9,7 @@ public class Window {
 	public static final String DEFAULT_TITLE = "3D game engine";
 	public static final int DEFAULT_FPS_MAX = 60;
 	public static final boolean DEFAULT_IS_RESIZEABLE = true;
+	public static final boolean DEFAULT_IS_CURSOR_ENABLED = true;
 
 	public static final long NULL_ID = -1;
 
@@ -19,6 +20,7 @@ public class Window {
     private Input input;
     
     private boolean isResizeable;
+    private boolean isCursorEnabled;
     
     public Window() {
     	this.windowID = NULL_ID;
@@ -28,6 +30,7 @@ public class Window {
     	this.input = null;
     	
     	this.isResizeable = DEFAULT_IS_RESIZEABLE;
+    	this.isCursorEnabled = DEFAULT_IS_CURSOR_ENABLED; 
     }
     
     public void setup() {
@@ -43,6 +46,7 @@ public class Window {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);
 
         this.windowID = GLFW.glfwCreateWindow(this.width, this.height, this.title, 0, 0);
+        GLFW.glfwSetInputMode(this.windowID, GLFW.GLFW_CURSOR, this.isCursorEnabled ? GLFW.GLFW_CURSOR_NORMAL : GLFW.GLFW_CURSOR_DISABLED);
         
         if( this.windowID == 0 ) {
             throw new RuntimeException("Failed to create the GLFW window!");
@@ -94,6 +98,12 @@ public class Window {
     	return this;
     }
     
+    public Window enableCursor(boolean isEnabled) {
+    	this.isCursorEnabled = isEnabled;
+    	GLFW.glfwSetInputMode(this.windowID, GLFW.GLFW_CURSOR, this.isCursorEnabled ? GLFW.GLFW_CURSOR_NORMAL : GLFW.GLFW_CURSOR_DISABLED);
+    	return this;
+    }
+    
     public long getID() {
         return this.windowID;
     }
@@ -116,6 +126,10 @@ public class Window {
     
     public Input getInput() {
     	return this.input;
+    }
+    
+    public boolean isCursorEnabled() {
+    	return this.isCursorEnabled;
     }
 
     private void onResize(int width, int height) {

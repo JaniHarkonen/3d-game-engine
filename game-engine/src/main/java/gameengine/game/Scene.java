@@ -7,6 +7,7 @@ import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
+import gameengine.engine.renderer.Camera;
 import gameengine.engine.renderer.IRenderPass;
 import gameengine.engine.renderer.Projection;
 import gameengine.engine.window.Window;
@@ -14,16 +15,19 @@ import gameengine.engine.window.Window;
 public class Scene implements IScene, ITickable {
 	private List<IGameObject> objects;
 	private Projection activeProjection;
+	private Camera activeCamera;
 	
 	public Scene() {
 		this.objects = new ArrayList<>();
 		
 		Window window = Engine.getInstance().getWindow();
 		this.activeProjection = new Projection(window.getWidth(), window.getHeight());
+		this.activeCamera = new Camera();
 	}
 
 	@Override
 	public void tick(float deltaTime) {
+		this.activeCamera.DEBUGupdate();
 		for( IGameObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
@@ -45,7 +49,14 @@ public class Scene implements IScene, ITickable {
 		this.activeProjection = projection;
 	}
 	
+	@Override
 	public Projection getActiveProjection() {
 		return this.activeProjection;
 	}
+	
+	@Override
+	public Camera getActiveCamera() {
+		return this.activeCamera;
+	}
+	
 }

@@ -27,6 +27,7 @@ public class ScenePass implements IRenderPass {
         uniformsMap.createUniform("projectionMatrix");
         uniformsMap.createUniform("modelMatrix");
         uniformsMap.createUniform("txtSampler");
+        uniformsMap.createUniform("cameraMatrix");
     }
 
     public void render(Game game) {
@@ -34,6 +35,7 @@ public class ScenePass implements IRenderPass {
         shaderProgram.bind();
         uniformsMap.setUniform("txtSampler", 0);
         uniformsMap.setUniform("projectionMatrix", worldScene.getActiveProjection().getProjMatrix());
+        uniformsMap.setUniform("cameraMatrix", worldScene.getActiveCamera().getViewMatrix());
         worldScene.render(this);
         GL46.glBindVertexArray(0);
         shaderProgram.unbind();
