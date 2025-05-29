@@ -9,7 +9,7 @@ import gameengine.engine.IScene;
 import gameengine.game.Game;
 import gameengine.util.FileUtils;
 
-public class ScenePass {
+public class ScenePass implements IRenderPass {
     private ShaderProgram shaderProgram;
     private UniformManager uniformsMap;
 
@@ -25,13 +25,16 @@ public class ScenePass {
     private void createUniforms() {
         uniformsMap = new UniformManager(shaderProgram.getProgramId());
         uniformsMap.createUniform("projectionMatrix");
+        uniformsMap.createUniform("modelMatrix");
+        uniformsMap.createUniform("txtSampler");
     }
 
     public void render(Game game) {
     	IScene worldScene = game.getWorldScene();
         shaderProgram.bind();
+        uniformsMap.setUniform("txtSampler", 0);
         uniformsMap.setUniform("projectionMatrix", worldScene.getActiveProjection().getProjMatrix());
-        worldScene.render();
+        worldScene.render(this);
         GL46.glBindVertexArray(0);
         shaderProgram.unbind();
     }
@@ -39,4 +42,10 @@ public class ScenePass {
     public void destroy() {
         shaderProgram.cleanup();
     }
+
+
+	@Override
+	public UniformManager getUniformManager() {
+		return this.uniformsMap;
+	}
 }

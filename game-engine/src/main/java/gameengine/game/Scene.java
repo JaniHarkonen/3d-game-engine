@@ -7,6 +7,7 @@ import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
+import gameengine.engine.renderer.IRenderPass;
 import gameengine.engine.renderer.Projection;
 import gameengine.engine.window.Window;
 
@@ -29,9 +30,9 @@ public class Scene implements IScene, ITickable {
 	}
 
 	@Override
-	public void render() {
+	public void render(IRenderPass renderPass) {
 		for( IGameObject object : this.objects ) {
-			object.render();
+			object.render(renderPass);
 		}
 	}
 	

@@ -14,7 +14,7 @@ public class Game implements ITickable {
 	
 	public void setup() {
 		this.worldScene = new Scene();
-		this.worldScene.addObject(new TestObject());
+		this.worldScene.addObject(new TestAnother());
 	}
 	
 	public void tick(float deltaTime) {

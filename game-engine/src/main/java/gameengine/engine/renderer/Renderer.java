@@ -12,6 +12,7 @@ public class Renderer {
 
 	public Renderer() {
 		GL.createCapabilities();
+		GL46.glEnable(GL46.GL_DEPTH_TEST);
 		scenePass = new ScenePass();
 	}
 	
