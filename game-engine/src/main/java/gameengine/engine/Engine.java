@@ -99,4 +99,8 @@ public class Engine {
 	public Window getWindow() {
 		return this.window;
 	}
+	
+	public Game getGame() {
+		return this.game;
+	}
 }

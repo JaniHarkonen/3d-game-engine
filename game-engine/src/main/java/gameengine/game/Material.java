@@ -2,7 +2,7 @@ package gameengine.game;
 
 import org.joml.Vector4f;
 
-import gameengine.engine.renderer.Texture;
+import gameengine.engine.asset.Texture;
 
 public class Material {
 	public static final int DEFAULT_TEXTURE_SLOT_COUNT = 3;

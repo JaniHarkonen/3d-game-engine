@@ -11,9 +11,9 @@ import org.joml.Vector4f;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
+import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.IRenderPass;
 import gameengine.engine.renderer.Mesh;
-import gameengine.engine.renderer.Texture;
 import gameengine.util.FileUtils;
 
 public class TestAnother implements IGameObject {
@@ -194,7 +194,8 @@ public class TestAnother implements IGameObject {
         List<Mesh> meshes = new ArrayList<>();
         meshes.add(mesh);
         
-        Texture texture = new Texture(FileUtils.getResourcePath("texture/texture.png"));
+        //Texture texture = new Texture(FileUtils.getResourcePath("texture/texture.png"));
+        Texture texture = Engine.getInstance().getGame().getAssets().getTexture("tex-default");
         Material material = new Material();
         material.setTexture(0, texture);
         
