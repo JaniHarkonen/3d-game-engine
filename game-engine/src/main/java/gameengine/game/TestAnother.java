@@ -194,8 +194,7 @@ public class TestAnother implements IGameObject {
         List<Mesh> meshes = new ArrayList<>();
         meshes.add(mesh);
         
-        //Texture texture = new Texture(FileUtils.getResourcePath("texture/texture.png"));
-        Texture texture = Engine.getInstance().getGame().getAssets().getTexture("tex-default");
+        Texture texture = (Texture) Engine.getInstance().getGame().getAssets().get("tex-default");
         Material material = new Material();
         material.setTexture(0, texture);
         

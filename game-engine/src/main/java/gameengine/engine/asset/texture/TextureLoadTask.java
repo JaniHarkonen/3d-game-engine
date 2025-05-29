@@ -7,7 +7,7 @@ import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
 import gameengine.engine.asset.ILoadTask;
-
+/*
 public class TextureLoadTask implements ILoadTask<Texture> {
 	
 	private String name;
@@ -67,3 +67,4 @@ public class TextureLoadTask implements ILoadTask<Texture> {
 		return this.loadedAsset;
 	}
 }
+*/

@@ -4,6 +4,7 @@ import gameengine.engine.Engine;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
 import gameengine.engine.asset.AssetManager;
+import gameengine.engine.asset.texture.Texture;
 import gameengine.engine.window.Window;
 
 public class Game implements ITickable {
@@ -25,9 +26,9 @@ public class Game implements ITickable {
 	}
 	
 	public void preloadAssets() {
-		TestPreloadAssetGroup preload = new TestPreloadAssetGroup();
+		AssetManager.Group preload = new AssetManager.Group("preload");
+		preload.put(new Texture("tex-default", "texture/texture.png"));
 		this.assetManager.registerGroup(preload);
-		preload.load();
 	}
 	
 	public void tick(float deltaTime) {
@@ -43,7 +44,7 @@ public class Game implements ITickable {
 		return this.worldScene;
 	}
 	
-	public TestPreloadAssetGroup getAssets() {
-		return (TestPreloadAssetGroup) this.assetManager.findGroup("preload");
+	public AssetManager.Group getAssets() {
+		return this.assetManager.findGroup("preload");
 	}
 }

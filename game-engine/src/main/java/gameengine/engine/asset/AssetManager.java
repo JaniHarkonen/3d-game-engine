@@ -4,60 +4,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AssetManager {
-	public static abstract class AGroup {
-		protected String name;
-		protected Map<String, ILoadTask<? extends IAsset>> loaders;
+	public static class Group {
+		private final String name;
+		private Map<String, IAsset> assets;
 		
-		protected AGroup(String name) {
+		public Group(String name) {
 			this.name = name;
-			this.loaders = new HashMap<>();
+			this.assets = new HashMap<>();
 		}
 		
 		
-		/**
-		 * To be overridden. Contains the loading calls for all assets of the group.
-		 */
-		public abstract void load();
+		public Group put(IAsset asset) {
+			this.assets.put(asset.getName(), asset);
+			return this;
+		}
+		
+		public IAsset get(String name) {
+			return this.assets.get(name);
+		}
+		
+		public void load() {
+			for( IAsset a : this.assets.values() ) {
+				a.load();
+			}
+		}
 		
 		public void deload() {
-				// Deload all assets by default
-			for( ILoadTask<?> task : this.loaders.values() ) {
-				task.deload();
+			for( IAsset a : this.assets.values() ) {
+				a.deload();
 			}
-		}
-		
-		protected <T extends IAsset> T loadAsset(ILoadTask<T> task) {
-			if( this.loaders.containsKey(task.getName()) ) {
-				System.out.println("ERROR: Trying to load an already existing asset!");
-				return null;
-			}
-			
-			T asset = task.load();
-			this.loaders.put(task.getName(), task);
-			return asset;
-		}
-		
-		protected void deloadAsset(String name) {
-			ILoadTask<?> task = this.loaders.get(name);
-			
-			if( task == null ) {
-				System.out.println("ERROR: Unable to deload non-existing asset!");
-				return;
-			}
-			
-			task.deload();
-			this.loaders.remove(name);
-		}
-		
-		public IAsset findAsset(String name) {
-			ILoadTask<?> task = this.loaders.get(name);
-			
-			if( task == null ) {
-				System.out.println("ERROR: Can't find asset '" + name + "' in asset group '" + this.name + "'!");
-				return null;
-			}
-			
-			return task.getLoadedAsset();
 		}
 		
 		public String getName() {
@@ -66,14 +41,14 @@ public class AssetManager {
 	}
 
 	
-	private final Map<String, AGroup> groups;
+	private final Map<String, Group> groups;
 	
 	public AssetManager() {
 		this.groups = new HashMap<>(); 
 	}
 	
 	
-	public void registerGroup(AGroup group) {
+	public void registerGroup(Group group) {
 		if( this.groups.containsKey(group.getName()) ) {
 			System.out.println("ERROR: Trying to create an already existing asset group!");
 			return;
@@ -82,7 +57,7 @@ public class AssetManager {
 		this.groups.put(group.getName(), group);
 	}
 	
-	public AGroup findGroup(String name) {
+	public Group findGroup(String name) {
 		return this.groups.get(name);
 	}
 }
