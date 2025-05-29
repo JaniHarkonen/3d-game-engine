@@ -1,4 +1,4 @@
-package gameengine.engine.renderer;
+package gameengine.engine.renderer.shader;
 
 import java.util.ArrayList;
 import java.util.List;

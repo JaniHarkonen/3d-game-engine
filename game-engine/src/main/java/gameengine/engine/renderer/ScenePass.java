@@ -6,6 +6,9 @@ import java.util.List;
 import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.IScene;
+import gameengine.engine.renderer.shader.ShaderModuleData;
+import gameengine.engine.renderer.shader.ShaderProgram;
+import gameengine.engine.renderer.uniform.UniformManager;
 import gameengine.game.Game;
 import gameengine.util.FileUtils;
 

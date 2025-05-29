@@ -1,4 +1,4 @@
-package gameengine.engine.renderer;
+package gameengine.engine.renderer.shader;
 
 public class ShaderModuleData {
 	private String shaderFile;

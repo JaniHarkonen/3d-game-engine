@@ -1,4 +1,4 @@
-package gameengine.engine.renderer;
+package gameengine.engine.renderer.uniform;
 
 import java.util.HashMap;
 import java.util.Map;
