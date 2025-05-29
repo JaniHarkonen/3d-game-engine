@@ -1,10 +1,11 @@
-package gameengine.engine.renderer;
+package gameengine.engine.asset.mesh;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.IRenderable;
+import gameengine.engine.renderer.IRenderPass;
 import gameengine.engine.renderer.vo.VAO;
 
 public class Mesh implements IRenderable {

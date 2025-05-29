@@ -1,8 +1,8 @@
 package gameengine.game;
 
 import gameengine.engine.asset.AssetManager;
-import gameengine.engine.asset.Texture;
-import gameengine.engine.asset.TextureLoadTask;
+import gameengine.engine.asset.texture.Texture;
+import gameengine.engine.asset.texture.TextureLoadTask;
 import gameengine.util.FileUtils;
 
 public class TestPreloadAssetGroup extends AssetManager.AGroup {

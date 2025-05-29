@@ -1,9 +1,11 @@
-package gameengine.engine.asset;
+package gameengine.engine.asset.texture;
 
 import java.nio.ByteBuffer;
 
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.stb.STBImage;
+
+import gameengine.engine.asset.IAsset;
 
 public class Texture implements IAsset {
     private final String name;

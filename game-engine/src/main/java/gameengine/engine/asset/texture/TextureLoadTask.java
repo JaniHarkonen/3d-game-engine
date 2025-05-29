@@ -1,10 +1,12 @@
-package gameengine.engine.asset;
+package gameengine.engine.asset.texture;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
+
+import gameengine.engine.asset.ILoadTask;
 
 public class TextureLoadTask implements ILoadTask<Texture> {
 	
