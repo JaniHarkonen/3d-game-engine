@@ -76,6 +76,8 @@ public class Engine {
 		this.window.setup();
 		
 		this.renderer = new Renderer();
+		this.renderer.setup();
+		
 		this.physics = new Physics();
 		
 		this.game = new Game();

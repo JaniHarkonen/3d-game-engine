@@ -5,7 +5,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.IRenderable;
-import gameengine.engine.asset.mesh.Mesh;
+import gameengine.engine.asset.Mesh;
 import gameengine.engine.renderer.IRenderPass;
 
 public class Model implements IRenderable {

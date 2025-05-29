@@ -1,4 +1,4 @@
-package gameengine.engine.asset.mesh;
+package gameengine.engine.asset;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;

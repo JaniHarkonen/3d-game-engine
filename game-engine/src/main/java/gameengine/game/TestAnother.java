@@ -11,8 +11,8 @@ import org.joml.Vector4f;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
-import gameengine.engine.asset.mesh.Mesh;
-import gameengine.engine.asset.texture.Texture;
+import gameengine.engine.asset.Mesh;
+import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.IRenderPass;
 import gameengine.engine.window.Window;
 

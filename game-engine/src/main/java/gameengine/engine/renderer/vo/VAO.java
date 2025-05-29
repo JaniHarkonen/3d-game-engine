@@ -2,7 +2,7 @@ package gameengine.engine.renderer.vo;
 
 import org.lwjgl.opengl.GL46;
 
-import gameengine.engine.asset.mesh.Mesh;
+import gameengine.engine.asset.Mesh;
 
 public class VAO {
 

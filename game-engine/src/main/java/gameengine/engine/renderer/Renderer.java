@@ -13,7 +13,11 @@ public class Renderer {
 	public Renderer() {
 		GL.createCapabilities();
 		GL46.glEnable(GL46.GL_DEPTH_TEST);
-		scenePass = new ScenePass();
+		this.scenePass = new ScenePass();
+	}
+	
+	public void setup() {
+		this.scenePass.setup();
 	}
 	
 	public void render(Game game, Window target) {
