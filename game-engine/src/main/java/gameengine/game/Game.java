@@ -6,6 +6,7 @@ import gameengine.engine.ITickable;
 import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.texture.Texture;
 import gameengine.engine.window.Window;
+import gameengine.util.FileUtils;
 
 public class Game implements ITickable {
 
@@ -27,14 +28,15 @@ public class Game implements ITickable {
 	
 	public void preloadAssets() {
 		AssetManager.Group preload = new AssetManager.Group("preload");
-		preload.put(new Texture("tex-default", "texture/texture.png"));
+		preload.put(new Texture("tex-default", FileUtils.getResourcePath("texture/texture.png")));
 		this.assetManager.registerGroup(preload);
+		preload.load();
 	}
 	
 	public void tick(float deltaTime) {
 		this.worldScene.tick(deltaTime);
 		
-		Window window = Engine.getInstance().getWindow();
+		Window window = Engine.getWindow();
 		window.getInput().DEBUGmapInput(11306, (e) -> {
 			window.enableCursor(!window.isCursorEnabled());
 		});

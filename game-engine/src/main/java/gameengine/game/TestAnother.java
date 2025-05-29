@@ -14,7 +14,7 @@ import gameengine.engine.IGameObject;
 import gameengine.engine.asset.mesh.Mesh;
 import gameengine.engine.asset.texture.Texture;
 import gameengine.engine.renderer.IRenderPass;
-import gameengine.util.FileUtils;
+import gameengine.engine.window.Window;
 
 public class TestAnother implements IGameObject {
     private Matrix4f modelMatrix;
@@ -67,7 +67,8 @@ public class TestAnother implements IGameObject {
 
 	@Override
 	public void tick(float deltaTime) {
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12315, (e) -> {
+		Window window = Engine.getWindow();
+		window.getInput().DEBUGmapInput(12315, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;
@@ -77,7 +78,7 @@ public class TestAnother implements IGameObject {
 			this.updateModelMatrix();
 		});
 		
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12314, (e) -> {
+		window.getInput().DEBUGmapInput(12314, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;
@@ -87,7 +88,7 @@ public class TestAnother implements IGameObject {
 			this.updateModelMatrix();
 		});
 		
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12384, (e) -> {
+		window.getInput().DEBUGmapInput(12384, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;
@@ -97,7 +98,7 @@ public class TestAnother implements IGameObject {
 			this.updateModelMatrix();
 		});
 		
-		Engine.getInstance().getWindow().getInput().DEBUGmapInput(12383, (e) -> {
+		window.getInput().DEBUGmapInput(12383, (e) -> {
 			Vector4f position = new Vector4f();
 			position.zero();
 			//position.x -= 1 * deltaTime;
@@ -194,7 +195,7 @@ public class TestAnother implements IGameObject {
         List<Mesh> meshes = new ArrayList<>();
         meshes.add(mesh);
         
-        Texture texture = (Texture) Engine.getInstance().getGame().getAssets().get("tex-default");
+        Texture texture = (Texture) Engine.getGame().getAssets().get("tex-default");
         Material material = new Material();
         material.setTexture(0, texture);
         

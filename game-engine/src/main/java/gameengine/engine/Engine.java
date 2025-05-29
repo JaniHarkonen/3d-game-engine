@@ -21,8 +21,32 @@ public class Engine {
 		return INSTANCE = new Engine();
 	}
 	
-	public static Engine getInstance() {
-		return INSTANCE;
+	public static Window getWindow() {
+		return INSTANCE.window;
+	}
+	
+	public static Game getGame() {
+		return INSTANCE.game;
+	}
+	
+	public static Renderer getRenderer() {
+		return INSTANCE.renderer;
+	}
+	
+	public static Physics getPhysics() {
+		return INSTANCE.physics;
+	}
+	
+	public static void requestStop() {
+		INSTANCE.willStop = true;
+	}
+	
+	public static void setTickRate(float tickRate) {
+		INSTANCE.tickRate = tickRate;
+	}
+	
+	public static void start() {
+		INSTANCE.startEngine();
 	}
 
 	private boolean willStop;
@@ -43,7 +67,7 @@ public class Engine {
 		this.tickRateRealized = 0;
 	}
 	
-	public void start() {
+	private void startEngine() {
 		System.out.println("engine started");
 		
 		long engineStartTime = System.nanoTime();
@@ -86,21 +110,5 @@ public class Engine {
 		
 		System.out.println("engine process terminated");
 		System.out.println("ran for " + ((System.nanoTime() - engineStartTime) / SECONDS) + "s");
-	}
-	
-	public void requestStop() {
-		this.willStop = true;
-	}
-	
-	public void setTickRate(float tickRate) {
-		this.tickRate = tickRate;
-	}
-	
-	public Window getWindow() {
-		return this.window;
-	}
-	
-	public Game getGame() {
-		return this.game;
 	}
 }

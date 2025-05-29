@@ -20,7 +20,7 @@ public class Scene implements IScene, ITickable {
 	public Scene() {
 		this.objects = new ArrayList<>();
 		
-		Window window = Engine.getInstance().getWindow();
+		Window window = Engine.getWindow();
 		this.activeProjection = new Projection(window.getWidth(), window.getHeight());
 		this.activeCamera = new Camera();
 	}

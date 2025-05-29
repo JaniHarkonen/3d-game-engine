@@ -26,6 +26,7 @@ public class Texture implements IAsset {
         this.image = null;
     }
     
+    
 	@Override
 	public void load() {
 		String path = this.path;

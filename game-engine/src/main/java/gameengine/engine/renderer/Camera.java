@@ -5,6 +5,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import gameengine.engine.Engine;
+import gameengine.engine.window.Window;
 
 public class Camera {
 	private Vector3f direction;
@@ -38,30 +39,30 @@ public class Camera {
     
     public void DEBUGupdate() {
     	float speed = 0.5f;
-    	
+    	Window window = Engine.getWindow();
     	
     	// W
-    	Engine.getInstance().getWindow().getInput().DEBUGmapInput(12137, (e) -> {
+    	window.getInput().DEBUGmapInput(12137, (e) -> {
     		this.moveForward(speed);
     	});
 
     	// A
-    	Engine.getInstance().getWindow().getInput().DEBUGmapInput(12115, (e) -> {
+    	window.getInput().DEBUGmapInput(12115, (e) -> {
     		this.moveLeft(speed);
     	});
     	
     	// S
-    	Engine.getInstance().getWindow().getInput().DEBUGmapInput(12133, (e) -> {
+    	window.getInput().DEBUGmapInput(12133, (e) -> {
     		this.moveBackwards(speed);
     	});
     	
     	// D
-    	Engine.getInstance().getWindow().getInput().DEBUGmapInput(12118, (e) -> {
+    	window.getInput().DEBUGmapInput(12118, (e) -> {
     		this.moveRight(speed);
     	});
     	
     	// Mouse pan
-    	Engine.getInstance().getWindow().getInput().DEBUGmapInput(24000, (e) -> {
+    	window.getInput().DEBUGmapInput(24000, (e) -> {
             this.addRotation((float) Math.toRadians(e.mouseDeltaY * 0.1f),
                     (float) Math.toRadians(e.mouseDeltaX * 0.1f));
     	});
