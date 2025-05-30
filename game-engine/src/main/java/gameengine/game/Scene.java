@@ -8,8 +8,8 @@ import gameengine.engine.IGameObject;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
 import gameengine.engine.renderer.Camera;
-import gameengine.engine.renderer.IRenderPass;
 import gameengine.engine.renderer.Projection;
+import gameengine.engine.renderer.Renderer;
 import gameengine.engine.window.Window;
 
 public class Scene implements IScene, ITickable {
@@ -34,9 +34,9 @@ public class Scene implements IScene, ITickable {
 	}
 
 	@Override
-	public void render(IRenderPass renderPass) {
+	public void submitToRenderer(Renderer renderer) {
 		for( IGameObject object : this.objects ) {
-			object.render(renderPass);
+			renderer.getScenePass().submit(object);
 		}
 	}
 	
@@ -58,5 +58,4 @@ public class Scene implements IScene, ITickable {
 	public Camera getActiveCamera() {
 		return this.activeCamera;
 	}
-	
 }

@@ -4,11 +4,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
 
-import gameengine.engine.IRenderable;
-import gameengine.engine.renderer.IRenderPass;
 import gameengine.engine.renderer.vo.VAO;
 
-public class Mesh implements IRenderable {
+public class Mesh {
 	
 	public static class Face {
 		public static final int INDICES_PER_FACE = 3;
@@ -80,8 +78,7 @@ public class Mesh implements IRenderable {
     	this.vao.generate();
     }
     
-	@Override
-	public void render(IRenderPass renderPass) {
+	public void render() {
 		this.vao.bind();
 		GL46.glDrawElements(GL46.GL_TRIANGLES, this.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
 	}

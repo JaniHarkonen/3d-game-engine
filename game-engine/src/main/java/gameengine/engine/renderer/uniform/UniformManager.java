@@ -16,6 +16,7 @@ public class UniformManager {
         uniforms = new HashMap<>();
     }
 
+    
     public void createUniform(String uniformName) {
         int uniformLocation = GL46.glGetUniformLocation(programId, uniformName);
         if (uniformLocation < 0) {

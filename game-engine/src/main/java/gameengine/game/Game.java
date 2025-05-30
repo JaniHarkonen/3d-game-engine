@@ -1,13 +1,10 @@
 package gameengine.game;
 
-import org.lwjgl.opengl.GL46;
-
 import gameengine.engine.Engine;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
 import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.Texture;
-import gameengine.engine.renderer.shader.Shader;
 import gameengine.engine.window.Window;
 import gameengine.util.FileUtils;
 
@@ -37,6 +34,7 @@ public class Game implements ITickable {
 		preload.load();
 	}
 	
+	@Override
 	public void tick(float deltaTime) {
 		this.worldScene.tick(deltaTime);
 		

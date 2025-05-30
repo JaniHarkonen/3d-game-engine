@@ -13,7 +13,8 @@ import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
-import gameengine.engine.renderer.IRenderPass;
+import gameengine.engine.renderer.Renderer;
+import gameengine.engine.renderer.ScenePass;
 import gameengine.engine.window.Window;
 
 public class TestAnother implements IGameObject {
@@ -64,66 +65,7 @@ public class TestAnother implements IGameObject {
     public void updateModelMatrix() {
         modelMatrix.translationRotateScale(position, rotation, scale);
     }
-
-	@Override
-	public void tick(float deltaTime) {
-		Window window = Engine.getWindow();
-		window.getInput().DEBUGmapInput(12315, (e) -> {
-			Vector4f position = new Vector4f();
-			position.zero();
-			//position.x -= 1 * deltaTime;
-			//position.y -= 1 * deltaTime;
-			position.z -= 1 * deltaTime;
-			this.setPosition(position.x + this.getPosition().x, position.y + this.getPosition().y, position.z + this.getPosition().z);
-			this.updateModelMatrix();
-		});
-		
-		window.getInput().DEBUGmapInput(12314, (e) -> {
-			Vector4f position = new Vector4f();
-			position.zero();
-			//position.x -= 1 * deltaTime;
-			//position.y -= 1 * deltaTime;
-			position.z += 1 * deltaTime;
-			this.setPosition(position.x + this.getPosition().x, position.y + this.getPosition().y, position.z + this.getPosition().z);
-			this.updateModelMatrix();
-		});
-		
-		window.getInput().DEBUGmapInput(12384, (e) -> {
-			Vector4f position = new Vector4f();
-			position.zero();
-			//position.x -= 1 * deltaTime;
-			//position.y -= 1 * deltaTime;
-			position.w += 1 * deltaTime;
-			this.setScale(this.getScale() + position.w);
-			this.updateModelMatrix();
-		});
-		
-		window.getInput().DEBUGmapInput(12383, (e) -> {
-			Vector4f position = new Vector4f();
-			position.zero();
-			//position.x -= 1 * deltaTime;
-			//position.y -= 1 * deltaTime;
-			position.w -= 1 * deltaTime;
-			this.setScale(this.getScale() + position.w);
-			this.updateModelMatrix();
-		});
-		
-        rot += 10*deltaTime;
-        
-        if (rot > 360) {
-            rot = 0;
-        }
-        
-		this.setRotation(1, 1, 1, (float) Math.toRadians(rot));
-		this.updateModelMatrix();
-	}
-
-	@Override
-	public void render(IRenderPass renderPass) {
-		renderPass.getUniformManager().setUniform("modelMatrix", this.getModelMatrix());
-		this.model.render(renderPass);
-	}
-
+    
 	@Override
 	public void onCreate() {
 		Vector3f[] vertices = new Vector3f[]{
@@ -206,5 +148,79 @@ public class TestAnother implements IGameObject {
         position = new Vector3f();
         rotation = new Quaternionf();
         scale = 1;
+	}
+
+	@Override
+	public void tick(float deltaTime) {
+		Window window = Engine.getWindow();
+		window.getInput().DEBUGmapInput(12315, (e) -> {
+			Vector4f position = new Vector4f();
+			position.zero();
+			//position.x -= 1 * deltaTime;
+			//position.y -= 1 * deltaTime;
+			position.z -= 1 * deltaTime;
+			this.setPosition(position.x + this.getPosition().x, position.y + this.getPosition().y, position.z + this.getPosition().z);
+			this.updateModelMatrix();
+		});
+		
+		window.getInput().DEBUGmapInput(12314, (e) -> {
+			Vector4f position = new Vector4f();
+			position.zero();
+			//position.x -= 1 * deltaTime;
+			//position.y -= 1 * deltaTime;
+			position.z += 1 * deltaTime;
+			this.setPosition(position.x + this.getPosition().x, position.y + this.getPosition().y, position.z + this.getPosition().z);
+			this.updateModelMatrix();
+		});
+		
+		window.getInput().DEBUGmapInput(12384, (e) -> {
+			Vector4f position = new Vector4f();
+			position.zero();
+			//position.x -= 1 * deltaTime;
+			//position.y -= 1 * deltaTime;
+			position.w += 1 * deltaTime;
+			this.setScale(this.getScale() + position.w);
+			this.updateModelMatrix();
+		});
+		
+		window.getInput().DEBUGmapInput(12383, (e) -> {
+			Vector4f position = new Vector4f();
+			position.zero();
+			//position.x -= 1 * deltaTime;
+			//position.y -= 1 * deltaTime;
+			position.w -= 1 * deltaTime;
+			this.setScale(this.getScale() + position.w);
+			this.updateModelMatrix();
+		});
+		
+        rot += 10*deltaTime;
+        
+        if (rot > 360) {
+            rot = 0;
+        }
+        
+		this.setRotation(1, 1, 1, (float) Math.toRadians(rot));
+		this.updateModelMatrix();
+	}
+	
+	@Override
+	public void submitToRenderer(Renderer renderer) {
+		renderer.getScenePass().submit(this);
+	}
+
+	@Override
+	public void render(ScenePass renderPass) {
+		renderPass.getUniformManager().setUniform("modelMatrix", this.getModelMatrix());
+		this.model.render();
+	}
+
+	@Override
+	public void renderShadow() {
+		
+	}
+
+	@Override
+	public boolean isShadowEnabled() {
+		return false;
 	}
 }
