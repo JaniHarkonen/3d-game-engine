@@ -1,4 +1,4 @@
-package gameengine.game;
+package gameengine.game.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,8 @@ import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
 import gameengine.engine.window.Window;
+import gameengine.game.Material;
+import gameengine.game.Model;
 
 public class TestAnother implements IGameObject {
     private Matrix4f modelMatrix;

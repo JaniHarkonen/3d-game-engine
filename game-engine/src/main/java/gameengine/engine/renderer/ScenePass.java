@@ -18,7 +18,6 @@ public class ScenePass extends ARenderPass<IGameObject> {
 	public final UAMatrix4f uModel;
 	public final UInteger1 uDiffuseSampler;
 	
-	Projection projection;
     Camera camera;
 
     public ScenePass() {
@@ -51,15 +50,9 @@ public class ScenePass extends ARenderPass<IGameObject> {
     @Override
     public void execute() {
         this.shaderProgram.bind();
-        /*
-        this.uniformsMap.setUniform("txtSampler", 0);
-        this.uniformsMap.setUniform("projectionMatrix", this.projection.getProjMatrix());
-        this.uniformsMap.setUniform("cameraMatrix", this.camera.getViewMatrix());
-        */
-        
         this.uDiffuseSampler.update(0);
-        this.uProjection.update(this.projection.getProjMatrix());
-        this.uCamera.update(this.camera.getViewMatrix());
+        this.uProjection.update(this.camera.getProjection().getAsMatrix());
+        this.uCamera.update(this.camera.getTransform().getAsMatrix());
         
         for( IGameObject object : this.submissions ) {
         	object.render(this);

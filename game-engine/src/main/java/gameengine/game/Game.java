@@ -6,17 +6,17 @@ import gameengine.engine.ITickable;
 import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.window.Window;
+import gameengine.game.test.TestAnother;
+import gameengine.game.test.TestCamera;
 import gameengine.util.FileUtils;
 
 public class Game implements ITickable {
 
 	private AssetManager assetManager;
-	private AssetManager.Group agShaders;
 	private Scene worldScene;
 	
 	public Game() {
 		this.assetManager = new AssetManager();
-		this.agShaders = null;
 		this.worldScene = null;
 	}
 	
@@ -24,6 +24,7 @@ public class Game implements ITickable {
 	public void setup() {
 		this.preloadAssets();
 		this.worldScene = new Scene();
+		this.worldScene.addObject(new TestCamera());
 		this.worldScene.addObject(new TestAnother());
 	}
 	

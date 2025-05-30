@@ -36,7 +36,6 @@ public class Renderer {
 		worldScene.submitToRenderer(this);
 		
 			// Scene render pass
-		this.scenePass.projection = worldScene.getActiveProjection();
 		this.scenePass.camera = worldScene.getActiveCamera();
 		this.scenePass.execute();
 	}
