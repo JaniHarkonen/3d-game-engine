@@ -210,7 +210,7 @@ public class TestAnother implements IGameObject {
 
 	@Override
 	public void render(ScenePass renderPass) {
-		renderPass.getUniformManager().setUniform("modelMatrix", this.getModelMatrix());
+		renderPass.uModel.update(this.getModelMatrix());
 		this.model.render();
 	}
 

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL46;
 
+import gameengine.engine.renderer.uniform.IUniform;
+
 public class ShaderProgram {
 
     private int ID;
@@ -37,6 +39,12 @@ public class ShaderProgram {
         	s.detach(this);
         	s.deload();
         }
+    }
+    
+    public void declareUniform(IUniform<?>... uniforms) {
+    	for( IUniform<?> u : uniforms ) {
+    		u.initialize(this);
+    	}
     }
 
     public void bind() {

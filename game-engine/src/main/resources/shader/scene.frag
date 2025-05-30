@@ -4,9 +4,9 @@ in vec2 outTextCoord;
 
 out vec4 fragColor;
 
-uniform sampler2D txtSampler;
+uniform sampler2D uDiffuseSampler;
 
 void main()
 {
-    fragColor = texture(txtSampler, outTextCoord);
+    fragColor = texture(uDiffuseSampler, outTextCoord);
 }

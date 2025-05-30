@@ -5,28 +5,30 @@ import org.lwjgl.opengl.GL46;
 import gameengine.engine.IGameObject;
 import gameengine.engine.renderer.shader.Shader;
 import gameengine.engine.renderer.shader.ShaderProgram;
-import gameengine.engine.renderer.uniform.UniformManager;
+import gameengine.engine.renderer.uniform.UAMatrix4f;
+import gameengine.engine.renderer.uniform.UInteger1;
 import gameengine.util.FileUtils;
 
 public class ScenePass extends ARenderPass<IGameObject> {
 	public static final String VERTEX_SHADER = "shd-scene-vert";
 	public static final String FRAGMENT_SHADER = "shd-scene-frag";
 	
+	public final UAMatrix4f uProjection;
+	public final UAMatrix4f uCamera;
+	public final UAMatrix4f uModel;
+	public final UInteger1 uDiffuseSampler;
+	
 	Projection projection;
     Camera camera;
 
     public ScenePass() {
     	super();
+    	this.uProjection = new UAMatrix4f("uProjection");
+    	this.uCamera = new UAMatrix4f("uCamera");
+    	this.uModel = new UAMatrix4f("uModel");
+    	this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
     }
     
-    
-    private void createUniforms() {
-        uniformsMap = new UniformManager(shaderProgram.getID());
-        uniformsMap.createUniform("projectionMatrix");
-        uniformsMap.createUniform("modelMatrix");
-        uniformsMap.createUniform("txtSampler");
-        uniformsMap.createUniform("cameraMatrix");
-    }
     
     @Override
     public void setup() {
@@ -37,15 +39,27 @@ public class ScenePass extends ARenderPass<IGameObject> {
     	this.shaderProgram.addShader(sceneVertex);
     	this.shaderProgram.addShader(sceneFragment);
     	this.shaderProgram.generate();
-    	this.createUniforms();
+    	
+    	this.shaderProgram.declareUniform(
+			this.uProjection,
+			this.uCamera,
+			this.uModel,
+			this.uDiffuseSampler
+		);
     }
 
     @Override
     public void execute() {
         this.shaderProgram.bind();
+        /*
         this.uniformsMap.setUniform("txtSampler", 0);
         this.uniformsMap.setUniform("projectionMatrix", this.projection.getProjMatrix());
         this.uniformsMap.setUniform("cameraMatrix", this.camera.getViewMatrix());
+        */
+        
+        this.uDiffuseSampler.update(0);
+        this.uProjection.update(this.projection.getProjMatrix());
+        this.uCamera.update(this.camera.getViewMatrix());
         
         for( IGameObject object : this.submissions ) {
         	object.render(this);
