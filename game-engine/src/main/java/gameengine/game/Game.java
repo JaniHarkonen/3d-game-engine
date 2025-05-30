@@ -8,6 +8,7 @@ import gameengine.engine.asset.Texture;
 import gameengine.engine.window.Window;
 import gameengine.game.test.TestAnother;
 import gameengine.game.test.TestCamera;
+import gameengine.logger.Logger;
 import gameengine.util.FileUtils;
 
 public class Game implements ITickable {
@@ -26,6 +27,7 @@ public class Game implements ITickable {
 		this.worldScene = new Scene();
 		this.worldScene.addObject(new TestCamera());
 		this.worldScene.addObject(new TestAnother());
+		Logger.info(this, "Game setup done!");
 	}
 	
 	private void preloadAssets() {

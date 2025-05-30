@@ -50,8 +50,8 @@ public class LoggerMessage {
 		}
 		
 		return (
-			Logger.get().formatDateTimeString(this.startTime) +  
-			(this.endTime == null ? "" : " - " + Logger.get().formatDateTimeString(this.endTime))
+			Logger.formatDateTimeString(this.startTime) +  
+			(this.endTime == null ? "" : " - " + Logger.formatDateTimeString(this.endTime))
 		);
 	}
 	

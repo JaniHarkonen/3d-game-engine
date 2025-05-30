@@ -3,6 +3,7 @@ package gameengine.engine.renderer.uniform;
 import java.util.function.Supplier;
 
 import gameengine.engine.renderer.shader.ShaderProgram;
+import gameengine.logger.Logger;
 
 public class UArray<T> implements IUniform<T[]> {
 	private String name;
@@ -29,11 +30,11 @@ public class UArray<T> implements IUniform<T[]> {
 	@Override
 	public void update(T[] values) {
 		if( this.array.length != values.length) {
-			/*Logger.get().warn(this, 
-				"WARNING: Unable to set array uniform '" + this.name + "'!",
+			Logger.warn(this, 
+				"Unable to set array uniform '" + this.name + "'!",
 				"Uniform array of size " + this.array.length + 
 				" is being set with an array of size " + values.length + "."
-			);*/
+			);
 			return;
 		}
 		

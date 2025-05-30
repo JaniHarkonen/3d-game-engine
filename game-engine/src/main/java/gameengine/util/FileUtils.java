@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.net.URL;
 
 import gameengine.Main;
+import gameengine.logger.Logger;
 
 public final class FileUtils {
 
@@ -39,11 +40,7 @@ public final class FileUtils {
 		URL url = Main.class.getResource("/" + relativePath);
 		
 		if( url == null ) {
-			System.out.println(
-				"[FileUtils.getResourcePath(String)]\n"+
-				"ERROR: Unable to resolve relative resource path: \n"+
-				relativePath
-			);
+			Logger.error("FileUtils.getResourcePath()", "Unable to resolve relative resource path:\n", relativePath);
 			return null;
 		}
 		

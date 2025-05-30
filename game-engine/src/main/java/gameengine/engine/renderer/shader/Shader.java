@@ -54,4 +54,8 @@ public class Shader implements IAsset {
 	public String getName() {
 		return this.name;
 	}
+	
+	public String getPath() {
+		return this.path;
+	}
 }

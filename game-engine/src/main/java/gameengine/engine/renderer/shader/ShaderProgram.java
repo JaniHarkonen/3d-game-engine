@@ -6,6 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.renderer.uniform.IUniform;
+import gameengine.logger.Logger;
 
 public class ShaderProgram {
 
@@ -21,29 +22,35 @@ public class ShaderProgram {
         this.ID = GL46.glCreateProgram();
         
         if( this.ID == 0 ) {
-            throw new RuntimeException("ERROR: Failed to create a shader program!");
+        	Logger.fatal(this, "Failed to create shader program!");
         }
         
         for( Shader s : this.shaders ) {
+        	Logger.info(this, "Loading shader '" + s.getName() + "' from: ", s.getPath());
         	s.load();
         	s.attach(this);
+        	Logger.spam(this, "Attached shader '" + s.getName() + "'.");
         }
         
         GL46.glLinkProgram(this.ID);
+        Logger.info(this, "Linked shader program.");
         
         if( GL46.glGetProgrami(this.ID, GL46.GL_LINK_STATUS) == 0 ) {
-            throw new RuntimeException("ERROR: Unable to link shader program: " + GL46.glGetProgramInfoLog(this.ID, 1024));
+        	Logger.fatal(this, "Unable to link shader program!", "OpenGL log:", GL46.glGetProgramInfoLog(this.ID, 1024));
         }
         
         for( Shader s : this.shaders ) {
+        	Logger.spam(this, "Detaching shader '" + s.getName() + "'.");
         	s.detach(this);
         	s.deload();
+        	Logger.info(this, "Deloaded shader '" +s.getName() + "'.");
         }
     }
     
     public void declareUniform(IUniform<?>... uniforms) {
     	for( IUniform<?> u : uniforms ) {
     		u.initialize(this);
+    		Logger.info(this, "Declared uniform '" + u.getName() + "'.");
     	}
     }
 

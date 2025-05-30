@@ -2,6 +2,8 @@ package gameengine.engine.window;
 
 import org.lwjgl.glfw.GLFW;
 
+import gameengine.logger.Logger;
+
 public class Window {
 	
 	public static final int DEFAULT_WIDTH = 640;
@@ -35,7 +37,7 @@ public class Window {
     
     public void setup() {
         if( !GLFW.glfwInit() ) {
-            throw new IllegalStateException("Unable to initialize GLFW!");
+        	Logger.fatal(this, "GLFW initialization failed!");
         }
 
         GLFW.glfwDefaultWindowHints();
@@ -46,12 +48,16 @@ public class Window {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);
 
         this.windowID = GLFW.glfwCreateWindow(this.width, this.height, this.title, 0, 0);
-        GLFW.glfwSetInputMode(this.windowID, GLFW.GLFW_CURSOR, this.isCursorEnabled ? GLFW.GLFW_CURSOR_NORMAL : GLFW.GLFW_CURSOR_DISABLED);
         
         if( this.windowID == 0 ) {
-            throw new RuntimeException("Failed to create the GLFW window!");
+        	Logger.error(this, "Failed to create window!");
+        	return;
         }
         
+        Logger.info(this, "Window created.");
+        
+        int cursor = this.isCursorEnabled ? GLFW.GLFW_CURSOR_NORMAL : GLFW.GLFW_CURSOR_DISABLED;
+        GLFW.glfwSetInputMode(this.windowID, GLFW.GLFW_CURSOR, cursor);
         GLFW.glfwSetFramebufferSizeCallback(this.windowID, (win, w, h) -> this.onResize(w, h));
         
         this.input = new Input();
@@ -60,6 +66,8 @@ public class Window {
         GLFW.glfwMakeContextCurrent(this.windowID);
     	GLFW.glfwSwapInterval(0);
         GLFW.glfwShowWindow(this.windowID);
+        
+        Logger.info(this, "Window setup done.");
     }
     
     public void pollEvents() {

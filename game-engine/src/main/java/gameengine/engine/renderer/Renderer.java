@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL46;
 import gameengine.engine.IScene;
 import gameengine.engine.window.Window;
 import gameengine.game.Game;
+import gameengine.logger.Logger;
 
 public class Renderer {
 	
@@ -22,6 +23,7 @@ public class Renderer {
 		GL.createCapabilities();
 		GL46.glEnable(GL46.GL_DEPTH_TEST);
 		this.scenePass.setup();
+		Logger.info(this, "Renderer setup done.");
 	}
 	
 	public void render(Game game, Window target) {
@@ -32,12 +34,16 @@ public class Renderer {
 		this.scenePass.reset();
 		
 			// Generate submissions
+		Logger.spam(this, "Submitting to scene render pass...");
 		IScene worldScene = game.getWorldScene();
-		worldScene.submitToRenderer(this);
+		worldScene.submitToRenderer(this);		
 		
 			// Scene render pass
+		Logger.spam(this, "Rendering scene...");
 		this.scenePass.camera = worldScene.getActiveCamera();
 		this.scenePass.execute();
+		
+		Logger.spam(this, "Scene rendered.");
 	}
 	
 	public ScenePass getScenePass() {

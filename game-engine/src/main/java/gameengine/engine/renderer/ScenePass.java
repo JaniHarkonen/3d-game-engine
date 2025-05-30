@@ -7,6 +7,7 @@ import gameengine.engine.renderer.shader.Shader;
 import gameengine.engine.renderer.shader.ShaderProgram;
 import gameengine.engine.renderer.uniform.UAMatrix4f;
 import gameengine.engine.renderer.uniform.UInteger1;
+import gameengine.logger.Logger;
 import gameengine.util.FileUtils;
 
 public class ScenePass extends ARenderPass<IGameObject> {
@@ -31,6 +32,7 @@ public class ScenePass extends ARenderPass<IGameObject> {
     
     @Override
     public void setup() {
+    	Logger.info(this, "Scene render pass setup started...");
     	Shader sceneVertex = new Shader(VERTEX_SHADER, FileUtils.getResourcePath("shader/scene.vert"), GL46.GL_VERTEX_SHADER);
     	Shader sceneFragment = new Shader(FRAGMENT_SHADER, FileUtils.getResourcePath("shader/scene.frag"), GL46.GL_FRAGMENT_SHADER);
     	
@@ -38,6 +40,7 @@ public class ScenePass extends ARenderPass<IGameObject> {
     	this.shaderProgram.addShader(sceneVertex);
     	this.shaderProgram.addShader(sceneFragment);
     	this.shaderProgram.generate();
+    	Logger.info(this, "Shader program generated.");
     	
     	this.shaderProgram.declareUniform(
 			this.uProjection,

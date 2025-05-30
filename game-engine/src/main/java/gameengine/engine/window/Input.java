@@ -8,6 +8,8 @@ import java.util.function.Consumer;
 
 import org.lwjgl.glfw.GLFW;
 
+import gameengine.logger.Logger;
+
 public class Input {
 	
 	public class Event {
@@ -79,6 +81,8 @@ public class Input {
 		GLFW.glfwSetCursorPosCallback(windowID, (win, mouseX, mouseY) -> {
 			this.mousePosition(mouseX, mouseY);
 		});
+		
+		Logger.info(this, "Input bound.");
 	}
 	
 	void poll(/*Controller controller*/) {
@@ -100,9 +104,7 @@ public class Input {
 			this.eventQueue.add(event);
 		}
 		
-		for( Event e : this.eventQueue ) {
-			System.out.println(e.hashCode());
-		}
+		Logger.spam(this, "Input polled.");
 	}
 	
 	void clear() {
