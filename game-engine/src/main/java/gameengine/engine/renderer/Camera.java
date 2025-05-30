@@ -1,5 +1,6 @@
 package gameengine.engine.renderer;
 
+import gameengine.game.CameraTransform;
 import gameengine.game.Transform;
 
 public class Camera {
@@ -7,14 +8,8 @@ public class Camera {
 	private Projection projection;
 
     public Camera(Projection projection) {
-        this.transform = new Transform() {
-        	@Override
-        	protected void recalculate() {
-        		this.transformMatrix.identity()
-        		.rotate(this.rotator.getAsQuaternion())
-        		.translate(-this.position.x, -this.position.y, -this.position.z);
-        	}
-        };
+    		// Special transform whose matrix is translated and rotated slightly different
+        this.transform = new CameraTransform();
         this.projection = projection;
     }
 
