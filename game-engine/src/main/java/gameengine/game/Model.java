@@ -61,4 +61,10 @@ public class Model {
 		
 		this.materials[index] = material;
 	}
+	
+	public void setMaterial(Material ...material) {
+		for( int i = 0; i < material.length; i++ ) {
+			this.setMaterial(i, material[i]);
+		}
+	}
 }

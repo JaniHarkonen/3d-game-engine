@@ -4,6 +4,7 @@ import org.joml.Vector4f;
 
 import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.uniform.object.material.SSMaterial;
+import gameengine.logger.Logger;
 
 public class Material {
 	public static final int DIFFUSE = 0;
@@ -16,6 +17,17 @@ public class Material {
 	public static final Vector4f DEFAULT_SPECULAR_COLOR = 
 		new Vector4f(1.0f, 1.0f, 1.0f, 1.0f); // pulled from fbx via Assimp
 	public static final float DEFAULT_REFLECTANCE = 0.0f;
+	
+	public static Material create(Texture texture) {
+		if( texture == null ) {
+			Logger.error("Material.create()", "Trying to create a material based on a null texture!");
+			return null;
+		}
+		
+		Material material = new Material();
+		material.setTexture(DIFFUSE, texture);
+		return material;
+	}
 
 	private Texture[] textureSlot;
 	private Vector4f ambientColor;

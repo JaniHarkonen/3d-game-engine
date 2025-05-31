@@ -21,7 +21,7 @@ import gameengine.util.GeometryUtils;
 public class Mesh implements IAsset {
 	public static final int DEFAULT_IMPORT_FLAGS = (
 		Assimp.aiProcess_GenSmoothNormals |
-		Assimp.aiProcess_JoinIdenticalVertices |
+		//Assimp.aiProcess_JoinIdenticalVertices |
 		Assimp.aiProcess_Triangulate | 
 		Assimp.aiProcess_FixInfacingNormals | 
 		Assimp.aiProcess_CalcTangentSpace | 
@@ -32,7 +32,6 @@ public class Mesh implements IAsset {
 	private final String name;
 	private String path;
     private Submesh[] submeshes;
-    //private Material[] meshMaterials;
     private int importFlags;
 
     public Mesh(String name, String path) {
@@ -45,7 +44,6 @@ public class Mesh implements IAsset {
     
     private void reset() {
     	this.submeshes = new Submesh[0];
-    	//this.meshMaterials = new Material[0];
     }
 	
 	@Override
@@ -72,6 +70,8 @@ public class Mesh implements IAsset {
 		int submeshCount = aiScene.mNumMeshes();
 		this.submeshes = new Submesh[submeshCount];
 		//this.meshMaterials = new Material[meshCount];
+		
+		Logger.info(this, "Found " + submeshCount + " submeshes.");
 		
 		//List<Bone> boneList = new ArrayList<>();
 		PointerBuffer aiMeshBuffer = aiScene.mMeshes();
@@ -396,50 +396,6 @@ public class Mesh implements IAsset {
 		
 		this.submeshes[index].render();
 	}
-
-	/*
-	public void render(ScenePass scenePass) {
-		if( this.submeshes.length == 0 ) {
-			Logger.spam(this, "WARNING: Attempting to render a mesh with 0 submeshes!");
-			return;
-		}
-		
-		if( this.meshMaterials.length == 0 ) {
-			Logger.spam(this, "WARNING: Attempting to render a model with 0 mesh materials!");
-			return;
-		}
-		
-		if( this.meshes.length != this.meshMaterials.length ) {
-			Logger.spam(
-				this, 
-				"WARNING: Rendering a model with different number of meshes and materials! Meshes: " + 
-				this.meshes.length + ", materials: " + this.meshMaterials.length + "."
-			);
-		}
-		
-		for( int i = 0; i < this.meshes.length; i++ ) {
-			Material material = this.meshMaterials[i];
-			Texture[] materialTextures = material.getTextures();
-			
-			for( int j = 0; j < materialTextures.length; j++ ) {
-				Texture texture = materialTextures[j];
-				
-				if( texture == null ) {
-					break;
-				}
-				
-				GL46.glActiveTexture(GL46.GL_TEXTURE0 + j);
-				texture.bind();
-			}
-			
-			scenePass.uMaterial.update(material.getAsStruct());
-			this.meshes[i].render();
-		}
-	}*/
-	
-	/*public void setMaterial(int index, Material material) {
-		this.meshMaterials[index] = material;
-	}*/
 	
 	@Override
 	public String getName() {

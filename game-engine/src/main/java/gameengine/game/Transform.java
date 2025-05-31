@@ -42,6 +42,10 @@ public class Transform {
 		this.scale = possessor.scale;
 	}
 	
+	public void shift(float x, float y, float z) {
+		this.position.add(x, y, z);
+	}
+	
 	public void setPosition(float x, float y, float z) {
 		this.position.set(x, y, z);
 	}
