@@ -7,6 +7,7 @@ import gameengine.engine.renderer.shader.Shader;
 import gameengine.engine.renderer.shader.ShaderProgram;
 import gameengine.engine.renderer.uniform.UAMatrix4f;
 import gameengine.engine.renderer.uniform.UInteger1;
+import gameengine.engine.renderer.uniform.object.material.UMaterial;
 import gameengine.logger.Logger;
 import gameengine.util.FileUtils;
 
@@ -18,6 +19,7 @@ public class ScenePass extends ARenderPass<IGameObject> {
 	public final UAMatrix4f uCamera;
 	public final UAMatrix4f uModel;
 	public final UInteger1 uDiffuseSampler;
+	public final UMaterial uMaterial;
 	
     Camera camera;
 
@@ -27,6 +29,7 @@ public class ScenePass extends ARenderPass<IGameObject> {
     	this.uCamera = new UAMatrix4f("uCamera");
     	this.uModel = new UAMatrix4f("uModel");
     	this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
+    	this.uMaterial = new UMaterial("uMaterial");
     }
     
     

@@ -56,6 +56,7 @@ public final class Logger {
 		this.severityLabels.put(ERROR, "ERROR");
 		this.severityLabels.put(WARN, "Warning");
 		this.severityLabels.put(INFO, "Info");
+		this.severityLabels.put(SPAM, "Spam");
 	}
 	
 	public static void registerTarget(ILogRecorder target) {

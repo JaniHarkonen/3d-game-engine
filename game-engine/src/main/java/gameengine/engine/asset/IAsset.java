@@ -7,4 +7,6 @@ public interface IAsset {
 	public void deload();
 	
 	public String getName();
+	
+	public String getPath();
 }

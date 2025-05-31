@@ -7,6 +7,8 @@ import org.lwjgl.opengl.GL46;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
+import gameengine.logger.Logger;
+
 public class Texture implements IAsset {
     private final String name;
     private String path;
@@ -27,6 +29,7 @@ public class Texture implements IAsset {
     
 	@Override
 	public void load() {
+		Logger.info(this, "Loading texture '" + this.name + "' from: ", this.path);
 		String path = this.path;
 		
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -46,6 +49,8 @@ public class Texture implements IAsset {
             this.image = bufferImage;
             this.generate();
         }
+        
+        Logger.info(this, "Texture loaded.");
 	}
 	
 	@Override
@@ -54,6 +59,7 @@ public class Texture implements IAsset {
     	STBImage.stbi_image_free(this.image);
     	this.image = null;
     	this.graphicsID = -1;
+    	Logger.info(this, "Deloaded texture '" + this.name + "'.");
 	}
     
     private void generate() {
@@ -85,5 +91,10 @@ public class Texture implements IAsset {
     @Override
     public String getName() {
     	return this.name;
+    }
+    
+    @Override
+    public String getPath() {
+    	return this.path;
     }
 }

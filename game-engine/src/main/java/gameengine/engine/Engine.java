@@ -137,7 +137,7 @@ public class Engine {
 		
 		Logger.setSystem(SYSTEM_ENGINE);
 		
-		this.window.destroy();
+		this.window.dispose();
 		
 		Logger.debug(this, "engine process terminated");
 		Logger.debug(this, "ran for " + ((System.nanoTime() - engineStartTime) / SECONDS) + "s");

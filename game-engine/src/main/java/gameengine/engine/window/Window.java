@@ -84,9 +84,10 @@ public class Window {
     	GLFW.glfwSetWindowShouldClose(this.windowID, true);
     }
     
-    public void destroy() {
+    public void dispose() {
     	GLFW.glfwDestroyWindow(this.windowID);
     	GLFW.glfwTerminate();
+    	Logger.info(this, "GLFW window disposed and terminated.");
     }
     
     Window setDimensions(int width, int height) {

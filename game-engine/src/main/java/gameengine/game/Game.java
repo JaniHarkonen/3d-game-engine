@@ -33,6 +33,7 @@ public class Game implements ITickable {
 	private void preloadAssets() {
 		AssetManager.Group preload = new AssetManager.Group("preload");
 		preload.put(new Texture("tex-default", FileUtils.getResourcePath("texture/texture.png")));
+		preload.put(new Model("mdl-default", FileUtils.getResourcePath("model/box.fbx")));
 		this.assetManager.registerGroup(preload);
 		preload.load();
 	}

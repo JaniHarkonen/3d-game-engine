@@ -25,12 +25,12 @@ public class UMaterial extends AUniformObject<SSMaterial> {
 		this.reflectance = new UFloat1();
 		
 		this
-		.addField("hasNormalMap", this.hasNormalMap)
-		.addField("hasRoughnessMap", this.hasRoughnessMap)
-		.addField("ambient", this.ambient)
-		.addField("diffuse", this.diffuse)
-		.addField("specular", this.specular)
-		.addField("reflectance", this.reflectance);
+		//.addField("hasNormalMap", this.hasNormalMap)
+		//.addField("hasRoughnessMap", this.hasRoughnessMap)
+		//.addField("ambient", this.ambient)
+		.addField("diffuse", this.diffuse);
+		//.addField("specular", this.specular)
+		//.addField("reflectance", this.reflectance);
 	}
 	
 	public UMaterial() {
@@ -40,11 +40,11 @@ public class UMaterial extends AUniformObject<SSMaterial> {
 	
 	@Override
 	public void update(SSMaterial value) {
-		this.hasNormalMap.update(value.hasNormalMap);
-		this.hasRoughnessMap.update(value.hasRoughnessMap);
-		this.ambient.update(value.ambient);
+		//this.hasNormalMap.update(value.hasNormalMap);
+		//this.hasRoughnessMap.update(value.hasRoughnessMap);
+		//this.ambient.update(value.ambient);
 		this.diffuse.update(value.diffuse);
-		this.specular.update(value.specular);
-		this.reflectance.update(value.reflectance);
+		//this.specular.update(value.specular);
+		//this.reflectance.update(value.reflectance);
 	}
 }

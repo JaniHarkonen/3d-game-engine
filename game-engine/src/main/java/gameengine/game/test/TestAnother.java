@@ -1,8 +1,5 @@
 package gameengine.game.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -11,6 +8,7 @@ import org.joml.Vector4f;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
+import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.Renderer;
@@ -134,18 +132,22 @@ public class TestAnother implements IGameObject {
         	new Mesh.Face(4, 6, 7), new Mesh.Face(5, 4, 7)
         };
 		
-        Mesh mesh = new Mesh();
+        /*Mesh mesh = new Mesh();
         mesh.populate(vertices, UVs, faces);
         List<Mesh> meshes = new ArrayList<>();
-        meshes.add(mesh);
+        meshes.add(mesh);*/
         
-        Texture texture = (Texture) Engine.getGame().getAssets().get("tex-default");
+        AssetManager.Group assets = Engine.getGame().getAssets();
+        
+        Texture texture = (Texture) assets.get("tex-default");
         Material material = new Material();
-        material.setTexture(0, texture);
+        material.setTexture(Material.DIFFUSE, texture);
         
-        List<Material> materials = new ArrayList<>();
-        materials.add(material);
-        this.model = new Model(meshes, materials);
+        //List<Material> materials = new ArrayList<>();
+        //materials.add(material);
+        this.model = (Model) assets.get("mdl-default");
+        this.model.setMaterial(0, material);
+        //this.model = new Model(meshes, materials);
         modelMatrix = new Matrix4f();
         position = new Vector3f();
         rotation = new Quaternionf();
@@ -213,7 +215,7 @@ public class TestAnother implements IGameObject {
 	@Override
 	public void render(ScenePass renderPass) {
 		renderPass.uModel.update(this.getModelMatrix());
-		this.model.render();
+		this.model.render(renderPass);
 	}
 
 	@Override
