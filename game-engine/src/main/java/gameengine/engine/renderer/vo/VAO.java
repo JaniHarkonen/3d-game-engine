@@ -2,19 +2,19 @@ package gameengine.engine.renderer.vo;
 
 import org.lwjgl.opengl.GL46;
 
-import gameengine.engine.asset.Mesh;
+import gameengine.engine.renderer.Submesh;
 import gameengine.logger.Logger;
 
 public class VAO {
 
-	private Mesh mesh;
+	private Submesh submesh;
 	private int ID;
 	private VBO vboVertices;
 	private VBO vboUVs;
 	private VBO vboIndices;
 	
-	public VAO(Mesh mesh) {
-		this.mesh = mesh;
+	public VAO(Submesh submesh) {
+		this.submesh = submesh;
 		this.ID = -1;
 		this.vboVertices = null;
 		this.vboUVs = null;
@@ -23,22 +23,22 @@ public class VAO {
 	
 	
 	public void generate() {
-		Logger.info(this, "Generating VAO for mesh '" + this.mesh + "'...");
+		Logger.info(this, "Generating VAO for submesh '" + this.submesh + "'...");
 		this.ID = GL46.glGenVertexArrays();
 		
         this.bind();
         	this.vboVertices = new VBO(GL46.GL_ARRAY_BUFFER, GL46.GL_FLOAT, 3);
-        	this.vboVertices.generate(this.mesh.getVertices());
+        	this.vboVertices.generate(this.submesh.getVertices());
         	this.vboVertices.enable(0);
         	Logger.info(this, "Vertices VBO @ 0");
         	
         	this.vboUVs = new VBO(GL46.GL_ARRAY_BUFFER, GL46.GL_FLOAT, 2);
-        	this.vboUVs.generate(this.mesh.getUVs());
+        	this.vboUVs.generate(this.submesh.getUVs());
         	this.vboUVs.enable(1);
         	Logger.info(this, "UVs VBO @ 1");
         	
         	this.vboIndices = new VBO(GL46.GL_ELEMENT_ARRAY_BUFFER, GL46.GL_INT, 0);
-        	this.vboIndices.generate(Mesh.Face.facesToIndices(this.mesh.getFaces()));
+        	this.vboIndices.generate(Submesh.Face.facesToIndices(this.submesh.getFaces()));
         	Logger.info(this, "Indices VBO OK");
         this.unbind();
 	}
@@ -57,7 +57,7 @@ public class VAO {
 		this.vboUVs.dispose();
 		this.vboIndices.dispose();
 		GL46.glDeleteVertexArrays(this.ID);
-		Logger.info(this, "VAO disposed for mesh '" + this.mesh + "'.");
-		this.mesh = null;
+		Logger.info(this, "VAO disposed for submesh '" + this.submesh + "'.");
+		this.submesh = null;
 	}
 }

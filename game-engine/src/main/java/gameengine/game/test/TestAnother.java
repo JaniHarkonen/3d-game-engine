@@ -9,12 +9,13 @@ import org.joml.Vector4f;
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
 import gameengine.engine.asset.AssetManager;
-import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
+import gameengine.engine.renderer.Submesh;
 import gameengine.engine.window.Window;
 import gameengine.game.Material;
+import gameengine.game.Mesh;
 import gameengine.game.Model;
 
 public class TestAnother implements IGameObject {
@@ -123,13 +124,13 @@ public class TestAnother implements IGameObject {
 			new Vector2f(1.0f, 0.5f),
         };
         
-        Mesh.Face[] faces = new Mesh.Face[]{
-        	new Mesh.Face(0, 1, 3), new Mesh.Face(3, 1, 2),
-        	new Mesh.Face(8, 10, 11), new Mesh.Face(9, 8, 11),
-        	new Mesh.Face(12, 13, 7), new Mesh.Face(5, 12, 7),
-        	new Mesh.Face(14, 15, 6), new Mesh.Face(4, 14, 6),
-        	new Mesh.Face(16, 18, 19), new Mesh.Face(17, 16, 19),
-        	new Mesh.Face(4, 6, 7), new Mesh.Face(5, 4, 7)
+        Submesh.Face[] faces = new Submesh.Face[]{
+        	new Submesh.Face(0, 1, 3), new Submesh.Face(3, 1, 2),
+        	new Submesh.Face(8, 10, 11), new Submesh.Face(9, 8, 11),
+        	new Submesh.Face(12, 13, 7), new Submesh.Face(5, 12, 7),
+        	new Submesh.Face(14, 15, 6), new Submesh.Face(4, 14, 6),
+        	new Submesh.Face(16, 18, 19), new Submesh.Face(17, 16, 19),
+        	new Submesh.Face(4, 6, 7), new Submesh.Face(5, 4, 7)
         };
 		
         /*Mesh mesh = new Mesh();
@@ -145,7 +146,8 @@ public class TestAnother implements IGameObject {
         
         //List<Material> materials = new ArrayList<>();
         //materials.add(material);
-        this.model = (Model) assets.get("mdl-default");
+        Mesh mesh = (Mesh) assets.get("mesh-man");
+        this.model = new Model(mesh);
         this.model.setMaterial(0, material);
         //this.model = new Model(meshes, materials);
         modelMatrix = new Matrix4f();

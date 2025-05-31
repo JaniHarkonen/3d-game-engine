@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIVector3D;
 
-import gameengine.engine.asset.Mesh;
+import gameengine.engine.renderer.Submesh;
 
 public final class GeometryUtils {
 
@@ -81,10 +81,10 @@ public final class GeometryUtils {
 		return result;
 	}
 	
-	public static int[] faceArrayToIntArray(Mesh.Face[] faceArray) {
-		int[] result = new int[faceArray.length * Mesh.Face.INDICES_PER_FACE];
+	public static int[] faceArrayToIntArray(Submesh.Face[] faceArray) {
+		int[] result = new int[faceArray.length * Submesh.Face.INDICES_PER_FACE];
 		for( int i = 0; i < faceArray.length; i++ ) {
-			Mesh.Face face = faceArray[i];
+			Submesh.Face face = faceArray[i];
 			result[i * 3] = face.getIndex(0);
 			result[i * 3 + 1] = face.getIndex(1);
 			result[i * 3 + 2] = face.getIndex(2);

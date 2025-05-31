@@ -1,4 +1,4 @@
-package gameengine.engine.asset;
+package gameengine.engine.renderer;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.renderer.vo.VAO;
 
-public class Mesh {
+public class Submesh {
 	
 	public static class Face {
 		public static final int INDICES_PER_FACE = 3;
@@ -61,7 +61,7 @@ public class Mesh {
     private Vector2f[] UVs;
     private Face[] faces;
 
-    public Mesh() {
+    public Submesh() {
     	this.vao = null;
     	this.vertices = null;
     	this.UVs = null;
