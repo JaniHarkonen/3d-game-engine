@@ -115,7 +115,7 @@ public class Game implements ITickable {
 		preload.put(new Mesh("mesh-man", FileUtils.getResourcePath("model/man.fbx")));
 		preload.put(new Mesh("mesh-box", FileUtils.getResourcePath("model/box.fbx")));
 		preload.put(new Mesh("mesh-player", FileUtils.getResourcePath("model/player.fbx")));
-		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/outside_triangles.fbx")));
+		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
 		this.assetManager.registerGroup(preload);
 		preload.load();
 	}
