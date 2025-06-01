@@ -32,7 +32,7 @@ public class TestModel implements IGameObject {
 
 	@Override
 	public void render(ScenePass renderPass) {
-		renderPass.uModel.update(this.transform.getAsMatrix());
+		renderPass.uObject.update(this.transform.getAsMatrix());
 		this.model.render(renderPass);
 	}
 	

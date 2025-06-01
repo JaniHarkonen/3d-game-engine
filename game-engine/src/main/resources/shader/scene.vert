@@ -12,11 +12,11 @@ out vec2 outUV;
 
 uniform mat4 uProjection;
 uniform mat4 uCamera;
-uniform mat4 uModel;
+uniform mat4 uObject;
 
 void main()
 {
-    mat4 modelViewMatrix = uCamera * uModel;
+    mat4 modelViewMatrix = uCamera * uObject;
     vec4 mvPosition =  modelViewMatrix * vec4(inPosition, 1.0);
     gl_Position = uProjection * mvPosition;
     outPosition = mvPosition.xyz;

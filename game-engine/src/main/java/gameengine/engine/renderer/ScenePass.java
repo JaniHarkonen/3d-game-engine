@@ -28,7 +28,7 @@ public class ScenePass extends ARenderPass<IGameObject> {
 	
 	public final UAMatrix4f uProjection;
 	public final UAMatrix4f uCamera;
-	public final UAMatrix4f uModel;
+	public final UAMatrix4f uObject;
 	public final UInteger1 uDiffuseSampler;
 	public final UMaterial uMaterial;
 	public final UAmbientLight uAmbientLight;
@@ -42,7 +42,7 @@ public class ScenePass extends ARenderPass<IGameObject> {
     	super();
     	this.uProjection = new UAMatrix4f("uProjection");
     	this.uCamera = new UAMatrix4f("uCamera");
-    	this.uModel = new UAMatrix4f("uModel");
+    	this.uObject = new UAMatrix4f("uObject");
     	this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
     	this.uMaterial = new UMaterial("uMaterial");
     	this.uAmbientLight = new UAmbientLight("uAmbientLight");
@@ -73,7 +73,7 @@ public class ScenePass extends ARenderPass<IGameObject> {
     	this.shaderProgram.declareUniform(
 			this.uProjection,
 			this.uCamera,
-			this.uModel,
+			this.uObject,
 			this.uDiffuseSampler,
 			this.uMaterial,
 			this.uAmbientLight,
