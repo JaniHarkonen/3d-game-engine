@@ -2,6 +2,7 @@ package gameengine.game;
 
 import org.lwjgl.opengl.GL46;
 
+import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.ScenePass;
 import gameengine.logger.Logger;

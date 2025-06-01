@@ -7,6 +7,7 @@ import gameengine.engine.Engine;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
 import gameengine.engine.asset.AssetManager;
+import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.window.Input;
 import gameengine.engine.window.Window;

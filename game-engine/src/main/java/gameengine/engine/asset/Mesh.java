@@ -1,4 +1,4 @@
-package gameengine.game;
+package gameengine.engine.asset;
 
 import java.nio.IntBuffer;
 import java.util.Arrays;
@@ -12,7 +12,6 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
-import gameengine.engine.asset.IAsset;
 import gameengine.engine.renderer.Submesh;
 import gameengine.logger.Logger;
 import gameengine.util.ArrayUtils;

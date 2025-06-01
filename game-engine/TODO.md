@@ -14,4 +14,3 @@
 	- this will make IHasShadow useless
 	- this allows for the setting of any number of rendering strategies
 - make a 'component' package in 'game' and maybe in 'renderer' for reusable, independent classes
-- move Mesh to 'engine.asset'
