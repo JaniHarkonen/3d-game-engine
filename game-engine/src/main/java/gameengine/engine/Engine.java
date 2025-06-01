@@ -85,7 +85,8 @@ public class Engine {
 		
 		long engineStartTime = System.nanoTime();
 		
-		this.window = new Window();
+		this.window = new Window()
+		.setDimensions(1280, 720);
 		Logger.setSystem(SYSTEM_WINDOW);
 		this.window.setup();
 		

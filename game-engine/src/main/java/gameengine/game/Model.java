@@ -50,6 +50,7 @@ public class Model {
 				texture.bind();
 			}
 			
+			renderPass.uMaterial.update(material.getAsStruct());
 			this.mesh.renderSubmesh(i);
 		}
 	}

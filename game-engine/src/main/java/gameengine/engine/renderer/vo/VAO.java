@@ -10,6 +10,7 @@ public class VAO {
 	private Submesh submesh;
 	private int ID;
 	private VBO vboVertices;
+	private VBO vboNormals;
 	private VBO vboUVs;
 	private VBO vboIndices;
 	
@@ -17,6 +18,7 @@ public class VAO {
 		this.submesh = submesh;
 		this.ID = -1;
 		this.vboVertices = null;
+		this.vboNormals = null;
 		this.vboUVs = null;
 		this.vboIndices = null;
 	}
@@ -32,10 +34,15 @@ public class VAO {
         	this.vboVertices.enable(0);
         	Logger.info(this, "Vertices VBO @ 0");
         	
+        	this.vboNormals = new VBO(GL46.GL_ARRAY_BUFFER, GL46.GL_FLOAT, 3);
+        	this.vboNormals.generate(this.submesh.getNormals());
+        	this.vboNormals.enable(1);
+        	Logger.info(this, "Normals VBO @ 1");
+        	
         	this.vboUVs = new VBO(GL46.GL_ARRAY_BUFFER, GL46.GL_FLOAT, 2);
         	this.vboUVs.generate(this.submesh.getUVs());
-        	this.vboUVs.enable(1);
-        	Logger.info(this, "UVs VBO @ 1");
+        	this.vboUVs.enable(2);
+        	Logger.info(this, "UVs VBO @ 2");
         	
         	this.vboIndices = new VBO(GL46.GL_ELEMENT_ARRAY_BUFFER, GL46.GL_INT, 0);
         	this.vboIndices.generate(Submesh.Face.facesToIndices(this.submesh.getFaces()));
@@ -54,6 +61,7 @@ public class VAO {
 	public void dispose() {
 		this.unbind();
 		this.vboVertices.dispose();
+		this.vboNormals.dispose();
 		this.vboUVs.dispose();
 		this.vboIndices.dispose();
 		GL46.glDeleteVertexArrays(this.ID);

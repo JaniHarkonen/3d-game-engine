@@ -38,6 +38,7 @@ public final class GeometryUtils {
 		}
 		
 		Vector3f[] result = new Vector3f[buffer.remaining()];
+		
 		for( int i = 0; buffer.remaining() > 0; i++ ) {
 			AIVector3D aiVector = buffer.get();
 			result[i] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());

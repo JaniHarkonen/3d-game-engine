@@ -69,7 +69,6 @@ public class Mesh implements IAsset {
 			//////////////////////////// Extract meshes ////////////////////////////
 		int submeshCount = aiScene.mNumMeshes();
 		this.submeshes = new Submesh[submeshCount];
-		//this.meshMaterials = new Material[meshCount];
 		
 		Logger.info(this, "Found " + submeshCount + " submeshes.");
 		
@@ -140,7 +139,7 @@ public class Mesh implements IAsset {
 			}
 			
 			Submesh submesh = new Submesh();
-			submesh.populate(vertices, UVs, faces);
+			submesh.populate(vertices, normals, UVs, faces);
 			this.submeshes[i] = submesh;
 			
 			Logger.spam(this, "Vertex count: " + vertices.length, "UV count: " + UVs.length, "Face count: " + faces.length);
@@ -177,8 +176,8 @@ public class Mesh implements IAsset {
 				);
 			}
 		}
-		
-		Assimp.aiReleaseImport(aiScene);*/
+		*/
+		Assimp.aiReleaseImport(aiScene);
 		Logger.info(this, "Mesh loaded.");
 	}
 	

@@ -55,22 +55,24 @@ public class Submesh {
 		}
 	}
 	
-	
 	private VAO vao;
     private Vector3f[] vertices;
+    private Vector3f[] normals;
     private Vector2f[] UVs;
     private Face[] faces;
 
     public Submesh() {
     	this.vao = null;
     	this.vertices = null;
+    	this.normals = null;
     	this.UVs = null;
     	this.faces = null;
     }
     
     
-    public void populate(Vector3f[] vertices, Vector2f[] UVs, Face[] faces) {
+    public void populate(Vector3f[] vertices, Vector3f[] normals, Vector2f[] UVs, Face[] faces) {
     	this.vertices = vertices;
+    	this.normals = normals;
     	this.UVs = UVs;
     	this.faces = faces;
     	
@@ -93,6 +95,10 @@ public class Submesh {
     
     public Vector3f[] getVertices() {
     	return this.vertices;
+    }
+    
+    public Vector3f[] getNormals() {
+    	return this.normals;
     }
     
     public Vector2f[] getUVs() {

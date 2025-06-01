@@ -65,22 +65,11 @@ public class TestCamera implements IGameObject {
 	}
 
 	@Override
-	public void renderShadow() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isShadowEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void onCreate() {
-		Window window = Engine.getWindow();
-		Projection projection = new Projection(window.getWidth(), window.getHeight());
+		Projection projection = new Projection();
 		this.camera = new Camera(projection);
+		this.camera.getProjection().setAspectRatio(1/1);
+		this.camera.getProjection().setFOV(75f);
 		Engine.getGame().getWorldScene().setActiveCamera(this.camera);
 		
 		this.transform = new Transform();

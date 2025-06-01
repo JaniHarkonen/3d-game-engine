@@ -6,6 +6,6 @@ import gameengine.engine.renderer.uniform.IShaderStruct;
 
 public class SSAmbientLight implements IShaderStruct {
 
-	public float factor;
 	public Vector3f color;
+	public float intensity;
 }

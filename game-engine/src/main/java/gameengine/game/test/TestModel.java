@@ -35,16 +35,6 @@ public class TestModel implements IGameObject {
 		renderPass.uModel.update(this.transform.getAsMatrix());
 		this.model.render(renderPass);
 	}
-
-	@Override
-	public void renderShadow() {
-		
-	}
-
-	@Override
-	public boolean isShadowEnabled() {
-		return false;
-	}
 	
 	public Transform getTransform() {
 		return this.transform;

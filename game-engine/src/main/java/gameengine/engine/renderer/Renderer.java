@@ -22,8 +22,8 @@ public class Renderer {
 	public void setup() {
 		GL.createCapabilities();
 		GL46.glEnable(GL46.GL_DEPTH_TEST);
-		GL46.glEnable(GL46.GL_CULL_FACE);
-		GL46.glCullFace(GL46.GL_BACK);
+		//GL46.glEnable(GL46.GL_CULL_FACE);
+		//GL46.glCullFace(GL46.GL_BACK);
 		this.scenePass.setup();
 		Logger.info(this, "Renderer setup done.");
 	}
@@ -31,6 +31,7 @@ public class Renderer {
 	public void render(Game game, Window target) {
 		GL46.glViewport(0, 0, target.getWidth(), target.getHeight());
 		GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
+		GL46.glClearColor(0, 1, 0, 1);
 		
 			// Reset scenes before submissions
 		this.scenePass.reset();

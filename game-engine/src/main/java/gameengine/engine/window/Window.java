@@ -90,13 +90,13 @@ public class Window {
     	Logger.info(this, "GLFW window disposed and terminated.");
     }
     
-    Window setDimensions(int width, int height) {
+    public Window setDimensions(int width, int height) {
     	this.width = width;
     	this.height = height;
     	return this;
     }
     
-    Window setTitle(String title) {
+    public Window setTitle(String title) {
     	this.title = title;
     	return this;
     }

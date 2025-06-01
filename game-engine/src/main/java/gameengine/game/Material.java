@@ -13,10 +13,10 @@ public class Material {
 	public static final Vector4f DEFAULT_AMBIENT_COLOR = 
 		new Vector4f(0.0f, 0.0f, 0.0f, 1.0f); // pulled from fbx via Assimp
 	public static final Vector4f DEFAULT_DIFFUSE_COLOR = 
-		new Vector4f(0.8f, 0.8f, 0.8f, 1.0f); // pulled from fbx via Assimp
+		new Vector4f(0.0f, 0.0f, 0.0f, 1.0f); // pulled from fbx via Assimp
 	public static final Vector4f DEFAULT_SPECULAR_COLOR = 
 		new Vector4f(1.0f, 1.0f, 1.0f, 1.0f); // pulled from fbx via Assimp
-	public static final float DEFAULT_REFLECTANCE = 0.0f;
+	public static final float DEFAULT_REFLECTANCE = 0.5f;
 	
 	public static Material create(Texture texture) {
 		if( texture == null ) {
@@ -43,6 +43,7 @@ public class Material {
 		this.specularColor = Material.DEFAULT_SPECULAR_COLOR;
 		this.reflectance = 0.0f;
 		this.materialStruct = new SSMaterial();
+		this.updateStruct();
 	}
 	
 	

@@ -6,17 +6,17 @@ import gameengine.engine.renderer.uniform.UVector3f;
 
 public class UAmbientLight extends AUniformObject<SSAmbientLight> {
 
-	private UFloat1 factor;
 	private UVector3f color;
+	private UFloat1 intensity;
 	
 	public UAmbientLight(String name) {
 		super(name);
 		
-		this.factor = new UFloat1();
+		this.intensity = new UFloat1();
 		this.color = new UVector3f();
 		
 		this
-		.addField("factor", this.factor)
+		.addField("intensity", this.intensity)
 		.addField("color", this.color);
 	}
 	
@@ -27,7 +27,7 @@ public class UAmbientLight extends AUniformObject<SSAmbientLight> {
 
 	@Override
 	public void update(SSAmbientLight value) {
-		this.factor.update(value.factor);
+		this.intensity.update(value.intensity);
 		this.color.update(value.color);
 	}
 }
