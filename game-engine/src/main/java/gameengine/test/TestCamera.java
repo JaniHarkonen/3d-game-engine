@@ -1,15 +1,15 @@
-package gameengine.game.test;
+package gameengine.test;
 
 import org.joml.Vector3f;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
-import gameengine.engine.renderer.Camera;
-import gameengine.engine.renderer.Projection;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
+import gameengine.engine.renderer.component.Camera;
+import gameengine.engine.renderer.component.Projection;
 import gameengine.engine.window.Window;
-import gameengine.game.Transform;
+import gameengine.game.component.Transform;
 
 public class TestCamera implements IGameObject {
 	

@@ -1,4 +1,4 @@
-package gameengine.game;
+package gameengine.game.component;
 
 import org.lwjgl.opengl.GL46;
 

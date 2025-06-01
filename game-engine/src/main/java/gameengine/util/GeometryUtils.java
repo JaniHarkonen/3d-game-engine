@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIVector3D;
 
-import gameengine.engine.renderer.Submesh;
+import gameengine.engine.renderer.component.Submesh;
 
 public final class GeometryUtils {
 

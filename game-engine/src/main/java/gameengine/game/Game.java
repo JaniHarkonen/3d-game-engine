@@ -11,12 +11,14 @@ import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.window.Input;
 import gameengine.engine.window.Window;
+import gameengine.game.component.Material;
+import gameengine.game.component.Model;
 import gameengine.game.light.AmbientLight;
 import gameengine.game.light.DirectionalLight;
 import gameengine.game.light.PointLight;
-import gameengine.game.test.TestCamera;
-import gameengine.game.test.TestModel;
 import gameengine.logger.Logger;
+import gameengine.test.TestCamera;
+import gameengine.test.TestModel;
 import gameengine.util.FileUtils;
 
 public class Game implements ITickable {

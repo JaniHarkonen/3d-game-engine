@@ -3,6 +3,7 @@ package gameengine.engine.renderer;
 import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.IGameObject;
+import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.renderer.shader.Shader;
 import gameengine.engine.renderer.shader.ShaderProgram;
 import gameengine.engine.renderer.uniform.UAMatrix4f;

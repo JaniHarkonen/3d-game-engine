@@ -6,8 +6,8 @@ import java.util.List;
 import gameengine.engine.IGameObject;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
-import gameengine.engine.renderer.Camera;
 import gameengine.engine.renderer.Renderer;
+import gameengine.engine.renderer.component.Camera;
 
 public class Scene implements IScene, ITickable {
 	private List<IGameObject> objects;

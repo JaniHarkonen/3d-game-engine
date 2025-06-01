@@ -12,7 +12,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
-import gameengine.engine.renderer.Submesh;
+import gameengine.engine.renderer.component.Submesh;
 import gameengine.logger.Logger;
 import gameengine.util.ArrayUtils;
 import gameengine.util.GeometryUtils;

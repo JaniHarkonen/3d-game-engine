@@ -1,4 +1,4 @@
-package gameengine.engine.renderer;
+package gameengine.engine.renderer.component;
 
 import org.joml.Matrix4f;
 

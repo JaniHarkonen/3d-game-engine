@@ -1,10 +1,10 @@
-package gameengine.game.test;
+package gameengine.test;
 
 import gameengine.engine.IGameObject;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
-import gameengine.game.Model;
-import gameengine.game.Transform;
+import gameengine.game.component.Model;
+import gameengine.game.component.Transform;
 
 public class TestModel implements IGameObject {
 	private Transform transform;

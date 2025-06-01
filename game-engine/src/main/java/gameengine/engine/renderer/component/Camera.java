@@ -1,7 +1,7 @@
-package gameengine.engine.renderer;
+package gameengine.engine.renderer.component;
 
-import gameengine.game.CameraTransform;
-import gameengine.game.Transform;
+import gameengine.game.component.CameraTransform;
+import gameengine.game.component.Transform;
 
 public class Camera {
 	private Transform transform;

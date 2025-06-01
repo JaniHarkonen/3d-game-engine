@@ -2,7 +2,7 @@ package gameengine.engine.renderer.vo;
 
 import org.lwjgl.opengl.GL46;
 
-import gameengine.engine.renderer.Submesh;
+import gameengine.engine.renderer.component.Submesh;
 import gameengine.logger.Logger;
 
 public class VAO {
