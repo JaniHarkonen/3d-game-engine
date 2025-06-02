@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIVector3D;
 
-import gameengine.engine.renderer.Submesh;
+import gameengine.engine.renderer.component.Submesh;
 
 public final class GeometryUtils {
 
@@ -38,6 +38,7 @@ public final class GeometryUtils {
 		}
 		
 		Vector3f[] result = new Vector3f[buffer.remaining()];
+		
 		for( int i = 0; buffer.remaining() > 0; i++ ) {
 			AIVector3D aiVector = buffer.get();
 			result[i] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());

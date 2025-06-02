@@ -3,7 +3,7 @@ package gameengine.engine.renderer.uniform.object.material;
 import org.joml.Vector4f;
 
 import gameengine.engine.renderer.uniform.IShaderStruct;
-import gameengine.game.Material;
+import gameengine.game.component.Material;
 
 public class SSMaterial implements IShaderStruct {
 

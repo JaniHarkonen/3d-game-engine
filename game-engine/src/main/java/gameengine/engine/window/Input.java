@@ -12,7 +12,7 @@ import gameengine.logger.Logger;
 
 public class Input {
 	
-	public class Event {
+	public static class Event {
 		public int device;
 		public int type;
 		public int button;
@@ -20,6 +20,19 @@ public class Input {
 		public double mouseY;
 		public double mouseDeltaX;
 		public double mouseDeltaY;
+		
+			// WARNING: This constructor offsets the button depending on the input device
+		public Event(int device, int type, int button) {
+			this.device = device;
+			this.type = type;
+			this.button = ((device == DEVICE_KEYBOARD) ? KEYBOARD_BUTTON : 0) + button;
+		}
+		
+		public Event() {
+			this.device = 0;
+			this.type = 0;
+			this.button = 0;
+		}
 		
 		@Override
 		public int hashCode() {
@@ -41,6 +54,14 @@ public class Input {
 	
 	private static final int KEYBOARD_BUTTON = 50;
 	private static final int MOUSE_BUTTON = 0;
+	
+	private static int key(int key) {
+		return KEYBOARD_BUTTON + key;
+	}
+	
+	private static int mouseButton(int button) {
+		return MOUSE_BUTTON + button;
+	}
 
 	private Set<Integer> heldKeys;
 	private Set<Integer> heldMouseButtons;
@@ -124,11 +145,11 @@ public class Input {
 	}
 	
 	private void keyInput(int key, int action) {
-		this.input(DEVICE_KEYBOARD, this.key(key), action, this.heldKeys);
+		this.input(DEVICE_KEYBOARD, key(key), action, this.heldKeys);
 	}
 	
 	private void mouseInput(int button, int action) {
-		this.input(DEVICE_MOUSE, this.mouseButton(button), action, this.heldMouseButtons);
+		this.input(DEVICE_MOUSE, mouseButton(button), action, this.heldMouseButtons);
 	}
 	
 	private void mousePosition(double x, double y) {
@@ -187,13 +208,5 @@ public class Input {
 		event.mouseDeltaX = this.mouseDeltaX;
 		event.mouseDeltaY = this.mouseDeltaY;
 		this.eventQueue.add(event);
-	}
-	
-	private int key(int key) {
-		return KEYBOARD_BUTTON + key;
-	}
-	
-	private int mouseButton(int button) {
-		return MOUSE_BUTTON + button;
 	}
 }

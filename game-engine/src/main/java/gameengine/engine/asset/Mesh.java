@@ -1,4 +1,4 @@
-package gameengine.game;
+package gameengine.engine.asset;
 
 import java.nio.IntBuffer;
 import java.util.Arrays;
@@ -12,8 +12,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
-import gameengine.engine.asset.IAsset;
-import gameengine.engine.renderer.Submesh;
+import gameengine.engine.renderer.component.Submesh;
 import gameengine.logger.Logger;
 import gameengine.util.ArrayUtils;
 import gameengine.util.GeometryUtils;
@@ -69,7 +68,6 @@ public class Mesh implements IAsset {
 			//////////////////////////// Extract meshes ////////////////////////////
 		int submeshCount = aiScene.mNumMeshes();
 		this.submeshes = new Submesh[submeshCount];
-		//this.meshMaterials = new Material[meshCount];
 		
 		Logger.info(this, "Found " + submeshCount + " submeshes.");
 		
@@ -140,7 +138,7 @@ public class Mesh implements IAsset {
 			}
 			
 			Submesh submesh = new Submesh();
-			submesh.populate(vertices, UVs, faces);
+			submesh.populate(vertices, normals, UVs, faces);
 			this.submeshes[i] = submesh;
 			
 			Logger.spam(this, "Vertex count: " + vertices.length, "UV count: " + UVs.length, "Face count: " + faces.length);
@@ -177,8 +175,8 @@ public class Mesh implements IAsset {
 				);
 			}
 		}
-		
-		Assimp.aiReleaseImport(aiScene);*/
+		*/
+		Assimp.aiReleaseImport(aiScene);
 		Logger.info(this, "Mesh loaded.");
 	}
 	

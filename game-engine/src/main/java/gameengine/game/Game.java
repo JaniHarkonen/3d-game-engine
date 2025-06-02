@@ -1,14 +1,22 @@
 package gameengine.game;
 
+import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
+
 import gameengine.engine.Engine;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
 import gameengine.engine.asset.AssetManager;
+import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
+import gameengine.engine.window.Input;
 import gameengine.engine.window.Window;
-import gameengine.game.test.TestModel;
-import gameengine.game.test.TestCamera;
+import gameengine.game.component.Material;
+import gameengine.game.component.Model;
+import gameengine.game.component.light.PointLight;
 import gameengine.logger.Logger;
+import gameengine.test.TestCamera;
+import gameengine.test.TestModel;
 import gameengine.util.FileUtils;
 
 public class Game implements ITickable {
@@ -26,6 +34,14 @@ public class Game implements ITickable {
 		this.preloadAssets();
 		this.worldScene = new Scene();
 		this.worldScene.addObject(new TestCamera());
+		
+		PointLight testPointLight = new PointLight(new Vector3f(1, 1, 1), 1.0f, 0);
+		testPointLight.getTransform().setPosition(13, 1f, 0);
+		this.worldScene.addObject(testPointLight);
+		
+		testPointLight = new PointLight(new Vector3f(1, 1, 1), 0.5f, 1);
+		testPointLight.getTransform().setPosition(0, 1, 5);
+		this.worldScene.addObject(testPointLight);
 		
 		AssetManager.Group assets = this.getAssets();
 		
@@ -71,10 +87,46 @@ public class Game implements ITickable {
 		model = new Model((Mesh) assets.get("mesh-player"));
 		model.setMaterial(Material.create((Texture) assets.get("tex-player")));
 		
-		TestModel testPlayer = new TestModel(model);
+		TestModel testPlayer = new TestModel(model) {
+			@Override
+			public void tick(float deltaTime) {
+				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_UP).hashCode(), (e) -> {
+					this.getTransform().shift(0, 0, -deltaTime * 10);
+				});
+				
+				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_DOWN).hashCode(), (e) -> {
+					this.getTransform().shift(0, 0, deltaTime * 10);
+				});
+				
+				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_LEFT).hashCode(), (e) -> {
+					this.getTransform().shift(-deltaTime * 10, 0, 0);
+				});
+				
+				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_RIGHT).hashCode(), (e) -> {
+					this.getTransform().shift(deltaTime * 10, 0, 0);
+				});
+				
+				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_KP_8).hashCode(), (e) -> {
+					this.getTransform().shift(0, deltaTime * 10, 0);
+				});
+				
+				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_KP_2).hashCode(), (e) -> {
+					this.getTransform().shift(0, -deltaTime * 10, 0);
+				});
+			}
+		};
 		testPlayer.getTransform().setPosition(13, 0.08f, -1);
 		testPlayer.getTransform().setScale(0.025f, 0.025f, 0.025f);
 		this.worldScene.addObject(testPlayer);
+		
+			// Box
+		model = new Model((Mesh) assets.get("mesh-box"));
+		model.setMaterial(Material.create((Texture) assets.get("tex-snow")));
+		
+		TestModel testBox = new TestModel(model);
+		testBox.getTransform().setScale(0.01f, 0.01f, 0.01f);
+		testBox.getTransform().setPosition(0, 5, 0);
+		this.worldScene.addObject(testBox);
 		
 		Logger.info(this, "Game setup done!");
 	}
@@ -122,6 +174,7 @@ public class Game implements ITickable {
 	
 	@Override
 	public void tick(float deltaTime) {
+		this.worldScene.getActiveCamera().getProjection().setAspectRatio(Engine.getWindow().getWidth() / (float) Engine.getWindow().getHeight());
 		this.worldScene.tick(deltaTime);
 		
 		Window window = Engine.getWindow();

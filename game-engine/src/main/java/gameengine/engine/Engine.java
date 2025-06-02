@@ -85,7 +85,8 @@ public class Engine {
 		
 		long engineStartTime = System.nanoTime();
 		
-		this.window = new Window();
+		this.window = new Window()
+		.setDimensions(1280, 720);
 		Logger.setSystem(SYSTEM_WINDOW);
 		this.window.setup();
 		
@@ -106,24 +107,27 @@ public class Engine {
 		while( !this.willStop && !this.window.isClosing() ) {
 			float deltaTime = (System.nanoTime() - lastTick) / ((float) SECONDS);
 			
-			while( deltaTime >= 1 / this.tickRate ) {
-				lastTick = System.nanoTime();
+			if( deltaTime >= 1 / this.tickRate ) {
+				while( deltaTime >= 1 / this.tickRate ) {
+					lastTick = System.nanoTime();
+					
+					Logger.setSystem(SYSTEM_WINDOW);
+					this.window.pollEvents();
+					
+					Logger.setSystem(SYSTEM_GAME);
+					this.game.tick(1 / this.tickRate);
+					//Logger.setSystem(SYSTEM_PHYSICS);
+					//this.physics.tick();
+					
+					Logger.setSystem(SYSTEM_WINDOW);
+					this.window.update(deltaTime);
+					this.tickRateRealized++;
+					deltaTime -= 1 / this.tickRate;
+				}
 				
-				Logger.setSystem(SYSTEM_WINDOW);
-				this.window.pollEvents();
-				
-				Logger.setSystem(SYSTEM_GAME);
-				this.game.tick(1 / this.tickRate);
-				//Logger.setSystem(SYSTEM_PHYSICS);
-				//this.physics.tick();
-				
+					// Only render once all ticks have been processed
 				Logger.setSystem(SYSTEM_RENDERER);
 				this.renderer.render(this.game, this.window);
-				
-				Logger.setSystem(SYSTEM_WINDOW);
-				this.window.update(deltaTime);
-				this.tickRateRealized++;
-				deltaTime -= 1 / this.tickRate;
 			}
 			
 				// Debug functionality, to be removed

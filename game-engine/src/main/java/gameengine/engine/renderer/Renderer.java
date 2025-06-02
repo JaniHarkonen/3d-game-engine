@@ -10,6 +10,10 @@ import gameengine.logger.Logger;
 
 public class Renderer {
 	
+	public static final int RENDER_PASS_COUNT = 1;
+	
+	public static final int MAX_TEXTURE_COUNT = 1;
+	
 	private ScenePass scenePass;
 
 	public Renderer() {
@@ -31,6 +35,7 @@ public class Renderer {
 	public void render(Game game, Window target) {
 		GL46.glViewport(0, 0, target.getWidth(), target.getHeight());
 		GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
+		GL46.glClearColor(0, 1, 0, 1);
 		
 			// Reset scenes before submissions
 		this.scenePass.reset();
@@ -38,14 +43,10 @@ public class Renderer {
 			// Generate submissions
 		Logger.spam(this, "Submitting to scene render pass...");
 		IScene worldScene = game.getWorldScene();
-		worldScene.submitToRenderer(this);		
+		worldScene.submitToRenderer(this);
 		
 			// Scene render pass
-		Logger.spam(this, "Rendering scene...");
-		this.scenePass.camera = worldScene.getActiveCamera();
 		this.scenePass.execute();
-		
-		Logger.spam(this, "Scene rendered.");
 	}
 	
 	public ScenePass getScenePass() {
