@@ -24,8 +24,8 @@ struct Attenuation {
 };
 
 struct AmbientLight {
-    vec3 color;
-    float intensity;
+	vec3 color;
+	float intensity;
 };
 
 struct DirectionalLight {
@@ -73,9 +73,6 @@ vec4 applyLighting(
 	vec3 lightDirection, 
 	vec3 normal
 ) {
-    //vec4 diffuseColor = vec4(0, 0, 0, 1);
-    //vec4 specColor = vec4(0, 0, 0, 1);
-
     	// Diffuse Light
     float diffuseFactor = max(dot(normal, lightDirection), 0.0);
     vec4 fragDiffuse = targetDiffuse * vec4(lightColor, 1.0) * lightIntensity * diffuseFactor;
@@ -142,8 +139,7 @@ vec4 applyDirectionalLight(vec4 targetDiffuse, vec4 targetSpecular, float target
     return applyLighting(targetDiffuse, targetSpecular, targetReflectance, light.color, light.intensity, position, normalize(light.direction), normal);
 }
 
-void main()
-{
+void main() {
 		// Sample material textures
     vec4 texDiffuse = texture(uDiffuseSampler, outUV);
     

@@ -25,19 +25,17 @@ public class PointLight implements IGameObject, IHasStruct, IHasTransform {
 	}
 	
     private Attenuation attenuation;
-    private Vector3f color;
-    private float intensity;
     private int pointLightIndex;
     private Transform transform;
+    private LightProperties lightProperties;
     private SSPointLight pointLightStruct;
     private SceneRenderer sceneRenderer;
 
     public PointLight(Vector3f color, float intensity, int pointLightIndex) {
         this.attenuation = new Attenuation(0, 0, 1);
-        this.color = color;
-        this.intensity = intensity;
         this.pointLightIndex = pointLightIndex;
         this.transform = new Transform();
+        this.lightProperties = new LightProperties();
         this.pointLightStruct = new SSPointLight();
         this.sceneRenderer = new SceneRenderer();
     }
@@ -68,29 +66,17 @@ public class PointLight implements IGameObject, IHasStruct, IHasTransform {
     public void setAttenuation(Attenuation attenuation) {
         this.attenuation = attenuation;
     }
-
-    public void setColor(float r, float g, float b) {
-        this.color.set(r, g, b);
-    }
-
-    public void setIntensity(float intensity) {
-        this.intensity = intensity;
-    }
     
     public Attenuation getAttenuation() {
         return attenuation;
     }
-
-    public Vector3f getColor() {
-        return color;
-    }
-
-    public float getIntensity() {
-        return intensity;
-    }
     
     public int getPointLightIndex() {
     	return this.pointLightIndex;
+    }
+    
+    public LightProperties getLightProperties() {
+    	return this.lightProperties;
     }
     
     private Vector3f getPositionInCameraCoordinates() {
@@ -101,9 +87,9 @@ public class PointLight implements IGameObject, IHasStruct, IHasTransform {
 
 	@Override
 	public SSPointLight getAsStruct() {
-		this.pointLightStruct.color = this.color;
     	this.pointLightStruct.position = this.getPositionInCameraCoordinates();
-    	this.pointLightStruct.intensity = this.intensity;
+    	this.pointLightStruct.color = this.lightProperties.getColor();
+    	this.pointLightStruct.intensity = this.lightProperties.getIntensity();
     	this.pointLightStruct.attenuation = this.attenuation.getAsStruct();
 		return this.pointLightStruct;
 	}

@@ -6,23 +6,21 @@ import gameengine.engine.renderer.uniform.UVector3f;
 
 public class UDirectionalLight extends AUniformObject<SSDirectionalLight> {
     private UVector3f color;
+    private UFloat1 intensity;
     private UVector3f direction;
-	private UFloat1 intensity;
 	
 	public UDirectionalLight(String name) {
 		super(name);
 		
 		this.color = new UVector3f();
-		this.direction = new UVector3f();
 		this.intensity = new UFloat1();
+		this.direction = new UVector3f();
 		
 		this
 		.addField("color", this.color)
-		.addField("direction", this.direction)
-		.addField("intensity", this.intensity);
+		.addField("intensity", this.intensity)
+		.addField("direction", this.direction);
 	}
-	
-	
 	
 	public UDirectionalLight() {
 		this("");
@@ -32,7 +30,7 @@ public class UDirectionalLight extends AUniformObject<SSDirectionalLight> {
 	@Override
 	public void update(SSDirectionalLight value) {
 		this.color.update(value.color);
-		this.direction.update(value.direction);
 		this.intensity.update(value.intensity);
+		this.direction.update(value.direction);
 	}
 }

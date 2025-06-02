@@ -20,16 +20,14 @@ public class DirectionalLight implements IRenderable, IHasStruct {
 		}
 	}
 
-    private Vector3f color;
     private Vector3f direction;
-    private float intensity;
+    private LightProperties lightProperties;
     private SSDirectionalLight directionalLightStruct;
     private SceneRenderer sceneRenderer;
 
-    public DirectionalLight(Vector3f color, Vector3f direction, float intensity) {
-        this.color = color;
+    public DirectionalLight(Vector3f color, float intensity, Vector3f direction) {
         this.direction = direction;
-        this.intensity = intensity;
+        this.lightProperties = new LightProperties(color, intensity);
         this.directionalLightStruct = new SSDirectionalLight();
         this.sceneRenderer = new SceneRenderer();
     }
@@ -39,25 +37,17 @@ public class DirectionalLight implements IRenderable, IHasStruct {
 	public void submitToRenderer(Renderer renderer) {
 		renderer.getScenePass().preRender(this.sceneRenderer);
 	}
-
-    public void setColor(float r, float g, float b) {
-        this.color.set(r, g, b);
-    }
-
+	
     public void setDirection(Vector3f direction) {
         this.direction = direction;
     }
 
-    public void setIntensity(float intensity) {
-        this.intensity = intensity;
-    }
-    
-    public Vector3f getColor() {
-        return color;
-    }
-
     public Vector3f getDirection() {
         return direction;
+    }
+    
+    public LightProperties getLightProperties() {
+    	return this.lightProperties;
     }
     
     public Vector3f getDirectionInCameraCoordinates() {
@@ -67,14 +57,10 @@ public class DirectionalLight implements IRenderable, IHasStruct {
         return new Vector3f(direction.x, direction.y, direction.z);
     }
 
-    public float getIntensity() {
-        return intensity;
-    }
-
 	@Override
 	public SSDirectionalLight getAsStruct() {
-		this.directionalLightStruct.color = this.color;
-    	this.directionalLightStruct.intensity = this.intensity;
+		this.directionalLightStruct.color = this.lightProperties.getColor();
+		this.directionalLightStruct.intensity = this.lightProperties.getIntensity();
     	this.directionalLightStruct.direction = this.getDirectionInCameraCoordinates();
 		return this.directionalLightStruct;
 	}

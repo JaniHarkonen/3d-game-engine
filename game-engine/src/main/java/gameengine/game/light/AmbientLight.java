@@ -18,15 +18,13 @@ public class AmbientLight implements IRenderable, IHasStruct {
 		}
 	}
 
-    private Vector3f color;
-    private float intensity;
+    private LightProperties lightProperties;
     private SSAmbientLight ambientLightStruct;
     private SceneRenderer sceneRenderer;
 
     
     public AmbientLight(Vector3f color, float intensity) {
-        this.intensity = intensity;
-        this.color = color;
+        this.lightProperties = new LightProperties(color, intensity);
         this.ambientLightStruct = new SSAmbientLight();
         this.sceneRenderer = new SceneRenderer();
     }
@@ -37,26 +35,14 @@ public class AmbientLight implements IRenderable, IHasStruct {
 		renderer.getScenePass().preRender(this.sceneRenderer);
 	}
     
-    public void setColor(float r, float g, float b) {
-        this.color.set(r, g, b);
-    }
-
-    public void setIntensity(float intensity) {
-        this.intensity = intensity;
-    }
-    
-    public Vector3f getColor() {
-        return color;
-    }
-
-    public float getIntensity() {
-        return intensity;
-    }
-    
     @Override
     public SSAmbientLight getAsStruct() {
-    	this.ambientLightStruct.color = this.color;
-    	this.ambientLightStruct.intensity = this.intensity;
+    	this.ambientLightStruct.color = this.lightProperties.getColor();
+    	this.ambientLightStruct.intensity = this.lightProperties.getIntensity();
     	return this.ambientLightStruct;
+    }
+    
+    public LightProperties getProperties() {
+    	return this.lightProperties;
     }
 }

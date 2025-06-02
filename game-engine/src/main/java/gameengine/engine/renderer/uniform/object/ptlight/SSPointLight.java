@@ -1,6 +1,7 @@
 package gameengine.engine.renderer.uniform.object.ptlight;
 
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import gameengine.engine.renderer.uniform.IShaderStruct;
 import gameengine.engine.renderer.uniform.object.attenuation.SSAttenuation;

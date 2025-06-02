@@ -6,7 +6,7 @@ import gameengine.engine.renderer.uniform.IShaderStruct;
 
 public class SSDirectionalLight implements IShaderStruct {
 
-    public Vector3f color;
+	public Vector3f color;
+	public float intensity;
     public Vector3f direction;
-    public float intensity;
 }

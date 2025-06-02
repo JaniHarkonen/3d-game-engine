@@ -39,7 +39,7 @@ public class Game implements ITickable {
 		testPointLight.getTransform().setPosition(13, 1f, 0);
 		this.worldScene.addObject(testPointLight);
 		
-		testPointLight = new PointLight(new Vector3f(1, 1, 1), 1.0f, 1);
+		testPointLight = new PointLight(new Vector3f(1, 1, 1), 0.5f, 1);
 		testPointLight.getTransform().setPosition(0, 1, 5);
 		this.worldScene.addObject(testPointLight);
 		
