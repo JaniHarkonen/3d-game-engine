@@ -13,7 +13,7 @@ import gameengine.engine.window.Input;
 import gameengine.engine.window.Window;
 import gameengine.game.component.Material;
 import gameengine.game.component.Model;
-import gameengine.game.light.PointLight;
+import gameengine.game.component.light.PointLight;
 import gameengine.logger.Logger;
 import gameengine.test.TestCamera;
 import gameengine.test.TestModel;

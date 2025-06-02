@@ -1,4 +1,4 @@
-package gameengine.game.light;
+package gameengine.game.component.light;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

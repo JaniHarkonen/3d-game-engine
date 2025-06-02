@@ -10,8 +10,8 @@ import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.component.Camera;
-import gameengine.game.light.AmbientLight;
-import gameengine.game.light.DirectionalLight;
+import gameengine.game.component.light.AmbientLight;
+import gameengine.game.component.light.DirectionalLight;
 
 public class Scene implements IScene, ITickable {
 	private List<IGameObject> objects;

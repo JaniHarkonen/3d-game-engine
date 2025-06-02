@@ -1,4 +1,4 @@
-package gameengine.game.light;
+package gameengine.game.component.light;
 
 import gameengine.engine.renderer.uniform.object.IHasStruct;
 import gameengine.engine.renderer.uniform.object.attenuation.SSAttenuation;

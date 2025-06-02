@@ -2,7 +2,7 @@ package gameengine.game;
 
 import org.joml.Vector3f;
 
-import gameengine.game.light.PointLight;
+import gameengine.game.component.light.PointLight;
 
 public class SpotLight {
 
