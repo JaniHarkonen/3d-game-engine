@@ -172,6 +172,7 @@ public class Game implements ITickable {
 	
 	@Override
 	public void tick(float deltaTime) {
+		this.worldScene.getActiveCamera().getProjection().setAspectRatio(Engine.getWindow().getWidth() / (float) Engine.getWindow().getHeight());
 		this.worldScene.tick(deltaTime);
 		
 		Window window = Engine.getWindow();

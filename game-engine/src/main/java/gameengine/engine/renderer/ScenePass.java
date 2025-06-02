@@ -2,8 +2,6 @@ package gameengine.engine.renderer;
 
 import org.lwjgl.opengl.GL46;
 
-import gameengine.engine.IGameObject;
-import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.renderer.shader.Shader;
 import gameengine.engine.renderer.shader.ShaderProgram;
 import gameengine.engine.renderer.uniform.UAMatrix4f;
@@ -19,7 +17,7 @@ import gameengine.engine.renderer.uniform.object.splight.USpotLight;
 import gameengine.logger.Logger;
 import gameengine.util.FileUtils;
 
-public class ScenePass extends ARenderPass<IGameObject> {
+public class ScenePass extends ARenderPass<ScenePass> {
 	public static final String VERTEX_SHADER = "shd-scene-vert";
 	public static final String FRAGMENT_SHADER = "shd-scene-frag";
 	
@@ -35,8 +33,6 @@ public class ScenePass extends ARenderPass<IGameObject> {
 	public final UDirectionalLight uDirectionalLight;
 	public final UArray<SSPointLight> uPointLights;
 	public final UArray<SSSpotLight> uSpotLights;
-	
-    Camera camera;
 
     public ScenePass() {
     	super();
@@ -85,17 +81,28 @@ public class ScenePass extends ARenderPass<IGameObject> {
 
     @Override
     public void execute() {
+    	Logger.spam(this, "Rendering scene...");
         this.shaderProgram.bind();
         this.uDiffuseSampler.update(0);
-        this.uProjection.update(this.camera.getProjection().getAsMatrix());
-        this.uCamera.update(this.camera.getTransform().getAsMatrix());
         
-        for( IGameObject object : this.submissions ) {
-        	object.render(this);
+        int preRenderCount = 0;
+        for( IRenderStrategy<ScenePass> renderer : this.preRender ) {
+        	renderer.render(this);
+        	preRenderCount++;
+        }
+        
+        //this.uProjection.update(this.camera.getProjection().getAsMatrix());
+        //this.uCamera.update(this.camera.getTransform().getAsMatrix());
+        
+        int renderCount = 0;
+        for( IRenderStrategy<ScenePass> renderer : this.render ) {
+        	renderer.render(this);
+        	renderCount++;
         }
         
         GL46.glBindVertexArray(0);
         this.shaderProgram.unbind();
+        Logger.info(this, "Scene rendered. Pre: " + preRenderCount + ", main: " + renderCount + ".");
     }
     
     @Override

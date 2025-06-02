@@ -27,7 +27,7 @@ public class Scene implements IScene, ITickable {
 	@Override
 	public void submitToRenderer(Renderer renderer) {
 		for( IGameObject object : this.objects ) {
-			renderer.getScenePass().submit(object);
+			object.submitToRenderer(renderer);
 		}
 	}
 	

@@ -32,7 +32,7 @@ public class Texture implements IAsset {
 		Logger.info(this, "Loading texture '" + this.name + "' from: ", this.path);
 		String path = this.path;
 		
-        try (MemoryStack stack = MemoryStack.stackPush()) {
+        try( MemoryStack stack = MemoryStack.stackPush() ) {
             IntBuffer bufferWidth = stack.mallocInt(1);
             IntBuffer bufferHeight = stack.mallocInt(1);
             IntBuffer bufferComponents = stack.mallocInt(1);
@@ -56,7 +56,7 @@ public class Texture implements IAsset {
 	@Override
 	public void deload() {
 		GL46.glDeleteTextures(this.graphicsID);
-    	STBImage.stbi_image_free(this.image);
+		STBImage.stbi_image_free(this.image);
     	this.image = null;
     	this.graphicsID = -1;
     	Logger.info(this, "Deloaded texture '" + this.name + "'.");

@@ -2,11 +2,11 @@ package gameengine.test;
 
 import gameengine.engine.IGameObject;
 import gameengine.engine.renderer.Renderer;
-import gameengine.engine.renderer.ScenePass;
 import gameengine.game.component.Model;
 import gameengine.game.component.Transform;
 
 public class TestModel implements IGameObject {
+	
 	private Transform transform;
 	private Model model;
 
@@ -18,6 +18,7 @@ public class TestModel implements IGameObject {
     
 	@Override
 	public void onCreate() {
+		this.model.getTransform().possess(this.transform);
 	}
 
 	@Override
@@ -27,13 +28,7 @@ public class TestModel implements IGameObject {
 	
 	@Override
 	public void submitToRenderer(Renderer renderer) {
-		renderer.getScenePass().submit(this);
-	}
-
-	@Override
-	public void render(ScenePass renderPass) {
-		renderPass.uObject.update(this.transform.getAsMatrix());
-		this.model.render(renderPass);
+		this.model.submitToRenderer(renderer);
 	}
 	
 	public Transform getTransform() {

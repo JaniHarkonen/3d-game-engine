@@ -5,14 +5,12 @@ import org.joml.Vector3f;
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
 import gameengine.engine.renderer.Renderer;
-import gameengine.engine.renderer.ScenePass;
 import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.renderer.component.Projection;
 import gameengine.engine.window.Window;
 import gameengine.game.component.Transform;
 
-public class TestCamera implements IGameObject {
-	
+public class TestCamera implements IGameObject {	
 	private Camera camera;
 	private Transform transform;
 
@@ -61,7 +59,7 @@ public class TestCamera implements IGameObject {
 
 	@Override
 	public void submitToRenderer(Renderer renderer) {
-		// TODO Auto-generated method stub
+		this.camera.submitToRenderer(renderer);
 	}
 
 	@Override
@@ -76,9 +74,10 @@ public class TestCamera implements IGameObject {
 		this.camera.getTransform().possess(this.transform);
 	}
 
+	/*
 	@Override
 	public void render(ScenePass renderPass) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 }

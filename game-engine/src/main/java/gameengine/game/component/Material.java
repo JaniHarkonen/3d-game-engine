@@ -3,13 +3,13 @@ package gameengine.game.component;
 import org.joml.Vector4f;
 
 import gameengine.engine.asset.Texture;
+import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.uniform.object.material.SSMaterial;
 import gameengine.logger.Logger;
 
 public class Material {
 	public static final int DIFFUSE = 0;
 	
-	public static final int DEFAULT_TEXTURE_SLOT_COUNT = 1;
 	public static final Vector4f DEFAULT_AMBIENT_COLOR = 
 		new Vector4f(0.0f, 0.0f, 0.0f, 1.0f); // pulled from fbx via Assimp
 	public static final Vector4f DEFAULT_DIFFUSE_COLOR = 
@@ -29,7 +29,7 @@ public class Material {
 		return material;
 	}
 
-	private Texture[] textureSlot;
+	private Texture[] textures;
 	private Vector4f ambientColor;
 	private Vector4f diffuseColor;
 	private Vector4f specularColor;
@@ -37,13 +37,27 @@ public class Material {
 	private SSMaterial materialStruct;
 	
 	public Material() {
-		this.textureSlot = new Texture[Material.DEFAULT_TEXTURE_SLOT_COUNT];
+		this.textures = new Texture[Renderer.MAX_TEXTURE_COUNT];
 		this.ambientColor = Material.DEFAULT_AMBIENT_COLOR;
 		this.diffuseColor = Material.DEFAULT_DIFFUSE_COLOR;
 		this.specularColor = Material.DEFAULT_SPECULAR_COLOR;
 		this.reflectance = 0.0f;
 		this.materialStruct = new SSMaterial();
 		this.updateStruct();
+	}
+	
+	public Material(Material src) {
+		this.textures = new Texture[src.textures.length];
+		this.ambientColor = new Vector4f(src.ambientColor);
+		this.diffuseColor = new Vector4f(src.diffuseColor);
+		this.specularColor = new Vector4f(src.specularColor);
+		this.reflectance = src.reflectance;
+		this.materialStruct = new SSMaterial();
+		this.updateStruct();
+		
+		for( int i = 0; i < src.textures.length; i++ ) {
+			this.textures[i] = src.textures[i];
+		}
 	}
 	
 	
@@ -54,8 +68,8 @@ public class Material {
 		this.materialStruct.reflectance = this.reflectance;
 	}
 	
-	public void setTexture(int textureSlot, Texture texture) {
-		this.textureSlot[textureSlot] = texture;
+	public void setTexture(int index, Texture texture) {
+		this.textures[index] = texture;
 	}
 	
 	public void setAmbientColor(Vector4f ambientColor) {
@@ -79,11 +93,11 @@ public class Material {
 	}
 	
 	public Texture[] getTextures() {
-		return this.textureSlot;
+		return this.textures;
 	}
 	
-	public Texture getTexture(int textureSlot) {
-		return this.textureSlot[textureSlot];
+	public Texture getTexture(int index) {
+		return this.textures[index];
 	}
 	
 	public Vector4f getAmbientColor() {
