@@ -13,8 +13,6 @@ import gameengine.engine.window.Input;
 import gameengine.engine.window.Window;
 import gameengine.game.component.Material;
 import gameengine.game.component.Model;
-import gameengine.game.light.AmbientLight;
-import gameengine.game.light.DirectionalLight;
 import gameengine.game.light.PointLight;
 import gameengine.logger.Logger;
 import gameengine.test.TestCamera;
@@ -36,10 +34,14 @@ public class Game implements ITickable {
 		this.preloadAssets();
 		this.worldScene = new Scene();
 		this.worldScene.addObject(new TestCamera());
-		this.worldScene.addObject(new AmbientLight());
-		this.worldScene.addObject(new PointLight(new Vector3f(1, 1, 1), new Vector3f(13, 1f, 0), 1.0f, 0));
-		this.worldScene.addObject(new PointLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 5), 1.0f, 1));
-		this.worldScene.addObject(new DirectionalLight(new Vector3f(1, 1, 1), new Vector3f(100, 100.0f, 100), 1.0f));
+		
+		PointLight testPointLight = new PointLight(new Vector3f(1, 1, 1), 1.0f, 0);
+		testPointLight.getTransform().setPosition(13, 1f, 0);
+		this.worldScene.addObject(testPointLight);
+		
+		testPointLight = new PointLight(new Vector3f(1, 1, 1), 1.0f, 1);
+		testPointLight.getTransform().setPosition(0, 1, 5);
+		this.worldScene.addObject(testPointLight);
 		
 		AssetManager.Group assets = this.getAssets();
 		

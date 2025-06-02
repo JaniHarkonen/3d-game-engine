@@ -36,10 +36,11 @@ public class Transform {
 		);
 	}
 	
-	public void possess(Transform possessor) {
-		this.position = possessor.position;
-		this.rotator = possessor.rotator;
-		this.scale = possessor.scale;
+	public void possess(IHasTransform possessor) {
+		Transform transform = possessor.getTransform();
+		this.position = transform.position;
+		this.rotator = transform.rotator;
+		this.scale = transform.scale;
 	}
 	
 	public void shift(float x, float y, float z) {

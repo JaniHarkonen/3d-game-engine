@@ -1,8 +1,9 @@
 package gameengine.game.light;
 
+import gameengine.engine.renderer.uniform.object.IHasStruct;
 import gameengine.engine.renderer.uniform.object.attenuation.SSAttenuation;
 
-public class Attenuation {
+public class Attenuation implements IHasStruct {
     private float constant;
     private float exponent;
     private float linear;
@@ -13,29 +14,19 @@ public class Attenuation {
         this.linear = linear;
         this.exponent = exponent;
         this.attenuationStruct = new SSAttenuation();
-        this.updateStruct();
     }
     
-    
-    private void updateStruct() {
-    	this.attenuationStruct.constant = this.constant;
-    	this.attenuationStruct.exponent = this.exponent;
-    	this.attenuationStruct.linear = this.linear;
-    }
     
     public void setConstant(float constant) {
         this.constant = constant;
-        this.updateStruct();
     }
 
     public void setExponent(float exponent) {
         this.exponent = exponent;
-        this.updateStruct();
     }
 
     public void setLinear(float linear) {
         this.linear = linear;
-        this.updateStruct();
     }
 
     public float getConstant() {
@@ -50,7 +41,11 @@ public class Attenuation {
         return linear;
     }
     
+    @Override
     public SSAttenuation getAsStruct() {
+    	this.attenuationStruct.constant = this.constant;
+    	this.attenuationStruct.exponent = this.exponent;
+    	this.attenuationStruct.linear = this.linear;
     	return this.attenuationStruct;
     }
 }

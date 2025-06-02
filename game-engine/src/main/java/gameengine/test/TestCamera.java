@@ -8,9 +8,10 @@ import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.renderer.component.Projection;
 import gameengine.engine.window.Window;
+import gameengine.game.component.IHasTransform;
 import gameengine.game.component.Transform;
 
-public class TestCamera implements IGameObject {	
+public class TestCamera implements IGameObject, IHasTransform {	
 	private Camera camera;
 	private Transform transform;
 
@@ -71,13 +72,11 @@ public class TestCamera implements IGameObject {
 		Engine.getGame().getWorldScene().setActiveCamera(this.camera);
 		
 		this.transform = new Transform();
-		this.camera.getTransform().possess(this.transform);
+		this.camera.getTransform().possess(this);
 	}
 
-	/*
 	@Override
-	public void render(ScenePass renderPass) {
-		// TODO Auto-generated method stub
-		
-	}*/
+	public Transform getTransform() {
+		return this.transform;
+	}
 }
