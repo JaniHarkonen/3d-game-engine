@@ -1,6 +1,7 @@
 package gameengine.engine.asset;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AssetManager {
@@ -10,7 +11,7 @@ public class AssetManager {
 		
 		public Group(String name) {
 			this.name = name;
-			this.assets = new HashMap<>();
+			this.assets = new LinkedHashMap<>();
 		}
 		
 		

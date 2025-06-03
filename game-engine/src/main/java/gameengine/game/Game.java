@@ -6,6 +6,7 @@ import org.lwjgl.assimp.Assimp;
 import gameengine.engine.Engine;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
+import gameengine.engine.asset.Animation;
 import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
@@ -91,8 +92,8 @@ public class Game implements ITickable {
 		TestPlayer testPlayer = new TestPlayer(model);
 		testPlayer.getTransform().setPosition(0, 0, 0);
 		testPlayer.getTransform().setScale(0.025f, 0.025f, 0.025f);
-		testPlayer.getAnimator().setAnimation(((Mesh) assets.get("mesh-player-run")).DEBUGgetAnimations()[0]);
 		testPlayer.getAnimator().setSpeed(1/30f);
+		testPlayer.getAnimator().setAnimation((Animation) assets.get("anim-player-idle"));
 		this.worldScene.addObject(testPlayer);
 		
 			// Box
@@ -102,7 +103,7 @@ public class Game implements ITickable {
 		TestModel testBox = new TestModel(model);
 		testBox.getTransform().setScale(0.01f, 0.01f, 0.01f);
 		testBox.getTransform().setPosition(0, 5, 0);
-		this.worldScene.addObject(testBox);
+		//this.worldScene.addObject(testBox);
 		
 		Logger.info(this, "Game setup done!");
 	}
@@ -144,27 +145,24 @@ public class Game implements ITickable {
 		preload.put(new Mesh("mesh-box", FileUtils.getResourcePath("model/box.fbx")));
 		preload.put(new Mesh("mesh-player", FileUtils.getResourcePath("model/player.fbx")));
 		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
-		preload.put(new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player/newnew/PlayerMeshNew.fbx"), (
+		
+		Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player/newnew/PlayerMeshNew.fbx"), (
 			Assimp.aiProcess_GenSmoothNormals |
 			Assimp.aiProcess_Triangulate | 
 			Assimp.aiProcess_FixInfacingNormals | 
 			Assimp.aiProcess_CalcTangentSpace | 
 			Assimp.aiProcess_LimitBoneWeights
-		)));
-		preload.put(new Mesh("mesh-player-run", FileUtils.getResourcePath("model/player/newnew/RunWithMeshNew.fbx"), (
-			Assimp.aiProcess_GenSmoothNormals |
-			Assimp.aiProcess_Triangulate | 
-			Assimp.aiProcess_FixInfacingNormals | 
-			Assimp.aiProcess_CalcTangentSpace | 
-			Assimp.aiProcess_LimitBoneWeights
-		)));
-		preload.put(new Mesh("anim-player-idle", FileUtils.getResourcePath("model/player/newnew/IdleAnim.fbx"), (
-			Assimp.aiProcess_GenSmoothNormals |
-			Assimp.aiProcess_Triangulate | 
-			Assimp.aiProcess_FixInfacingNormals | 
-			Assimp.aiProcess_CalcTangentSpace | 
-			Assimp.aiProcess_LimitBoneWeights
-		)));
+		));
+		preload.put(meshPlayerSkinned);
+		
+		Animation animPlayerIdle = new Animation("anim-player-idle", FileUtils.getResourcePath("model/player/newnew/IdleAnim.fbx"));
+		animPlayerIdle.DEBUGsetSkeleton(meshPlayerSkinned.DEBUGgetSkeleton());
+		preload.put(animPlayerIdle);
+		
+		Animation animPlayerRun = new Animation("anim-player-run", FileUtils.getResourcePath("model/player/newnew/RunNormalNew.fbx"));
+		animPlayerRun.DEBUGsetSkeleton(meshPlayerSkinned.DEBUGgetSkeleton());
+		preload.put(animPlayerRun);
+		
 		this.assetManager.registerGroup(preload);
 		preload.load();
 	}

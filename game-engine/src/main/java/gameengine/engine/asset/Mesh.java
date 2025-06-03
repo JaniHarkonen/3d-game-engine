@@ -7,22 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AINode;
-import org.lwjgl.assimp.AINodeAnim;
-import org.lwjgl.assimp.AIQuatKey;
-import org.lwjgl.assimp.AIQuaternion;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
@@ -43,21 +35,20 @@ public class Mesh implements IAsset {
 	
 	public static final int MAX_WEIGHT_COUNT = 4;
 	public static final int MAX_BONE_COUNT = 150;
-	private static final Matrix4f IDENTITY_MATRIX = new Matrix4f();
 	
 	private final String name;
 	private String path;
     private Submesh[] submeshes;
     private int importFlags;
     
-    private Animation[] DEBUGanimations;
+    private Skeleton DEBUGskeleton;
 
     public Mesh(String name, String path, int importFlags) {
     	this.name = name;
     	this.path = path;
         this.reset();
         this.importFlags = importFlags;
-        this.DEBUGanimations = new Animation[0];
+        this.DEBUGskeleton = new Skeleton();
     }
     
     public Mesh(String name, String path) {
@@ -78,7 +69,7 @@ public class Mesh implements IAsset {
         if( aiScene == null ) {
         	Logger.error(
     			this, 
-    			"Failed to load mesh '" + this.name + "' from: ", 
+    			"Failed to load Assimp scene for mesh '" + this.name + "' from: ", 
     			this.path, 
     			"Assimp log:", 
     			Assimp.aiGetErrorString()
@@ -163,36 +154,7 @@ public class Mesh implements IAsset {
 			Logger.spam(this, "Vertex count: " + vertices.length, "UV count: " + UVs.length, "Face count: " + faces.length);
 		}
 		
-			////////////////////////////Extract animations ////////////////////////////
-		int animationCount = aiScene.mNumAnimations();
-		
-		Logger.info(this, "Found " + animationCount + " animations.");
-		
-		if( animationCount > 0 ) {
-			Node rootNode = this.buildNodesTree(aiScene.mRootNode(), null);
-			Matrix4f globalInverseTransform = GeometryUtils.aiMatrix4ToMatrix4f(
-				aiScene.mRootNode().mTransformation()
-			).invert();
-			PointerBuffer aiAnimations = aiScene.mAnimations();
-			
-			Animation[] animations = new Animation[animationCount];
-			
-			for( int i = 0; i < animationCount; i++ ) {
-				Animation targetAnimation = new Animation("test-"+i);
-				animations[i] = targetAnimation;
-				
-				this.loadAnimation(
-					AIAnimation.create(aiAnimations.get(i)), 
-					targetAnimation, 
-					boneList, 
-					rootNode, 
-					globalInverseTransform
-				);
-			}
-			
-			this.DEBUGanimations = animations;
-		}
-		
+		this.DEBUGskeleton.populate(boneList);
 		Assimp.aiReleaseImport(aiScene);
 		Logger.info(this, "Mesh loaded.");
 	}
@@ -244,6 +206,7 @@ public class Mesh implements IAsset {
 	) {
 		List<VertexWeight> weightList = weightSet.get(vertexIndex);
 		int weightCount = (weightList != null) ? weightList.size() : 0;
+		
 		for( int j = 0; j < MAX_WEIGHT_COUNT; j++ ) {
 			int index = vertexIndex * MAX_WEIGHT_COUNT + j;
 			if( j < weightCount ) {
@@ -255,155 +218,6 @@ public class Mesh implements IAsset {
 				boneIDs[index] = 0;
 			}
 		}
-	}
-	
-    private int findMaxFrameCount(AIAnimation aiAnimation) {
-        int frameCount = 0;
-        int channelCount = aiAnimation.mNumChannels();
-        PointerBuffer aiChannels = aiAnimation.mChannels();
-        
-        for( int i = 0; i < channelCount; i++ ) {
-            AINodeAnim aiNodeAnim = AINodeAnim.create(aiChannels.get(i));
-            int positionKeyCount = aiNodeAnim.mNumPositionKeys();
-            int rotationKeyCount = aiNodeAnim.mNumRotationKeys();
-            int scalingKeyCount = aiNodeAnim.mNumScalingKeys();
-            int maxKeys = Math.max(Math.max(positionKeyCount, rotationKeyCount), scalingKeyCount);
-            frameCount = Math.max(frameCount, maxKeys);
-        }
-
-        return frameCount;
-    }
-	
-	private void loadAnimation(
-		AIAnimation aiAnimation, 
-		Animation targetAnimation, 
-		List<Bone> boneList, 
-		Node rootNode, 
-		Matrix4f globalInverseTransform
-	) {
-			// Build frame transforms for each key frame of the animation
-		int frameCount = this.findMaxFrameCount(aiAnimation);
-		Animation.Frame[] frames = new Animation.Frame[frameCount];
-		
-		for( int i = 0; i < frameCount; i++ ) {
-			Matrix4f[] boneTransforms = new Matrix4f[MAX_BONE_COUNT];
-			Arrays.fill(boneTransforms, IDENTITY_MATRIX);
-			Animation.Frame frame = new Animation.Frame(boneTransforms);
-			this.buildFrameTransforms(
-				aiAnimation, 
-				boneList, 
-				frame, 
-				i, 
-				rootNode, 
-				rootNode.getNodeTransform(), 
-				globalInverseTransform
-			);
-			frames[i] = frame;
-		}
-		
-		targetAnimation.populate(1.0f, frames);
-	}
-	
-	private void buildFrameTransforms(
-		AIAnimation aiAnimation, 
-		List<Bone> boneList, 
-		Animation.Frame frame, 
-		int frameIndex, 
-		Node node, 
-		Matrix4f parentTransform, 
-		Matrix4f globalInverseTransform
-	) {
-		String nodeName = node.getName();
-		AINodeAnim aiNodeAnim = this.findAIAnimationNode(aiAnimation, nodeName);
-		Matrix4f nodeTransform = node.getNodeTransform();
-		
-			// Build node transform matrix if this node is associated with an animation node
-		if( aiNodeAnim != null ) {
-			nodeTransform = this.buildNodeTransform(aiNodeAnim, frameIndex);
-		}
-		
-			// Apply node's transform to each Bone of the Assimp scene
-		Matrix4f nodeGlobalTransform = new Matrix4f(parentTransform).mul(nodeTransform);
-		for( Bone bone : boneList ) {
-			if( bone.getName().equals(nodeName) ) {
-				Matrix4f boneTransform = new Matrix4f(globalInverseTransform)
-				.mul(nodeGlobalTransform)
-				.mul(bone.getOffsetTransform());
-				frame.setBoneTransform(bone.getID(), boneTransform);
-			}
-		}
-		
-			// Recurse through child nodes
-		for( Node childNode : node.getChildren() ) {
-			this.buildFrameTransforms(
-				aiAnimation, 
-				boneList, 
-				frame, 
-				frameIndex, 
-				childNode, 
-				nodeGlobalTransform, 
-				globalInverseTransform
-			);
-		}
-	}
-	
-	private Node buildNodesTree(AINode aiNode, Node parentNode) {
-		String nodeName = aiNode.mName().dataString();
-		Node node = new Node(
-			nodeName, parentNode, GeometryUtils.aiMatrix4ToMatrix4f(aiNode.mTransformation())
-		);
-		
-		int childCount = aiNode.mNumChildren();
-		for( int i = 0; i < childCount; i++ ) {
-			node.addChild(this.buildNodesTree(AINode.create(aiNode.mChildren().get(i)), node));
-		}
-		
-		return node;
-	}
-	
-	private Matrix4f buildNodeTransform(AINodeAnim aiNodeAnim, int frameIndex) {
-        Matrix4f nodeTransform = new Matrix4f();
-        
-        	// Apply frame translation
-        int positionCount = aiNodeAnim.mNumPositionKeys();
-        if( positionCount > 0 ) {
-        	AIVectorKey.Buffer positionKeys = aiNodeAnim.mPositionKeys();
-        	AIVector3D aiTranslation = positionKeys.get(Math.min(positionCount - 1, frameIndex)).mValue();
-            nodeTransform.translate(aiTranslation.x(), aiTranslation.y(), aiTranslation.z());
-        }
-        
-        	// Apply frame rotation
-        int rotationKeyCount = aiNodeAnim.mNumRotationKeys();
-        if( rotationKeyCount > 0 ) {
-        	AIQuatKey.Buffer rotationKeys = aiNodeAnim.mRotationKeys();
-            AIQuaternion aiQuat = rotationKeys.get(Math.min(rotationKeyCount - 1, frameIndex)).mValue();
-            Quaternionf quat = new Quaternionf(aiQuat.x(), aiQuat.y(), aiQuat.z(), aiQuat.w());
-            nodeTransform.rotate(quat);
-        }
-        
-        	// Apply frame scaling
-        int scalingKeyCount = aiNodeAnim.mNumScalingKeys();
-        if( scalingKeyCount > 0 ) {
-        	AIVectorKey.Buffer scalingKeys = aiNodeAnim.mScalingKeys();
-        	AIVector3D aiScaling = scalingKeys.get(Math.min(scalingKeyCount - 1, frameIndex)).mValue();
-            nodeTransform.scale(aiScaling.x(), aiScaling.y(), aiScaling.z());
-        }
-
-        return nodeTransform;
-	}
-	
-	private AINodeAnim findAIAnimationNode(AIAnimation aiAnimation, String nodeName) {
-		int animationNodeCount = aiAnimation.mNumChannels();
-		PointerBuffer aiChannels = aiAnimation.mChannels();
-		
-		for( int i = 0; i < animationNodeCount; i++ ) {
-			AINodeAnim aiNodeAnim = AINodeAnim.create(aiChannels.get(i));
-			if( nodeName.equals(aiNodeAnim.mNodeName().dataString()) ) {
-				return aiNodeAnim;
-			}
-		}
-		
-		return null;
 	}
 
 	@Override
@@ -441,7 +255,7 @@ public class Mesh implements IAsset {
 		return this.submeshes.length;
 	}
 	
-	public Animation[] DEBUGgetAnimations() {
-		return this.DEBUGanimations;
+	public Skeleton DEBUGgetSkeleton() {
+		return this.DEBUGskeleton;
 	}
 }

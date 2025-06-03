@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
+import gameengine.engine.asset.Animation;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.window.Input;
 import gameengine.game.component.Animator;
@@ -54,6 +55,15 @@ public class TestPlayer implements IGameObject, IHasTransform {
 		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_H).hashCode(), (e) -> {
 			this.getTransform().getRotator().rotateZ(-deltaTime);
+		});
+		
+		
+		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_1).hashCode(), (e) -> {
+			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-idle"));
+		});
+		
+		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_2).hashCode(), (e) -> {
+			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-run"));
 		});
 	}
 	
