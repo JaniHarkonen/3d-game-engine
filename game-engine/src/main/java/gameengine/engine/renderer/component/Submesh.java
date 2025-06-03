@@ -60,6 +60,8 @@ public class Submesh {
     private Vector3f[] normals;
     private Vector2f[] UVs;
     private Face[] faces;
+    private int[] bones;
+    private float[] boneWeights;
 
     public Submesh() {
     	this.vao = null;
@@ -67,18 +69,29 @@ public class Submesh {
     	this.normals = null;
     	this.UVs = null;
     	this.faces = null;
+    	this.bones = new int[0];
+        this.boneWeights = new float[0];
     }
     
-    
-    public void populate(Vector3f[] vertices, Vector3f[] normals, Vector2f[] UVs, Face[] faces) {
+    public void populate(
+		Vector3f[] vertices, 
+		Vector3f[] normals, 
+		Vector2f[] UVs, 
+		Face[] faces, 
+		int[] bones, 
+		float[] boneWeights
+	) {
     	this.vertices = vertices;
     	this.normals = normals;
     	this.UVs = UVs;
     	this.faces = faces;
+    	this.bones = bones;
+    	this.boneWeights = boneWeights;
     	
     	this.vao = new VAO(this);
     	this.vao.generate();
     }
+
     
 	public void render() {
 		this.vao.bind();
@@ -87,6 +100,11 @@ public class Submesh {
 
     public void dipose() {
     	this.vao.dispose();
+    }
+    
+    public void setBones(int[] bones, float[] boneWeights) {
+    	this.bones = bones;
+    	this.boneWeights = boneWeights;
     }
     
     public int getVertexCount() {
@@ -107,5 +125,13 @@ public class Submesh {
     
     public Face[] getFaces() {
     	return this.faces;
+    }
+    
+    public int[] getBones() {
+    	return this.bones;
+    }
+    
+    public float[] getBoneWeights() {
+    	return this.boneWeights;
     }
 }

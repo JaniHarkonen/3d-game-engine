@@ -1,15 +1,15 @@
 package gameengine.game;
 
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.assimp.Assimp;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IScene;
 import gameengine.engine.ITickable;
+import gameengine.engine.asset.Animation;
 import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
-import gameengine.engine.window.Input;
 import gameengine.engine.window.Window;
 import gameengine.game.component.Material;
 import gameengine.game.component.Model;
@@ -17,6 +17,7 @@ import gameengine.game.component.light.PointLight;
 import gameengine.logger.Logger;
 import gameengine.test.TestCamera;
 import gameengine.test.TestModel;
+import gameengine.test.TestPlayer;
 import gameengine.util.FileUtils;
 
 public class Game implements ITickable {
@@ -84,39 +85,14 @@ public class Game implements ITickable {
 		this.worldScene.addObject(testScene);
 		
 			// Player
-		model = new Model((Mesh) assets.get("mesh-player"));
+		model = new Model((Mesh) assets.get("mesh-player-skinned"));
 		model.setMaterial(Material.create((Texture) assets.get("tex-player")));
 		
-		TestModel testPlayer = new TestModel(model) {
-			@Override
-			public void tick(float deltaTime) {
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_UP).hashCode(), (e) -> {
-					this.getTransform().shift(0, 0, -deltaTime * 10);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_DOWN).hashCode(), (e) -> {
-					this.getTransform().shift(0, 0, deltaTime * 10);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_LEFT).hashCode(), (e) -> {
-					this.getTransform().shift(-deltaTime * 10, 0, 0);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_RIGHT).hashCode(), (e) -> {
-					this.getTransform().shift(deltaTime * 10, 0, 0);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_KP_8).hashCode(), (e) -> {
-					this.getTransform().shift(0, deltaTime * 10, 0);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_KP_2).hashCode(), (e) -> {
-					this.getTransform().shift(0, -deltaTime * 10, 0);
-				});
-			}
-		};
-		testPlayer.getTransform().setPosition(13, 0.08f, -1);
+		TestPlayer testPlayer = new TestPlayer(model);
+		testPlayer.getTransform().setPosition((float)Math.random()*10f, 0, (float)Math.random()*10f);
 		testPlayer.getTransform().setScale(0.025f, 0.025f, 0.025f);
+		testPlayer.getAnimator().setSpeed(1/30f);
+		testPlayer.getAnimator().setAnimation((Animation) assets.get("anim-player-idle"));
 		this.worldScene.addObject(testPlayer);
 		
 			// Box
@@ -126,7 +102,7 @@ public class Game implements ITickable {
 		TestModel testBox = new TestModel(model);
 		testBox.getTransform().setScale(0.01f, 0.01f, 0.01f);
 		testBox.getTransform().setPosition(0, 5, 0);
-		this.worldScene.addObject(testBox);
+		//this.worldScene.addObject(testBox);
 		
 		Logger.info(this, "Game setup done!");
 	}
@@ -164,10 +140,34 @@ public class Game implements ITickable {
 		
 		preload.put(new Texture("tex-player", FileUtils.getResourcePath("texture/player_diff.png")));
 		
-		preload.put(new Mesh("mesh-man", FileUtils.getResourcePath("model/man.fbx")));
 		preload.put(new Mesh("mesh-box", FileUtils.getResourcePath("model/box.fbx")));
-		preload.put(new Mesh("mesh-player", FileUtils.getResourcePath("model/player.fbx")));
 		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
+		
+		Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player.fbx"), (
+			Assimp.aiProcess_GenSmoothNormals |
+			Assimp.aiProcess_Triangulate | 
+			Assimp.aiProcess_FixInfacingNormals | 
+			Assimp.aiProcess_CalcTangentSpace | 
+			Assimp.aiProcess_LimitBoneWeights
+		));
+		preload.put(meshPlayerSkinned);
+		
+		Animation animPlayerIdle = new Animation("anim-player-idle", FileUtils.getResourcePath("anim/IdleAnim.fbx"));
+		animPlayerIdle.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
+		preload.put(animPlayerIdle);
+		
+		Animation animPlayerRun = new Animation("anim-player-run", FileUtils.getResourcePath("anim/RunAnim.fbx"));
+		animPlayerRun.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
+		preload.put(animPlayerRun);
+		
+		Animation animIdleSmoke = new Animation("anim-player-idle-smoke", FileUtils.getResourcePath("anim/IdleSmokeAnim.fbx"));
+		animIdleSmoke.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
+		preload.put(animIdleSmoke);
+		
+		Animation animGetUpFromBack = new Animation("anim-player-get-up-back", FileUtils.getResourcePath("anim/GetUpFromBackAnim.fbx"));
+		animGetUpFromBack.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
+		preload.put(animGetUpFromBack);
+		
 		this.assetManager.registerGroup(preload);
 		preload.load();
 	}

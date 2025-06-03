@@ -67,12 +67,13 @@ public class TestCamera implements IGameObject, IHasTransform {
 	public void onCreate() {
 		Projection projection = new Projection();
 		this.camera = new Camera(projection);
-		this.camera.getProjection().setAspectRatio(1/1);
-		this.camera.getProjection().setFOV(75f);
+		this.camera.getProjection().setAspectRatio(1 / 1);
+		this.camera.getProjection().setFOV(70f);
 		Engine.getGame().getWorldScene().setActiveCamera(this.camera);
 		
 		this.transform = new Transform();
 		this.camera.getTransform().possess(this);
+		this.transform.setPosition(10, 10, 10);
 	}
 
 	@Override

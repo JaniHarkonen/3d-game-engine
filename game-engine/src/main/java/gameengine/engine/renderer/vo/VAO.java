@@ -13,6 +13,8 @@ public class VAO {
 	private VBO vboNormals;
 	private VBO vboUVs;
 	private VBO vboIndices;
+	private VBO vboBoneIDs;
+	private VBO vboBoneWeights;
 	
 	public VAO(Submesh submesh) {
 		this.submesh = submesh;
@@ -21,6 +23,8 @@ public class VAO {
 		this.vboNormals = null;
 		this.vboUVs = null;
 		this.vboIndices = null;
+		this.vboBoneIDs = null;
+		this.vboBoneWeights = null;
 	}
 	
 	
@@ -44,6 +48,16 @@ public class VAO {
         	this.vboUVs.enable(2);
         	Logger.info(this, "UVs VBO @ 2");
         	
+        	this.vboBoneIDs = new VBO(GL46.GL_ARRAY_BUFFER, GL46.GL_FLOAT, 4);
+        	this.vboBoneIDs.generate(this.submesh.getBones());
+        	this.vboBoneIDs.enable(3);
+        	Logger.info(this, "Bone IDs VBO @ 3");
+        	
+        	this.vboBoneWeights = new VBO(GL46.GL_ARRAY_BUFFER, GL46.GL_FLOAT, 4);
+        	this.vboBoneWeights.generate(this.submesh.getBoneWeights());
+        	this.vboBoneWeights.enable(4);
+        	Logger.info(this, "Bone weights VBO @ 4");
+        	
         	this.vboIndices = new VBO(GL46.GL_ELEMENT_ARRAY_BUFFER, GL46.GL_INT, 0);
         	this.vboIndices.generate(Submesh.Face.facesToIndices(this.submesh.getFaces()));
         	Logger.info(this, "Indices VBO OK");
@@ -63,6 +77,8 @@ public class VAO {
 		this.vboVertices.dispose();
 		this.vboNormals.dispose();
 		this.vboUVs.dispose();
+		this.vboBoneIDs.dispose();
+		this.vboBoneWeights.dispose();
 		this.vboIndices.dispose();
 		GL46.glDeleteVertexArrays(this.ID);
 		Logger.info(this, "VAO disposed for submesh '" + this.submesh + "'.");
