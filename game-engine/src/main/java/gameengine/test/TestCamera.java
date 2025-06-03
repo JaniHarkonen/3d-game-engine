@@ -73,6 +73,7 @@ public class TestCamera implements IGameObject, IHasTransform {
 		
 		this.transform = new Transform();
 		this.camera.getTransform().possess(this);
+		this.transform.setPosition(10,10,10);
 	}
 
 	@Override

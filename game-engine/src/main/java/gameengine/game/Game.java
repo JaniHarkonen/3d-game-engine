@@ -1,7 +1,7 @@
 package gameengine.game;
 
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.assimp.Assimp;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IScene;
@@ -9,7 +9,6 @@ import gameengine.engine.ITickable;
 import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
-import gameengine.engine.window.Input;
 import gameengine.engine.window.Window;
 import gameengine.game.component.Material;
 import gameengine.game.component.Model;
@@ -17,6 +16,7 @@ import gameengine.game.component.light.PointLight;
 import gameengine.logger.Logger;
 import gameengine.test.TestCamera;
 import gameengine.test.TestModel;
+import gameengine.test.TestPlayer;
 import gameengine.util.FileUtils;
 
 public class Game implements ITickable {
@@ -84,39 +84,15 @@ public class Game implements ITickable {
 		this.worldScene.addObject(testScene);
 		
 			// Player
-		model = new Model((Mesh) assets.get("mesh-player"));
+		//model = new Model((Mesh) assets.get("mesh-player"));
+		model = new Model((Mesh) assets.get("mesh-player-skinned"));
 		model.setMaterial(Material.create((Texture) assets.get("tex-player")));
 		
-		TestModel testPlayer = new TestModel(model) {
-			@Override
-			public void tick(float deltaTime) {
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_UP).hashCode(), (e) -> {
-					this.getTransform().shift(0, 0, -deltaTime * 10);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_DOWN).hashCode(), (e) -> {
-					this.getTransform().shift(0, 0, deltaTime * 10);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_LEFT).hashCode(), (e) -> {
-					this.getTransform().shift(-deltaTime * 10, 0, 0);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_RIGHT).hashCode(), (e) -> {
-					this.getTransform().shift(deltaTime * 10, 0, 0);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_KP_8).hashCode(), (e) -> {
-					this.getTransform().shift(0, deltaTime * 10, 0);
-				});
-				
-				Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_KP_2).hashCode(), (e) -> {
-					this.getTransform().shift(0, -deltaTime * 10, 0);
-				});
-			}
-		};
-		testPlayer.getTransform().setPosition(13, 0.08f, -1);
+		TestPlayer testPlayer = new TestPlayer(model);
+		testPlayer.getTransform().setPosition(0, 0, 0);
 		testPlayer.getTransform().setScale(0.025f, 0.025f, 0.025f);
+		testPlayer.getAnimator().setAnimation(((Mesh) assets.get("mesh-player-run")).DEBUGgetAnimations()[0]);
+		testPlayer.getAnimator().setSpeed(1/30f);
 		this.worldScene.addObject(testPlayer);
 		
 			// Box
@@ -168,6 +144,27 @@ public class Game implements ITickable {
 		preload.put(new Mesh("mesh-box", FileUtils.getResourcePath("model/box.fbx")));
 		preload.put(new Mesh("mesh-player", FileUtils.getResourcePath("model/player.fbx")));
 		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
+		preload.put(new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player/newnew/PlayerMeshNew.fbx"), (
+			Assimp.aiProcess_GenSmoothNormals |
+			Assimp.aiProcess_Triangulate | 
+			Assimp.aiProcess_FixInfacingNormals | 
+			Assimp.aiProcess_CalcTangentSpace | 
+			Assimp.aiProcess_LimitBoneWeights
+		)));
+		preload.put(new Mesh("mesh-player-run", FileUtils.getResourcePath("model/player/newnew/RunWithMeshNew.fbx"), (
+			Assimp.aiProcess_GenSmoothNormals |
+			Assimp.aiProcess_Triangulate | 
+			Assimp.aiProcess_FixInfacingNormals | 
+			Assimp.aiProcess_CalcTangentSpace | 
+			Assimp.aiProcess_LimitBoneWeights
+		)));
+		preload.put(new Mesh("anim-player-idle", FileUtils.getResourcePath("model/player/newnew/IdleAnim.fbx"), (
+			Assimp.aiProcess_GenSmoothNormals |
+			Assimp.aiProcess_Triangulate | 
+			Assimp.aiProcess_FixInfacingNormals | 
+			Assimp.aiProcess_CalcTangentSpace | 
+			Assimp.aiProcess_LimitBoneWeights
+		)));
 		this.assetManager.registerGroup(preload);
 		preload.load();
 	}

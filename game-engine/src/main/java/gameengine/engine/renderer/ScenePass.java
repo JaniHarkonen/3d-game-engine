@@ -27,6 +27,7 @@ public class ScenePass extends ARenderPass<ScenePass> {
 	public final UAMatrix4f uProjection;
 	public final UAMatrix4f uCamera;
 	public final UAMatrix4f uObject;
+	public final UAMatrix4f uBoneMatrices;
 	public final UInteger1 uDiffuseSampler;
 	public final UMaterial uMaterial;
 	public final UAmbientLight uAmbientLight;
@@ -39,6 +40,7 @@ public class ScenePass extends ARenderPass<ScenePass> {
     	this.uProjection = new UAMatrix4f("uProjection");
     	this.uCamera = new UAMatrix4f("uCamera");
     	this.uObject = new UAMatrix4f("uObject");
+    	this.uBoneMatrices = new UAMatrix4f("uBoneMatrices");
     	this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
     	this.uMaterial = new UMaterial("uMaterial");
     	this.uAmbientLight = new UAmbientLight("uAmbientLight");
@@ -70,6 +72,7 @@ public class ScenePass extends ARenderPass<ScenePass> {
 			this.uProjection,
 			this.uCamera,
 			this.uObject,
+			this.uBoneMatrices,
 			this.uDiffuseSampler,
 			this.uMaterial,
 			this.uAmbientLight,
@@ -91,9 +94,6 @@ public class ScenePass extends ARenderPass<ScenePass> {
         	preRenderCount++;
         }
         
-        //this.uProjection.update(this.camera.getProjection().getAsMatrix());
-        //this.uCamera.update(this.camera.getTransform().getAsMatrix());
-        
         int renderCount = 0;
         for( IRenderStrategy<ScenePass> renderer : this.render ) {
         	renderer.render(this);
@@ -102,7 +102,7 @@ public class ScenePass extends ARenderPass<ScenePass> {
         
         GL46.glBindVertexArray(0);
         this.shaderProgram.unbind();
-        Logger.info(this, "Scene rendered. Pre: " + preRenderCount + ", main: " + renderCount + ".");
+        Logger.spam(this, "Scene rendered. Pre: " + preRenderCount + ", main: " + renderCount + ".");
     }
     
     @Override
