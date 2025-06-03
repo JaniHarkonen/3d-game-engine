@@ -38,7 +38,6 @@ public class Renderer {
 		GL46.glClearColor(0, 1, 0, 1);
 		
 			// Reset scenes before submissions
-		this.scenePass.reset();
 		
 			// Generate submissions
 		Logger.spam(this, "Submitting to scene render pass...");

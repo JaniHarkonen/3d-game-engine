@@ -88,14 +88,16 @@ public class ScenePass extends ARenderPass<ScenePass> {
         this.shaderProgram.bind();
         this.uDiffuseSampler.update(0);
         
+        IRenderStrategy<ScenePass> renderer;
         int preRenderCount = 0;
-        for( IRenderStrategy<ScenePass> renderer : this.preRender ) {
+        
+        while( (renderer = this.preRender.poll()) != null ) {
         	renderer.render(this);
         	preRenderCount++;
         }
         
         int renderCount = 0;
-        for( IRenderStrategy<ScenePass> renderer : this.render ) {
+        while( (renderer = this.render.poll()) != null ) {
         	renderer.render(this);
         	renderCount++;
         }
