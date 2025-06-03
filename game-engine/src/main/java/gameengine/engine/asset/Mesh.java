@@ -2,7 +2,6 @@ package gameengine.engine.asset;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,24 +40,21 @@ public class Mesh implements IAsset {
     private Submesh[] submeshes;
     private int importFlags;
     
-    private Skeleton DEBUGskeleton;
+    	// If a skeleton is found, it will be placed in this field, otherwise null
+    private Skeleton skeleton;
 
     public Mesh(String name, String path, int importFlags) {
     	this.name = name;
     	this.path = path;
-        this.reset();
+    	this.submeshes = new Submesh[0];
         this.importFlags = importFlags;
-        this.DEBUGskeleton = new Skeleton();
+        this.skeleton = new Skeleton();
     }
     
     public Mesh(String name, String path) {
     	this(name, path, DEFAULT_IMPORT_FLAGS);
     }
     
-    
-    private void reset() {
-    	this.submeshes = new Submesh[0];
-    }
 	
 	@Override
 	public void load() {
@@ -77,7 +73,6 @@ public class Mesh implements IAsset {
         	return;
         }
 		
-			//////////////////////////// Extract meshes ////////////////////////////
 		int submeshCount = aiScene.mNumMeshes();
 		this.submeshes = new Submesh[submeshCount];
 		
@@ -92,12 +87,12 @@ public class Mesh implements IAsset {
 			Logger.spam(this, "Found submesh '" + aiMesh.mName().dataString() + "' (" + i + 1 + " / " + submeshCount + ").");
 			
 			Vector3f[] normals = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mNormals());
-			Vector3f[] tangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTangents());
-			Vector3f[] bitangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mBitangents());
+			//Vector3f[] tangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTangents());
+			//Vector3f[] bitangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mBitangents());
 			Vector2f[] UVs = GeometryUtils.aiVector3DBufferToVector2fArray(aiMesh.mTextureCoords(0));
 
 				// By default, set tangents array should be the same length as the normals array
-			if( tangents.length == 0 ) {
+			/*if( tangents.length == 0 ) {
 				tangents = new Vector3f[normals.length];
 				Arrays.fill(tangents, new Vector3f(0.0f));
 				Logger.warn(this, "Submesh '" + aiMesh.mName().dataString() + "' of mesh '" + this.name + "' contains no tangents!");
@@ -108,7 +103,7 @@ public class Mesh implements IAsset {
 				bitangents = new Vector3f[normals.length];
 				Arrays.fill(bitangents, new Vector3f(0.0f));
 				Logger.warn(this, "Submesh '" + aiMesh.mName().dataString() + "' of mesh '" + this.name + "' contains no bitangents!");
-			}
+			}*/
 			
 				// Fix UV-coordinates
 			for( Vector2f uv : UVs ) {
@@ -154,7 +149,7 @@ public class Mesh implements IAsset {
 			Logger.spam(this, "Vertex count: " + vertices.length, "UV count: " + UVs.length, "Face count: " + faces.length);
 		}
 		
-		this.DEBUGskeleton.populate(boneList);
+		this.skeleton.populate(boneList);
 		Assimp.aiReleaseImport(aiScene);
 		Logger.info(this, "Mesh loaded.");
 	}
@@ -181,8 +176,9 @@ public class Mesh implements IAsset {
 			
 			int weightCount = aiBone.mNumWeights();
 			AIVertexWeight.Buffer aiWeights = aiBone.mWeights();
-			for( int k = 0; k < weightCount; k++ ) {
-				AIVertexWeight aiWeight = aiWeights.get(k);
+			
+			for( int i = 0; i < weightCount; i++ ) {
+				AIVertexWeight aiWeight = aiWeights.get(i);
 				VertexWeight weight = new VertexWeight(
 					bone.getID(), aiWeight.mVertexId(), aiWeight.mWeight()
 				);
@@ -207,10 +203,10 @@ public class Mesh implements IAsset {
 		List<VertexWeight> weightList = weightSet.get(vertexIndex);
 		int weightCount = (weightList != null) ? weightList.size() : 0;
 		
-		for( int j = 0; j < MAX_WEIGHT_COUNT; j++ ) {
-			int index = vertexIndex * MAX_WEIGHT_COUNT + j;
-			if( j < weightCount ) {
-				VertexWeight weight = weightList.get(j);
+		for( int i = 0; i < MAX_WEIGHT_COUNT; i++ ) {
+			int index = vertexIndex * MAX_WEIGHT_COUNT + i;
+			if( i < weightCount ) {
+				VertexWeight weight = weightList.get(i);
 				weights[index] = weight.getWeight();
 				boneIDs[index] = weight.getBoneID();
 			} else {
@@ -228,7 +224,7 @@ public class Mesh implements IAsset {
 			s.dipose();
 		}
 		
-		this.reset();
+		this.submeshes = new Submesh[0];
 		Logger.info(this, "Mesh deloaded.");
 	}
 	
@@ -255,7 +251,7 @@ public class Mesh implements IAsset {
 		return this.submeshes.length;
 	}
 	
-	public Skeleton DEBUGgetSkeleton() {
-		return this.DEBUGskeleton;
+	public Skeleton getSkeleton() {
+		return this.skeleton;
 	}
 }

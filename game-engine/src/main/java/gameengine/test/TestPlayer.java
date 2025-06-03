@@ -26,7 +26,6 @@ public class TestPlayer implements IGameObject, IHasTransform {
     
 	@Override
 	public void onCreate() {
-		//this.model.getTransform().possess(this);
 	}
 
 	@Override
@@ -60,10 +59,26 @@ public class TestPlayer implements IGameObject, IHasTransform {
 		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_1).hashCode(), (e) -> {
 			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-idle"));
+			this.getAnimator().restart();
+			this.getAnimator().play();
 		});
 		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_2).hashCode(), (e) -> {
 			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-run"));
+			this.getAnimator().restart();
+			this.getAnimator().play();
+		});
+		
+		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_3).hashCode(), (e) -> {
+			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-idle-smoke"));
+			this.getAnimator().restart();
+			this.getAnimator().play();
+		});
+		
+		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_4).hashCode(), (e) -> {
+			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-get-up-back"));
+			this.getAnimator().restart();
+			this.getAnimator().play();
 		});
 	}
 	

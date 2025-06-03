@@ -52,7 +52,7 @@ public class Animator implements ITickable, IRenderable {
 				this.setFrame(this.currentFrameIndex);
 			} else {
 				this.currentFrameIndex = Math.max(
-					0, Math.min(this.animation.getFrameCount(), this.currentFrameIndex)
+					0, Math.min(this.animation.getFrameCount() - 1, this.currentFrameIndex)
 				);
 				this.onFinish();
 			}
@@ -67,8 +67,7 @@ public class Animator implements ITickable, IRenderable {
 	}
 	
 	public void onFinish() {
-		//this.pause();
-		this.restart();
+		this.pause();
 	}
 	
 	public Animator restart() {

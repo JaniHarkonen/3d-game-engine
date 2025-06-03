@@ -85,12 +85,11 @@ public class Game implements ITickable {
 		this.worldScene.addObject(testScene);
 		
 			// Player
-		//model = new Model((Mesh) assets.get("mesh-player"));
 		model = new Model((Mesh) assets.get("mesh-player-skinned"));
 		model.setMaterial(Material.create((Texture) assets.get("tex-player")));
 		
 		TestPlayer testPlayer = new TestPlayer(model);
-		testPlayer.getTransform().setPosition(0, 0, 0);
+		testPlayer.getTransform().setPosition((float)Math.random()*10f, 0, (float)Math.random()*10f);
 		testPlayer.getTransform().setScale(0.025f, 0.025f, 0.025f);
 		testPlayer.getAnimator().setSpeed(1/30f);
 		testPlayer.getAnimator().setAnimation((Animation) assets.get("anim-player-idle"));
@@ -141,12 +140,10 @@ public class Game implements ITickable {
 		
 		preload.put(new Texture("tex-player", FileUtils.getResourcePath("texture/player_diff.png")));
 		
-		preload.put(new Mesh("mesh-man", FileUtils.getResourcePath("model/man.fbx")));
 		preload.put(new Mesh("mesh-box", FileUtils.getResourcePath("model/box.fbx")));
-		preload.put(new Mesh("mesh-player", FileUtils.getResourcePath("model/player.fbx")));
 		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
 		
-		Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player/newnew/PlayerMeshNew.fbx"), (
+		Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player.fbx"), (
 			Assimp.aiProcess_GenSmoothNormals |
 			Assimp.aiProcess_Triangulate | 
 			Assimp.aiProcess_FixInfacingNormals | 
@@ -155,13 +152,21 @@ public class Game implements ITickable {
 		));
 		preload.put(meshPlayerSkinned);
 		
-		Animation animPlayerIdle = new Animation("anim-player-idle", FileUtils.getResourcePath("model/player/newnew/IdleAnim.fbx"));
-		animPlayerIdle.DEBUGsetSkeleton(meshPlayerSkinned.DEBUGgetSkeleton());
+		Animation animPlayerIdle = new Animation("anim-player-idle", FileUtils.getResourcePath("anim/IdleAnim.fbx"));
+		animPlayerIdle.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
 		preload.put(animPlayerIdle);
 		
-		Animation animPlayerRun = new Animation("anim-player-run", FileUtils.getResourcePath("model/player/newnew/RunNormalNew.fbx"));
-		animPlayerRun.DEBUGsetSkeleton(meshPlayerSkinned.DEBUGgetSkeleton());
+		Animation animPlayerRun = new Animation("anim-player-run", FileUtils.getResourcePath("anim/RunAnim.fbx"));
+		animPlayerRun.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
 		preload.put(animPlayerRun);
+		
+		Animation animIdleSmoke = new Animation("anim-player-idle-smoke", FileUtils.getResourcePath("anim/IdleSmokeAnim.fbx"));
+		animIdleSmoke.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
+		preload.put(animIdleSmoke);
+		
+		Animation animGetUpFromBack = new Animation("anim-player-get-up-back", FileUtils.getResourcePath("anim/GetUpFromBackAnim.fbx"));
+		animGetUpFromBack.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
+		preload.put(animGetUpFromBack);
 		
 		this.assetManager.registerGroup(preload);
 		preload.load();
