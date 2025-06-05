@@ -1,4 +1,4 @@
-package gameengine.game.component;
+package gameengine.engine.renderer.component;
 
 import org.joml.Vector4f;
 

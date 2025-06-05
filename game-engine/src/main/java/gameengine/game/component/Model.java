@@ -8,6 +8,7 @@ import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
+import gameengine.engine.renderer.component.Material;
 import gameengine.logger.Logger;
 import gameengine.util.ArrayUtils;
 

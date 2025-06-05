@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.asset.Image;
 import gameengine.engine.renderer.CascadeShadowPass;
+import gameengine.engine.renderer.component.Material;
 import gameengine.engine.renderer.component.TextureGL;
-import gameengine.game.component.Material;
 import gameengine.logger.Logger;
 
 public class ShadowBuffer {
