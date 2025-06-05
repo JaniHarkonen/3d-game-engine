@@ -35,7 +35,7 @@ struct AmbientLight {
 
 struct DirectionalLight {
     vec3 color;
-    vec3 direction;
+    vec3 position;
     float intensity;
 };
 
@@ -217,7 +217,7 @@ vec4 applyDirectionalLight(
     	light.color, 
     	light.intensity, 
     	position, 
-    	normalize(light.direction), 
+    	normalize(light.position), 
     	normal
 	);
 }

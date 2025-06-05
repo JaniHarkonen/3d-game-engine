@@ -12,8 +12,10 @@ import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
 import gameengine.engine.renderer.uniform.object.IHasStruct;
 import gameengine.engine.renderer.uniform.object.drlight.SSDirectionalLight;
+import gameengine.game.component.IHasTransform;
+import gameengine.game.component.Transform;
 
-public class DirectionalLight implements IRenderable, IHasStruct {
+public class DirectionalLight implements IRenderable, IHasStruct, IHasTransform {
 	private class SceneRenderer implements IRenderStrategy<ScenePass> {
 		@Override
 		public void render(ScenePass renderPass) {
@@ -24,18 +26,18 @@ public class DirectionalLight implements IRenderable, IHasStruct {
 	private class CascadeShadowRenderer implements IRenderStrategy<CascadeShadowPass> {
 		@Override
 		public void render(CascadeShadowPass renderPass) {
-	        renderPass.directionalLight = new Vector3f(getDirection());
+	        renderPass.directionalLight = new Vector3f(getTransform().getPosition());
 		}
 	}
 
-    private Vector3f direction;
+    private Transform transform;
     private LightProperties lightProperties;
     private SSDirectionalLight directionalLightStruct;
     private SceneRenderer sceneRenderer;
     private CascadeShadowRenderer cascadeShadowRenderer;
 
-    public DirectionalLight(Vector3f color, float intensity, Vector3f direction) {
-        this.direction = direction;
+    public DirectionalLight(Vector3f color, float intensity) {
+        this.transform = new Transform();
         this.lightProperties = new LightProperties(color, intensity);
         this.directionalLightStruct = new SSDirectionalLight();
         this.sceneRenderer = new SceneRenderer();
@@ -48,31 +50,29 @@ public class DirectionalLight implements IRenderable, IHasStruct {
 		renderer.getCascadeShadowPass().preRender(this.cascadeShadowRenderer);
 		renderer.getScenePass().preRender(this.sceneRenderer);
 	}
-	
-    public void setDirection(Vector3f direction) {
-        this.direction = direction;
-    }
-
-    public Vector3f getDirection() {
-        return direction;
-    }
     
     public LightProperties getLightProperties() {
     	return this.lightProperties;
     }
     
-    public Vector3f getDirectionInCameraCoordinates() {
+    public Vector3f getPositionInCameraSpace() {
     	Matrix4f cameraMatrix = Engine.getGame().getWorldScene().getActiveCamera().getTransform().getAsMatrix();
-        Vector4f direction = new Vector4f(getDirection(), 0);
-        direction.mul(cameraMatrix);
-        return new Vector3f(direction.x, direction.y, direction.z);
+        Vector4f position = new Vector4f(this.transform.getPosition(), 0);
+        position.mul(cameraMatrix);
+        return new Vector3f(position.x, position.y, position.z);
     }
 
 	@Override
 	public SSDirectionalLight getAsStruct() {
 		this.directionalLightStruct.color = this.lightProperties.getColor();
 		this.directionalLightStruct.intensity = this.lightProperties.getIntensity();
-    	this.directionalLightStruct.direction = this.getDirectionInCameraCoordinates();
+    	this.directionalLightStruct.position = this.getPositionInCameraSpace();
 		return this.directionalLightStruct;
+	}
+
+
+	@Override
+	public Transform getTransform() {
+		return this.transform;
 	}
 }

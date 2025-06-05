@@ -8,4 +8,3 @@
 	-> fix for model and shadow buffer
 - there shouldn't be a cascade shadow list, instead use an array since this the cascade count should be fixed
 - use directional light as the source for cascade shadows
-- DirectionalLight should use a transform
