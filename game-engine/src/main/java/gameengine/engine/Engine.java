@@ -94,8 +94,8 @@ public class Engine {
 		Logger.setSystem(SYSTEM_RENDERER);
 		this.renderer.setup();
 		
-		//this.physics = new Physics();
-		//Logger.setSystem(SYSTEM_PHYSICS);
+		this.physics = new Physics();
+		Logger.setSystem(SYSTEM_PHYSICS);
 
 		this.game = new Game();
 		Logger.setSystem(SYSTEM_GAME);
@@ -116,8 +116,9 @@ public class Engine {
 					
 					Logger.setSystem(SYSTEM_GAME);
 					this.game.tick(1 / this.tickRate);
-					//Logger.setSystem(SYSTEM_PHYSICS);
-					//this.physics.tick();
+					
+					Logger.setSystem(SYSTEM_PHYSICS);
+					this.physics.tick(1 / this.tickRate);
 					
 					Logger.setSystem(SYSTEM_WINDOW);
 					this.window.update(deltaTime);

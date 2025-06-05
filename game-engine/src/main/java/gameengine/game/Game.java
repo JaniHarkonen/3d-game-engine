@@ -86,8 +86,9 @@ public class Game implements ITickable {
 		this.worldScene.addObject(testScene);
 		
 			// Player
-		model = new Model((Mesh) assets.get("mesh-player-skinned"));
-		model.setMaterial(Material.create((Texture) assets.get("tex-player")));
+		//model = new Model((Mesh) assets.get("mesh-player-skinned"));
+		model = new Model((Mesh) assets.get("mesh-car-test"));
+		model.setMaterial(Material.create((Texture) assets.get("tex-car-test")));
 		
 		TestPlayer testPlayer = new TestPlayer(model);
 		testPlayer.getTransform().setPosition((float)Math.random()*10f, 0, (float)Math.random()*10f);
@@ -131,8 +132,10 @@ public class Game implements ITickable {
 		preload.put(new Texture("tex-wood-planks1", FileUtils.getResourcePath("texture/outside/diffuse/wood_planks1_diff.png")));
 		
 		preload.put(new Texture("tex-player", FileUtils.getResourcePath("texture/player_diff.png")));
+		preload.put(new Texture("tex-car-test", FileUtils.getResourcePath("texture/placeholder.png")));
 		
 		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
+		preload.put(new Mesh("mesh-car-test", FileUtils.getResourcePath("model/CarTest.fbx")));
 		
 		Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player.fbx"), (
 			Assimp.aiProcess_GenSmoothNormals |

@@ -1,11 +1,17 @@
 package gameengine.test;
 
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
+
+import org.joml.Quaternionf;
 import org.lwjgl.glfw.GLFW;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
 import gameengine.engine.asset.Animation;
+import gameengine.engine.physics.Physics;
 import gameengine.engine.renderer.Renderer;
+import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.window.Input;
 import gameengine.game.component.Animator;
 import gameengine.game.component.IHasTransform;
@@ -15,12 +21,15 @@ import gameengine.game.component.Transform;
 public class TestPlayer implements IGameObject, IHasTransform {
 	
 	private Transform transform;
+	private Model model;
 	private Animator animator;
+	private float cameraMode;
 
     public TestPlayer(Model model) {
     	this.transform = new Transform();
     	model.getTransform().possess(this);
     	this.animator = new Animator(model);
+    	this.cameraMode = 6f;
     }
 
     
@@ -31,6 +40,10 @@ public class TestPlayer implements IGameObject, IHasTransform {
 	@Override
 	public void tick(float deltaTime) {
 		this.animator.tick(deltaTime);
+		Vector3f pos = Physics.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).origin;
+		Quat4f rot = Physics.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).getRotation(new Quat4f());
+		this.transform.setPosition(pos.x, pos.y, pos.z);
+		this.transform.getRotator().setQuaternion(new Quaternionf(rot.x, rot.y, rot.z, rot.w));
 		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_R).hashCode(), (e) -> {
 			this.getTransform().getRotator().rotateX(deltaTime);
@@ -56,7 +69,6 @@ public class TestPlayer implements IGameObject, IHasTransform {
 			this.getTransform().getRotator().rotateZ(-deltaTime);
 		});
 		
-		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_1).hashCode(), (e) -> {
 			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-idle"));
 			this.getAnimator().restart();
@@ -80,6 +92,15 @@ public class TestPlayer implements IGameObject, IHasTransform {
 			this.getAnimator().restart();
 			this.getAnimator().play();
 		});
+		
+		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_V).hashCode(), (e) -> {
+			this.cameraMode = (this.cameraMode == 18) ? 6 : this.cameraMode + 6;
+		});
+		
+		Camera cam = Engine.getGame().getWorldScene().getActiveCamera();
+		org.joml.Vector3f v = cam.getTransform().getRotator().getForwardVector(new org.joml.Vector3f()).mul(this.cameraMode).negate();
+		org.joml.Vector3f me = this.transform.getPosition();
+		cam.getTransform().setPosition(me.x + v.x, me.y + v.y + 3f, me.z + v.z);
 	}
 	
 	@Override

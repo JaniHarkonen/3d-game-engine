@@ -55,7 +55,6 @@ public class Rotator {
 	
 	public void setEulerAngles(float xAngle, float yAngle, float zAngle) {
 		this.angles.set(xAngle, yAngle, zAngle);
-		this.recalculate();
 	}
 	
 	public void setXAngle(float xAngle) {
@@ -72,6 +71,32 @@ public class Rotator {
 	
 	public void setQuaternion(Quaternionf quaternion) {
 		this.rotationQuaternion = quaternion;
+		float x = quaternion.x;
+		float y = quaternion.y;
+		float z = quaternion.z;
+		float w = quaternion.w;
+		
+		float roll, pitch, yaw;
+
+			// Roll (x-axis rotation)
+		float sinr_cosp = 2 * (w * x + y * z);
+		float cosr_cosp = 1 - 2 * (x * x + y * y);
+        roll = (float) Math.atan2(sinr_cosp, cosr_cosp);
+
+        	// Pitch (y-axis rotation)
+        float sinp = 2 * (w * y - z * x);
+        
+        /*if( Math.abs(sinp) >= 1 ) {
+        	pitch = (float) Math.copySign(Math.PI / 2, sinp); // use 90 degrees if out of range
+        } else {*/
+        	pitch = (float) Math.asin(sinp);
+        //}
+
+        	// Yaw (z-axis rotation)
+        float siny_cosp = 2 * (w * z + x * y);
+        float cosy_cosp = 1 - 2 * (y * y + z * z);
+        yaw = (float) Math.atan2(siny_cosp, cosy_cosp);
+        this.setEulerAngles(roll, pitch, yaw);
 	}
 	
 	public void setQuaternion(float x, float y, float z, float w) {
