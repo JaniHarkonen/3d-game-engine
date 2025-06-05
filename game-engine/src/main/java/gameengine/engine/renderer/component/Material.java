@@ -1,6 +1,7 @@
 package gameengine.engine.renderer.component;
 
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL46;
 
 import gameengine.engine.asset.ITexture;
 import gameengine.engine.asset.Texture;
@@ -85,7 +86,7 @@ public class Material {
 				break;
 			}
 			
-			texture.active(samplerOffset + i);
+			texture.active(GL46.GL_TEXTURE0 + samplerOffset + i);
 		}
 	}
 	

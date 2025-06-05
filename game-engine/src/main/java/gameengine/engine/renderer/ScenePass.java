@@ -27,6 +27,10 @@ public class ScenePass extends ARenderPass<ScenePass> {
 	public static final int MAX_POINT_LIGHT_COUNT = 5;
 	public static final int MAX_SPOT_LIGHT_COUNT = 5;
 	
+	public static final int SAMPLER_DIFFUSE = 0;
+	public static final int SAMPLER_SHADOW = 1;
+	public static final int SAMPLER_LAST = SAMPLER_SHADOW + CascadeShadowPass.SHADOW_MAP_CASCADE_COUNT;
+	
 	public final UAMatrix4f uProjection;
 	public final UAMatrix4f uCamera;
 	public final UAMatrix4f uObject;
@@ -108,17 +112,14 @@ public class ScenePass extends ARenderPass<ScenePass> {
     @Override
     public void execute() {
     	Logger.spam(this, "Rendering scene...");
-    	
-    	final int DIFFUSE_SAMPLER = 0;
-    	final int SHADOW_SAMPLER = 1;
         this.shaderProgram.bind();
-        this.uDiffuseSampler.update(DIFFUSE_SAMPLER);
+        this.uDiffuseSampler.update(SAMPLER_DIFFUSE);
         
         CascadeShadow[] cascadeShadows = this.cascadeShadowPass.getCascadeShadows();
         
 		for( int i = 0; i < cascadeShadows.length; i++ ) {
 			CascadeShadow cascadeShadow = cascadeShadows[i];
-			this.uShadowMaps.update(SHADOW_SAMPLER + i, i);
+			this.uShadowMaps.update(SAMPLER_SHADOW + i, i);
 			
 			SSCascadeShadow cascadeShadowStruct = new SSCascadeShadow();
 			cascadeShadowStruct.lightView = cascadeShadow.getLightViewMatrix();
@@ -126,7 +127,7 @@ public class ScenePass extends ARenderPass<ScenePass> {
 			this.uCascadeShadows.update(cascadeShadowStruct, i);
 		}
 		
-		this.cascadeShadowPass.getShadowBuffer().bind(GL46.GL_TEXTURE0 + SHADOW_SAMPLER);
+		this.cascadeShadowPass.getShadowBuffer().bind(SAMPLER_SHADOW);
         
         int preRenderCount = 0;
     	for( IRenderStrategy<ScenePass> renderer : this.preRender ) {

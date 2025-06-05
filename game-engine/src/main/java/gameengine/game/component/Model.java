@@ -1,7 +1,5 @@
 package gameengine.game.component;
 
-import org.lwjgl.opengl.GL46;
-
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
@@ -23,11 +21,14 @@ public class Model implements IRenderable {
 				Material material = materials[i];
 				
 				if( material == null ) {
-					Logger.spam(this, "Warning: Rendering a mesh with no material for its submesh at index " + i + "!");
+					Logger.spam(
+						this, 
+						"Warning: Rendering a mesh with no material for its submesh at index " + i + "!"
+					);
 					continue;
 				}
 				
-				material.bind(GL46.GL_TEXTURE0);
+				material.bind(ScenePass.SAMPLER_DIFFUSE);
 				renderPass.uMaterial.update(material.getAsStruct());
 				mesh.renderSubmesh(i);
 			}
