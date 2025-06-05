@@ -59,9 +59,7 @@ public class ShadowBuffer {
 	}
 	
 	public void bind(int firstTextureIndex) {
-		for( int i = 0; i < CascadeShadowPass.SHADOW_MAP_CASCADE_COUNT; i++ ) {
-			this.depthMaterial.getTexture(i).active(firstTextureIndex + i);
-		}
+		this.depthMaterial.bind(firstTextureIndex);
 	}
 	
 	public void dispose() {
@@ -71,6 +69,7 @@ public class ShadowBuffer {
 		
 		GL46.glDeleteFramebuffers(this.fboDepthMap);
 		this.fboDepthMap = -1;
+		this.depthMaterial = null;
 		Logger.info(this, "Cascade shadow buffer disposed.");
 	}
 	

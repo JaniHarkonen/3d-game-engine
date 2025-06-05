@@ -23,6 +23,32 @@ import gameengine.util.ArrayUtils;
 import gameengine.util.GeometryUtils;
 
 public class Mesh implements IAsset {
+	private class VertexWeight {
+
+		private int boneID;
+		private int vertexID;
+		private float weight;
+		
+		public VertexWeight(int boneID, int vertexID, float weight) {
+			this.boneID = boneID;
+			this.vertexID = vertexID;
+			this.weight = weight;
+		}
+		
+		
+		public int getBoneID() {
+			return this.boneID;
+		}
+		
+		public int getVertexID() {
+			return this.vertexID;
+		}
+		
+		public float getWeight() {
+			return this.weight;
+		}
+	}
+	
 	public static final int DEFAULT_IMPORT_FLAGS = (
 		Assimp.aiProcess_GenSmoothNormals |
 		Assimp.aiProcess_Triangulate | 
@@ -78,7 +104,7 @@ public class Mesh implements IAsset {
 		
 		Logger.info(this, "Found " + submeshCount + " submeshes.");
 		
-		List<Bone> boneList = new ArrayList<>();
+		List<Skeleton.Bone> boneList = new ArrayList<>();
 		PointerBuffer aiMeshBuffer = aiScene.mMeshes();
 		
 		for( int i = 0; i < submeshCount; i++ ) {
@@ -156,7 +182,7 @@ public class Mesh implements IAsset {
 	
 	
 	private Map<Integer, List<VertexWeight>> generateWeightSet(
-		List<Bone> boneList, PointerBuffer aiBoneBuffer
+		List<Skeleton.Bone> boneList, PointerBuffer aiBoneBuffer
 	) {
 		Map<Integer, List<VertexWeight>> weightSet = new HashMap<>();
 		
@@ -167,7 +193,7 @@ public class Mesh implements IAsset {
 		while( aiBoneBuffer.remaining() > 0 ) {
 			AIBone aiBone = AIBone.create(aiBoneBuffer.get());
 			int boneID = boneList.size();
-			Bone bone = new Bone(
+			Skeleton.Bone bone = new Skeleton.Bone(
 				boneID, 
 				aiBone.mName().dataString(), 
 				GeometryUtils.aiMatrix4ToMatrix4f(aiBone.mOffsetMatrix())

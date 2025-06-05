@@ -73,6 +73,22 @@ public class Material {
 		this.materialStruct.reflectance = this.reflectance;
 	}
 	
+	public void bind(int samplerOffset) {
+		for( int i = 0; i < textures.length; i++ ) {
+			ITexture texture = textures[i];
+			
+			if( texture == null ) {
+				if( i == 0 ) {
+					Logger.spam(this, "Warning: Binding a material with no textures! Material index: " + i + ".");
+				}
+				
+				break;
+			}
+			
+			texture.active(samplerOffset + i);
+		}
+	}
+	
 	public void setTexture(int index, Texture texture) {
 		this.textures[index] = texture;
 	}

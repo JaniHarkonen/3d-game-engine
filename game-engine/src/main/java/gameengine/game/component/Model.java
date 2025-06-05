@@ -2,7 +2,6 @@ package gameengine.game.component;
 
 import org.lwjgl.opengl.GL46;
 
-import gameengine.engine.asset.ITexture;
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
@@ -27,23 +26,7 @@ public class Model implements IRenderable {
 					continue;
 				}
 				
-				ITexture[] textures = material.getTextures();
-				
-				if( textures.length == 0 ) {
-					Logger.spam(this, "Warning: Rendering a material with no textures! Material index: " + i + ".");
-					continue;
-				}
-				
-				for( int j = 0; j < textures.length; j++ ) {
-					ITexture texture = textures[j];
-					
-					if( texture == null ) {
-						break;
-					}
-					
-					texture.active(GL46.GL_TEXTURE0 + j);
-				}
-				
+				material.bind(GL46.GL_TEXTURE0);
 				renderPass.uMaterial.update(material.getAsStruct());
 				mesh.renderSubmesh(i);
 			}

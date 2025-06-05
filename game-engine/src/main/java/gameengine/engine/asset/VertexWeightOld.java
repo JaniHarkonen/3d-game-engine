@@ -1,12 +1,12 @@
 package gameengine.engine.asset;
 
-class VertexWeight {
+class VertexWeightOld {
 
 	private int boneID;
 	private int vertexID;
 	private float weight;
 	
-	public VertexWeight(int boneID, int vertexID, float weight) {
+	public VertexWeightOld(int boneID, int vertexID, float weight) {
 		this.boneID = boneID;
 		this.vertexID = vertexID;
 		this.weight = weight;
