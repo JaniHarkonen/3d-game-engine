@@ -2,6 +2,7 @@ package gameengine.game.component;
 
 import gameengine.engine.ITickable;
 import gameengine.engine.asset.Animation;
+import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
 import gameengine.engine.renderer.Renderer;
@@ -15,6 +16,14 @@ public class Animator implements ITickable, IRenderable {
 			renderPass.uBoneMatrices.update(getCurrentFrame().getBoneTransforms());
 		}
 	}
+	
+	private class CascadeShadowRenderer implements IRenderStrategy<CascadeShadowPass> {
+
+		@Override
+		public void render(CascadeShadowPass renderPass) {
+			renderPass.uBoneMatrices.update(getCurrentFrame().getBoneTransforms());
+		}
+	}
 
 	private Animation animation;
 	private Model animatedModel;
@@ -24,6 +33,7 @@ public class Animator implements ITickable, IRenderable {
 	private int direction;	// Must be 1 or -1
 	private boolean isPaused;
 	private SceneRenderer sceneRenderer;
+	private CascadeShadowRenderer cascadeShadowRenderer;
 	
 	public Animator(Model animatedModel) {
 		this.animation = null;
@@ -34,6 +44,7 @@ public class Animator implements ITickable, IRenderable {
 		this.direction = 1;
 		this.isPaused = false;
 		this.sceneRenderer = new SceneRenderer();
+		this.cascadeShadowRenderer = new CascadeShadowRenderer();
 	}
 	
 	
@@ -62,6 +73,7 @@ public class Animator implements ITickable, IRenderable {
 	
 	@Override
 	public void submitToRenderer(Renderer renderer) {
+		renderer.getCascadeShadowPass().submit(this.cascadeShadowRenderer);
 		renderer.getScenePass().submit(this.sceneRenderer);
 		this.animatedModel.submitToRenderer(renderer);
 	}

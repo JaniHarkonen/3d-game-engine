@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import gameengine.engine.Engine;
+import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
 import gameengine.engine.renderer.Renderer;
@@ -19,22 +20,32 @@ public class DirectionalLight implements IRenderable, IHasStruct {
 	        renderPass.uDirectionalLight.update(getAsStruct());
 		}
 	}
+	
+	private class CascadeShadowRenderer implements IRenderStrategy<CascadeShadowPass> {
+		@Override
+		public void render(CascadeShadowPass renderPass) {
+	        renderPass.directionalLight = new Vector3f(getDirection());
+		}
+	}
 
     private Vector3f direction;
     private LightProperties lightProperties;
     private SSDirectionalLight directionalLightStruct;
     private SceneRenderer sceneRenderer;
+    private CascadeShadowRenderer cascadeShadowRenderer;
 
     public DirectionalLight(Vector3f color, float intensity, Vector3f direction) {
         this.direction = direction;
         this.lightProperties = new LightProperties(color, intensity);
         this.directionalLightStruct = new SSDirectionalLight();
         this.sceneRenderer = new SceneRenderer();
+        this.cascadeShadowRenderer = new CascadeShadowRenderer();
     }
  
 
 	@Override
 	public void submitToRenderer(Renderer renderer) {
+		renderer.getCascadeShadowPass().preRender(this.cascadeShadowRenderer);
 		renderer.getScenePass().preRender(this.sceneRenderer);
 	}
 	

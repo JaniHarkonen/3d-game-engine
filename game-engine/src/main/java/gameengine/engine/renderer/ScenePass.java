@@ -2,12 +2,15 @@ package gameengine.engine.renderer;
 
 import org.lwjgl.opengl.GL46;
 
+import gameengine.engine.renderer.cshadow.CascadeShadow;
 import gameengine.engine.renderer.shader.Shader;
 import gameengine.engine.renderer.shader.ShaderProgram;
 import gameengine.engine.renderer.uniform.UAMatrix4f;
 import gameengine.engine.renderer.uniform.UArray;
 import gameengine.engine.renderer.uniform.UInteger1;
 import gameengine.engine.renderer.uniform.object.amlight.UAmbientLight;
+import gameengine.engine.renderer.uniform.object.cshadow.SSCascadeShadow;
+import gameengine.engine.renderer.uniform.object.cshadow.UCascadeShadow;
 import gameengine.engine.renderer.uniform.object.drlight.UDirectionalLight;
 import gameengine.engine.renderer.uniform.object.material.UMaterial;
 import gameengine.engine.renderer.uniform.object.ptlight.SSPointLight;
@@ -34,6 +37,10 @@ public class ScenePass extends ARenderPass<ScenePass> {
 	public final UDirectionalLight uDirectionalLight;
 	public final UArray<SSPointLight> uPointLights;
 	public final UArray<SSSpotLight> uSpotLights;
+	public final UArray<Integer> uShadowMaps;
+	public final UArray<SSCascadeShadow> uCascadeShadows;
+	
+	CascadeShadowPass cascadeShadowPass;
 
     public ScenePass() {
     	super();
@@ -53,14 +60,28 @@ public class ScenePass extends ARenderPass<ScenePass> {
 			"uSpotLights", new USpotLight[MAX_SPOT_LIGHT_COUNT]
 		);
     	this.uSpotLights.fill(() -> new USpotLight());
+    	this.uShadowMaps = new UArray<>(
+			"uShadowMaps", new UInteger1[CascadeShadowPass.SHADOW_MAP_CASCADE_COUNT]
+		);
+    	this.uShadowMaps.fill(() -> new UInteger1());
+    	this.uCascadeShadows = new UArray<>(
+			"uCascadeShadows", new UCascadeShadow[CascadeShadowPass.SHADOW_MAP_CASCADE_COUNT]
+		);
+    	this.uCascadeShadows.fill(() -> new UCascadeShadow());
+    	
+    	this.cascadeShadowPass = null;
     }
     
     
     @Override
     public void setup() {
     	Logger.info(this, "Scene render pass setup started...");
-    	Shader sceneVertex = new Shader(VERTEX_SHADER, FileUtils.getResourcePath("shader/scene.vert"), GL46.GL_VERTEX_SHADER);
-    	Shader sceneFragment = new Shader(FRAGMENT_SHADER, FileUtils.getResourcePath("shader/scene.frag"), GL46.GL_FRAGMENT_SHADER);
+    	Shader sceneVertex = new Shader(
+			VERTEX_SHADER, FileUtils.getResourcePath("shader/scene/scene.vert"), GL46.GL_VERTEX_SHADER
+		);
+    	Shader sceneFragment = new Shader(
+			FRAGMENT_SHADER, FileUtils.getResourcePath("shader/scene/scene.frag"), GL46.GL_FRAGMENT_SHADER
+		);
     	
     	this.shaderProgram = new ShaderProgram();
     	this.shaderProgram.addShader(sceneVertex);
@@ -78,26 +99,43 @@ public class ScenePass extends ARenderPass<ScenePass> {
 			this.uAmbientLight,
 			this.uDirectionalLight,
 			this.uPointLights,
-			this.uSpotLights
+			this.uSpotLights,
+			this.uShadowMaps,
+			this.uCascadeShadows
 		);
     }
 
     @Override
     public void execute() {
     	Logger.spam(this, "Rendering scene...");
+    	
+    	final int DIFFUSE_SAMPLER = 0;
+    	final int SHADOW_SAMPLER = 1;
         this.shaderProgram.bind();
-        this.uDiffuseSampler.update(0);
+        this.uDiffuseSampler.update(DIFFUSE_SAMPLER);
         
-        IRenderStrategy<ScenePass> renderer;
+        CascadeShadow[] cascadeShadows = this.cascadeShadowPass.getCascadeShadows();
+        
+		for( int i = 0; i < cascadeShadows.length; i++ ) {
+			CascadeShadow cascadeShadow = cascadeShadows[i];
+			this.uShadowMaps.update(SHADOW_SAMPLER + i, i);
+			
+			SSCascadeShadow cascadeShadowStruct = new SSCascadeShadow();
+			cascadeShadowStruct.lightView = cascadeShadow.getLightViewMatrix();
+			cascadeShadowStruct.splitDistance = cascadeShadow.getSplitDistance();
+			this.uCascadeShadows.update(cascadeShadowStruct, i);
+		}
+		
+		this.cascadeShadowPass.getShadowBuffer().bind(GL46.GL_TEXTURE0 + SHADOW_SAMPLER);
+        
         int preRenderCount = 0;
-        
-        while( (renderer = this.preRender.poll()) != null ) {
+    	for( IRenderStrategy<ScenePass> renderer : this.preRender ) {
         	renderer.render(this);
         	preRenderCount++;
         }
         
         int renderCount = 0;
-        while( (renderer = this.render.poll()) != null ) {
+    	for( IRenderStrategy<ScenePass> renderer : this.render ) {	
         	renderer.render(this);
         	renderCount++;
         }

@@ -1,29 +1,29 @@
 package gameengine.engine.renderer;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 import gameengine.engine.renderer.shader.ShaderProgram;
 import gameengine.logger.Logger;
 
 abstract class ARenderPass<T> {
-	protected Queue<IRenderStrategy<T>> preRender;
-	protected Queue<IRenderStrategy<T>> render;
+	protected List<IRenderStrategy<T>> preRender;
+	protected List<IRenderStrategy<T>> render;
 	protected ShaderProgram shaderProgram;
 	
 	protected ARenderPass() {
-		this.preRender = new LinkedList<>();
-		this.render = new LinkedList<>();
+		this.preRender = new ArrayList<>();
+		this.render = new ArrayList<>();
 		this.shaderProgram = null;
 	}
 	
 	
 	abstract void setup();
 	
-	/*void reset() {
+	protected void reset() {
 		this.preRender.clear();
 		this.render.clear();
-	}*/
+	}
 	
 	public void preRender(IRenderStrategy<T> renderer) {
 		if( renderer == null ) {

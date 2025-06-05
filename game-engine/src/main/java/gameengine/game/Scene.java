@@ -22,7 +22,7 @@ public class Scene implements IScene, ITickable {
 	public Scene() {
 		this.objects = new ArrayList<>();
 		this.activeCamera = null;
-		this.ambientLight = new AmbientLight(new Vector3f(1, 1, 1), 0.25f);
+		this.ambientLight = new AmbientLight(new Vector3f(1, 1, 1), 0.5f);
 		this.directionalLight = new DirectionalLight(new Vector3f(1, 1, 1), 1.0f, new Vector3f(100, 100.0f, 100));
 	}
 

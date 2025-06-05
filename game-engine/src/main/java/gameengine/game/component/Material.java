@@ -2,6 +2,7 @@ package gameengine.game.component;
 
 import org.joml.Vector4f;
 
+import gameengine.engine.asset.ITexture;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.uniform.object.material.SSMaterial;
@@ -29,21 +30,25 @@ public class Material {
 		return material;
 	}
 
-	private Texture[] textures;
+	private ITexture[] textures;
 	private Vector4f ambientColor;
 	private Vector4f diffuseColor;
 	private Vector4f specularColor;
 	private float reflectance;
 	private SSMaterial materialStruct;
 	
-	public Material() {
-		this.textures = new Texture[Renderer.MAX_TEXTURE_COUNT];
+	public Material(ITexture[] textures) {
+		this.textures = textures;
 		this.ambientColor = Material.DEFAULT_AMBIENT_COLOR;
 		this.diffuseColor = Material.DEFAULT_DIFFUSE_COLOR;
 		this.specularColor = Material.DEFAULT_SPECULAR_COLOR;
 		this.reflectance = 0.0f;
 		this.materialStruct = new SSMaterial();
 		this.updateStruct();
+	}
+	
+	public Material() {
+		this(new Texture[Renderer.MAX_TEXTURE_COUNT]);
 	}
 	
 	public Material(Material src) {
@@ -74,29 +79,25 @@ public class Material {
 	
 	public void setAmbientColor(Vector4f ambientColor) {
 		this.ambientColor = ambientColor;
-		this.updateStruct();
 	}
 	
 	public void setDiffuseColor(Vector4f diffuseColor) {
 		this.diffuseColor = diffuseColor;
-		this.updateStruct();
 	}
 	
 	public void setSpecularColor(Vector4f specularColor) {
 		this.specularColor = specularColor;
-		this.updateStruct();
 	}
 	
 	public void setReflectance(float reflectance) {
 		this.reflectance = reflectance;
-		this.updateStruct();
 	}
 	
-	public Texture[] getTextures() {
+	public ITexture[] getTextures() {
 		return this.textures;
 	}
 	
-	public Texture getTexture(int index) {
+	public ITexture getTexture(int index) {
 		return this.textures[index];
 	}
 	
@@ -117,6 +118,7 @@ public class Material {
 	}
 	
 	public SSMaterial getAsStruct() {
+		this.updateStruct();
 		return this.materialStruct;
 	}
 }

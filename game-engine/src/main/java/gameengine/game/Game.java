@@ -80,6 +80,7 @@ public class Game implements ITickable {
     		Material.create((Texture) assets.get("tex-barrel-trash"))
     	);
         
+        	// Outside
         TestModel testScene = new TestModel(model);
         testScene.getTransform().setScale(0.01f, 0.01f, 0.01f);
 		this.worldScene.addObject(testScene);
@@ -94,15 +95,6 @@ public class Game implements ITickable {
 		testPlayer.getAnimator().setSpeed(1/30f);
 		testPlayer.getAnimator().setAnimation((Animation) assets.get("anim-player-idle"));
 		this.worldScene.addObject(testPlayer);
-		
-			// Box
-		model = new Model((Mesh) assets.get("mesh-box"));
-		model.setMaterial(Material.create((Texture) assets.get("tex-snow")));
-		
-		TestModel testBox = new TestModel(model);
-		testBox.getTransform().setScale(0.01f, 0.01f, 0.01f);
-		testBox.getTransform().setPosition(0, 5, 0);
-		//this.worldScene.addObject(testBox);
 		
 		Logger.info(this, "Game setup done!");
 	}
@@ -140,7 +132,6 @@ public class Game implements ITickable {
 		
 		preload.put(new Texture("tex-player", FileUtils.getResourcePath("texture/player_diff.png")));
 		
-		preload.put(new Mesh("mesh-box", FileUtils.getResourcePath("model/box.fbx")));
 		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
 		
 		Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player.fbx"), (

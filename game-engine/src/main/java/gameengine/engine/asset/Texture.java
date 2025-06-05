@@ -7,23 +7,20 @@ import org.lwjgl.opengl.GL46;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
+import gameengine.engine.renderer.component.TextureGL;
 import gameengine.logger.Logger;
 
-public class Texture implements IAsset {
+public class Texture implements ITexture, IAsset {
     private final String name;
     private String path;
-    private int graphicsID;
-    private int width;
-    private int height;
-    private ByteBuffer image;
+    private Image image;
+    private TextureGL graphics;
 
     public Texture(String name, String path) {
         this.name = name;
         this.path = path;
-        this.graphicsID = -1;
-        this.width = -1;
-        this.height = -1;
         this.image = null;
+        this.graphics = null;
     }
     
     
@@ -44,49 +41,31 @@ public class Texture implements IAsset {
             	return;
             }
             
-            this.width = bufferWidth.get();
-            this.height = bufferHeight.get();
-            this.image = bufferImage;
-            this.generate();
+            this.image = new Image(bufferImage, bufferWidth.get(), bufferHeight.get());
+            this.graphics = new TextureGL(this.image, GL46.GL_RGBA, GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE, true);
+            this.graphics.generate();
+            
+            Logger.info(this, "Texture loaded.");
         }
-        
-        Logger.info(this, "Texture loaded.");
 	}
 	
 	@Override
 	public void deload() {
-		GL46.glDeleteTextures(this.graphicsID);
-		STBImage.stbi_image_free(this.image);
+		this.graphics.dispose();
+		this.image.dispose();
     	this.image = null;
-    	this.graphicsID = -1;
     	Logger.info(this, "Deloaded texture '" + this.name + "'.");
 	}
     
-    private void generate() {
-        this.graphicsID = GL46.glGenTextures();
-
-        this.bind();
-        GL46.glPixelStorei(GL46.GL_UNPACK_ALIGNMENT, 1);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_LINEAR);
-        GL46.glTexImage2D(
-    		GL46.GL_TEXTURE_2D, 
-    		0, 
-    		GL46.GL_RGBA, 
-    		this.width, 
-    		this.height, 
-    		0, 
-    		GL46.GL_RGBA, 
-    		GL46.GL_UNSIGNED_BYTE, 
-    		this.image
-		);
-        
-        GL46.glGenerateMipmap(GL46.GL_TEXTURE_2D);
-    }
-
-    public void bind() {
-    	GL46.glBindTexture(GL46.GL_TEXTURE_2D, this.graphicsID);
-    }
+	@Override
+	public void bind() {
+		this.graphics.bind();
+	}
+	
+	@Override
+	public void active(int index) {
+		this.graphics.active(index);
+	}
     
     @Override
     public String getName() {
@@ -96,5 +75,9 @@ public class Texture implements IAsset {
     @Override
     public String getPath() {
     	return this.path;
+    }
+    
+    public Image getImage() {
+    	return this.image;
     }
 }
