@@ -1,4 +1,4 @@
-package gameengine.game.component;
+package gameengine.engine.physics;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

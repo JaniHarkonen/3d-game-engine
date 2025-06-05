@@ -9,14 +9,14 @@ import org.lwjgl.glfw.GLFW;
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
 import gameengine.engine.asset.Animation;
-import gameengine.engine.physics.Physics;
+import gameengine.engine.physics.IHasTransform;
+import gameengine.engine.physics.PhysicsScene;
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.window.Input;
 import gameengine.game.component.Animator;
-import gameengine.game.component.IHasTransform;
 import gameengine.game.component.Model;
-import gameengine.game.component.Transform;
 
 public class TestPlayer implements IGameObject, IHasTransform {
 	
@@ -40,8 +40,8 @@ public class TestPlayer implements IGameObject, IHasTransform {
 	@Override
 	public void tick(float deltaTime) {
 		this.animator.tick(deltaTime);
-		Vector3f pos = Physics.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).origin;
-		Quat4f rot = Physics.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).getRotation(new Quat4f());
+		Vector3f pos = PhysicsScene.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).origin;
+		Quat4f rot = PhysicsScene.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).getRotation(new Quat4f());
 		this.transform.setPosition(pos.x, pos.y, pos.z);
 		this.transform.getRotator().setQuaternion(new Quaternionf(rot.x, rot.y, rot.z, rot.w));
 		

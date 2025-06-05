@@ -4,12 +4,12 @@ import org.joml.Vector3f;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
+import gameengine.engine.physics.IHasTransform;
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.renderer.component.Projection;
 import gameengine.engine.window.Window;
-import gameengine.game.component.IHasTransform;
-import gameengine.game.component.Transform;
 
 public class TestCamera implements IGameObject, IHasTransform {	
 	private Camera camera;

@@ -1,6 +1,6 @@
 package gameengine.engine;
 
-import gameengine.engine.physics.Physics;
+import gameengine.engine.physics.PhysicsScene;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.window.Window;
 import gameengine.game.Game;
@@ -44,7 +44,7 @@ public class Engine {
 		return instance.renderer;
 	}
 	
-	public static Physics getPhysics() {
+	public static PhysicsScene getPhysics() {
 		return instance.physics;
 	}
 	
@@ -64,7 +64,7 @@ public class Engine {
 	private Window window;
 	private Renderer renderer;
 	private Game game;
-	private Physics physics;
+	private PhysicsScene physics;
 	private float tickRate;
 	private int tickRateRealized;
 	
@@ -94,7 +94,7 @@ public class Engine {
 		Logger.setSystem(SYSTEM_RENDERER);
 		this.renderer.setup();
 		
-		this.physics = new Physics();
+		this.physics = new PhysicsScene();
 		Logger.setSystem(SYSTEM_PHYSICS);
 
 		this.game = new Game();

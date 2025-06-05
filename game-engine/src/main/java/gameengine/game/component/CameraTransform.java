@@ -1,5 +1,7 @@
 package gameengine.game.component;
 
+import gameengine.engine.physics.Transform;
+
 /**
  * This is a special transform class derived from the generic Transform.
  * CameraTransform should only be used by the camera, as its transform

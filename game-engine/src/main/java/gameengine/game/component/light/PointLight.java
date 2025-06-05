@@ -6,14 +6,14 @@ import org.lwjgl.glfw.GLFW;
 
 import gameengine.engine.Engine;
 import gameengine.engine.IGameObject;
+import gameengine.engine.physics.IHasTransform;
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
 import gameengine.engine.renderer.uniform.object.IHasStruct;
 import gameengine.engine.renderer.uniform.object.ptlight.SSPointLight;
 import gameengine.engine.window.Input;
-import gameengine.game.component.IHasTransform;
-import gameengine.game.component.Transform;
 
 public class PointLight implements IGameObject, IHasStruct, IHasTransform {
 	private class SceneRenderer implements IRenderStrategy<ScenePass> {

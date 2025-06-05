@@ -1,12 +1,12 @@
 package gameengine.engine.renderer.component;
 
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
 import gameengine.game.component.CameraTransform;
-import gameengine.game.component.Transform;
 
 public class Camera implements IRenderable {
 	private class SceneRenderer implements IRenderStrategy<ScenePass> {

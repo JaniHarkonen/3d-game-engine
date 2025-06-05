@@ -1,6 +1,7 @@
 package gameengine.game.component;
 
 import gameengine.engine.asset.Mesh;
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
