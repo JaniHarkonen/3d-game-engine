@@ -8,5 +8,5 @@ public class SSDirectionalLight implements IShaderStruct {
 
 	public Vector3f color;
 	public float intensity;
-    public Vector3f direction;
+    public Vector3f position;
 }

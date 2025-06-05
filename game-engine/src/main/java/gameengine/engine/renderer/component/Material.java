@@ -1,7 +1,9 @@
-package gameengine.game.component;
+package gameengine.engine.renderer.component;
 
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL46;
 
+import gameengine.engine.asset.ITexture;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.uniform.object.material.SSMaterial;
@@ -29,21 +31,25 @@ public class Material {
 		return material;
 	}
 
-	private Texture[] textures;
+	private ITexture[] textures;
 	private Vector4f ambientColor;
 	private Vector4f diffuseColor;
 	private Vector4f specularColor;
 	private float reflectance;
 	private SSMaterial materialStruct;
 	
-	public Material() {
-		this.textures = new Texture[Renderer.MAX_TEXTURE_COUNT];
+	public Material(ITexture[] textures) {
+		this.textures = textures;
 		this.ambientColor = Material.DEFAULT_AMBIENT_COLOR;
 		this.diffuseColor = Material.DEFAULT_DIFFUSE_COLOR;
 		this.specularColor = Material.DEFAULT_SPECULAR_COLOR;
 		this.reflectance = 0.0f;
 		this.materialStruct = new SSMaterial();
 		this.updateStruct();
+	}
+	
+	public Material() {
+		this(new Texture[Renderer.MAX_TEXTURE_COUNT]);
 	}
 	
 	public Material(Material src) {
@@ -68,35 +74,47 @@ public class Material {
 		this.materialStruct.reflectance = this.reflectance;
 	}
 	
+	public void bind(int samplerOffset) {
+		for( int i = 0; i < textures.length; i++ ) {
+			ITexture texture = textures[i];
+			
+			if( texture == null ) {
+				if( i == 0 ) {
+					Logger.spam(this, "Warning: Binding a material with no textures! Material index: " + i + ".");
+				}
+				
+				break;
+			}
+			
+			texture.active(GL46.GL_TEXTURE0 + samplerOffset + i);
+		}
+	}
+	
 	public void setTexture(int index, Texture texture) {
 		this.textures[index] = texture;
 	}
 	
 	public void setAmbientColor(Vector4f ambientColor) {
 		this.ambientColor = ambientColor;
-		this.updateStruct();
 	}
 	
 	public void setDiffuseColor(Vector4f diffuseColor) {
 		this.diffuseColor = diffuseColor;
-		this.updateStruct();
 	}
 	
 	public void setSpecularColor(Vector4f specularColor) {
 		this.specularColor = specularColor;
-		this.updateStruct();
 	}
 	
 	public void setReflectance(float reflectance) {
 		this.reflectance = reflectance;
-		this.updateStruct();
 	}
 	
-	public Texture[] getTextures() {
+	public ITexture[] getTextures() {
 		return this.textures;
 	}
 	
-	public Texture getTexture(int index) {
+	public ITexture getTexture(int index) {
 		return this.textures[index];
 	}
 	
@@ -117,6 +135,7 @@ public class Material {
 	}
 	
 	public SSMaterial getAsStruct() {
+		this.updateStruct();
 		return this.materialStruct;
 	}
 }

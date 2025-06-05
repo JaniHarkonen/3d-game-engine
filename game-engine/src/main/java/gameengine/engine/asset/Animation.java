@@ -1,5 +1,6 @@
 package gameengine.engine.asset;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +21,42 @@ import gameengine.logger.Logger;
 import gameengine.util.GeometryUtils;
 
 public class Animation implements IAsset {
+	
+	/************************* Node-class **************************/
+	private class Node {
+		private String nodeName;
+		//private Node parent;
+		private Matrix4f nodeTransform;
+		private List<Node> children;
+		
+		public Node(String nodeName, Node parent, Matrix4f nodeTransform) {
+			this.nodeName = nodeName;
+			//this.parent = parent;
+			this.nodeTransform = nodeTransform;
+			this.children = new ArrayList<>();
+		}
+		
+		
+		public void addChild(Node child) {
+			this.children.add(child);
+		}
+		
+		public String getName() {
+			return this.nodeName;
+		}
+		/*
+		public Node getParentNode() {
+			return this.parent;
+		}*/
+		
+		public Matrix4f getNodeTransform() {
+			return this.nodeTransform;
+		}
+		
+		public List<Node> getChildren() {
+			return this.children;
+		}
+	}
 	
 	/************************* Frame-class **************************/
 	
@@ -149,7 +186,7 @@ public class Animation implements IAsset {
 	
 	private void buildFrameTransforms(
 		AIAnimation aiAnimation, 
-		List<Bone> boneList, 
+		List<Skeleton.Bone> boneList, 
 		Animation.Frame frame, 
 		int frameIndex, 
 		Node node, 
@@ -167,7 +204,7 @@ public class Animation implements IAsset {
 		
 			// Apply node's transform to each Bone of the Assimp scene
 		Matrix4f nodeGlobalTransform = new Matrix4f(parentTransform).mul(nodeTransform);
-		for( Bone bone : boneList ) {
+		for( Skeleton.Bone bone : boneList ) {
 			if( bone.getName().equals(nodeName) ) {
 				Matrix4f boneTransform = new Matrix4f(globalInverseTransform)
 				.mul(nodeGlobalTransform)

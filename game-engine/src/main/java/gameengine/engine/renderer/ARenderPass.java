@@ -20,7 +20,7 @@ abstract class ARenderPass<T> {
 	
 	abstract void setup();
 	
-	void reset() {
+	protected void reset() {
 		this.preRender.clear();
 		this.render.clear();
 	}

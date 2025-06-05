@@ -1,13 +1,12 @@
 package gameengine.game.component;
 
-import org.lwjgl.opengl.GL46;
-
 import gameengine.engine.asset.Mesh;
-import gameengine.engine.asset.Texture;
+import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
+import gameengine.engine.renderer.component.Material;
 import gameengine.logger.Logger;
 import gameengine.util.ArrayUtils;
 
@@ -22,29 +21,27 @@ public class Model implements IRenderable {
 				Material material = materials[i];
 				
 				if( material == null ) {
-					Logger.spam(this, "Warning: Rendering a mesh with no material for its submesh at index " + i + "!");
+					Logger.spam(
+						this, 
+						"Warning: Rendering a mesh with no material for its submesh at index " + i + "!"
+					);
 					continue;
 				}
 				
-				Texture[] textures = material.getTextures();
-				
-				if( textures.length == 0 ) {
-					Logger.spam(this, "Warning: Rendering a material with no textures! Material index: " + i + ".");
-					continue;
-				}
-				
-				for( int j = 0; j < textures.length; j++ ) {
-					Texture texture = textures[j];
-					
-					if( texture == null ) {
-						break;
-					}
-					
-					GL46.glActiveTexture(GL46.GL_TEXTURE0 + j);
-					texture.bind();
-				}
-				
+				material.bind(ScenePass.SAMPLER_DIFFUSE);
 				renderPass.uMaterial.update(material.getAsStruct());
+				mesh.renderSubmesh(i);
+			}
+		}
+	}
+	
+	private class CascadeShadowRenderer implements IRenderStrategy<CascadeShadowPass> {
+		
+		@Override
+		public void render(CascadeShadowPass renderPass) {
+			renderPass.uObject.update(getTransform().getAsMatrix());
+			
+			for( int i = 0; i < mesh.getSubmeshCount(); i++ ) {
 				mesh.renderSubmesh(i);
 			}
 		}
@@ -54,12 +51,14 @@ public class Model implements IRenderable {
 	private Material[] materials;
 	private Transform transform;
 	private SceneRenderer sceneRenderer;
+	private CascadeShadowRenderer cascadeShadowRenderer;
 	
 	private Model(Mesh mesh, Material[] materials) {
 		this.mesh = mesh;
 		this.materials = materials;
 		this.transform = new Transform();
 		this.sceneRenderer = new SceneRenderer();
+		this.cascadeShadowRenderer = new CascadeShadowRenderer();
 	}
 	
 	public Model(Mesh mesh) {
@@ -83,6 +82,7 @@ public class Model implements IRenderable {
 	
 	@Override
 	public void submitToRenderer(Renderer renderer) {
+		renderer.getCascadeShadowPass().submit(this.cascadeShadowRenderer);
 		renderer.getScenePass().submit(this.sceneRenderer);
 	}
 	
