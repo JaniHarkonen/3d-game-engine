@@ -28,7 +28,6 @@ public class TextureGL implements ITexture {
     public void generate() {
     	Logger.info(this, "Generating texture graphics...");
         this.ID = GL46.glGenTextures();
-
         this.bind();
         GL46.glPixelStorei(GL46.GL_UNPACK_ALIGNMENT, 1);
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);

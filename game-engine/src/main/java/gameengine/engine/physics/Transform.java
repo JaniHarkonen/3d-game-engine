@@ -1,9 +1,15 @@
 package gameengine.engine.physics;
 
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class Transform {
+import com.bulletphysics.linearmath.MotionState;
+
+import gameengine.util.GeometryUtils;
+import gameengine.util.PhysicsUtils;
+
+public class Transform extends MotionState {
 	protected Vector3f position;
 	protected Rotator rotator;
 	protected Vector3f scale;
@@ -72,6 +78,11 @@ public class Transform {
 		return this.transformMatrix;
 	}
 	
+	public com.bulletphysics.linearmath.Transform getAsBulletPhysicsTransform() {
+		this.recalculate();
+		return PhysicsUtils.transformToBulletphysicsTransform(this);
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if( !(o instanceof Transform) ) {
@@ -84,5 +95,21 @@ public class Transform {
 			this.rotator.equals(t.rotator) &&
 			this.scale.equals(t.scale)
 		);
+	}
+
+	@Override
+	public com.bulletphysics.linearmath.Transform getWorldTransform(
+		com.bulletphysics.linearmath.Transform transform
+	) {
+		transform.set(this.getAsBulletPhysicsTransform());
+		return transform;
+	}
+
+	@Override
+	public void setWorldTransform(com.bulletphysics.linearmath.Transform transform) {
+		Quaternionf rotation;
+		this.position.set(transform.origin.x, transform.origin.y, transform.origin.z);
+		rotation = GeometryUtils.getBulletPhysicsTransformRotation(transform, new Quaternionf());
+		this.rotator.setQuaternion(rotation);
 	}
 }

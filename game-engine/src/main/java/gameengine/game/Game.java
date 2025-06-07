@@ -10,6 +10,7 @@ import gameengine.engine.asset.Animation;
 import gameengine.engine.asset.AssetManager;
 import gameengine.engine.asset.Mesh;
 import gameengine.engine.asset.Texture;
+import gameengine.engine.physics.IPhysicsObject;
 import gameengine.engine.renderer.component.Material;
 import gameengine.engine.window.Window;
 import gameengine.game.component.Model;
@@ -17,6 +18,7 @@ import gameengine.game.component.light.PointLight;
 import gameengine.logger.Logger;
 import gameengine.test.TestCamera;
 import gameengine.test.TestModel;
+import gameengine.test.TestPlane;
 import gameengine.test.TestPlayer;
 import gameengine.util.FileUtils;
 
@@ -47,6 +49,8 @@ public class Game implements ITickable {
 		AssetManager.Group assets = this.getAssets();
 		
 			// Outside scene
+		//Model model = new Model((Mesh) assets.get("mesh-downtown"));
+		//model.setMaterial(Material.create((Texture) assets.get("tex-snow")));
 		Model model = new Model((Mesh) assets.get("mesh-outside"));
         model.setMaterial(
     		Material.create((Texture) assets.get("tex-pavement1")),
@@ -83,19 +87,24 @@ public class Game implements ITickable {
         	// Outside
         TestModel testScene = new TestModel(model);
         testScene.getTransform().setScale(0.01f, 0.01f, 0.01f);
+        //testScene.getTransform().setScale(1f, 1f, 1f);
 		this.worldScene.addObject(testScene);
 		
 			// Player
-		//model = new Model((Mesh) assets.get("mesh-player-skinned"));
-		model = new Model((Mesh) assets.get("mesh-car-test"));
+		model = new Model((Mesh) assets.get("mesh-player-skinned"));
+		//model = new Model((Mesh) assets.get("mesh-car-test"));
 		model.setMaterial(Material.create((Texture) assets.get("tex-car-test")));
 		
 		TestPlayer testPlayer = new TestPlayer(model);
-		testPlayer.getTransform().setPosition((float)Math.random()*10f, 0, (float)Math.random()*10f);
-		testPlayer.getTransform().setScale(0.025f, 0.025f, 0.025f);
+		testPlayer.getTransform().setPosition((float)Math.random()*10f, 15, (float)Math.random()*10f);
+		//testPlayer.getTransform().setPosition(150f, 30, -150f);
+		testPlayer.getTransform().setScale(0.01f, .01f, .01f);
 		testPlayer.getAnimator().setSpeed(1/30f);
 		testPlayer.getAnimator().setAnimation((Animation) assets.get("anim-player-idle"));
-		this.worldScene.addObject(testPlayer);
+		this.worldScene.addObject((IPhysicsObject) testPlayer);
+		
+		TestPlane testPlane = new TestPlane();
+		this.worldScene.addObject((IPhysicsObject) testPlane); 
 		
 		Logger.info(this, "Game setup done!");
 	}
@@ -135,7 +144,17 @@ public class Game implements ITickable {
 		preload.put(new Texture("tex-car-test", FileUtils.getResourcePath("texture/placeholder.png")));
 		
 		preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx")));
+		preload.put(new Mesh("mesh-downtown", FileUtils.getResourcePath("model/Downtown.fbx")));
 		preload.put(new Mesh("mesh-car-test", FileUtils.getResourcePath("model/CarTest.fbx")));
+		preload.put(new Mesh("coll-car-test", FileUtils.getResourcePath("coll/CarTestCOL.fbx"), (
+			Assimp.aiProcess_GenSmoothNormals |
+			//Assimp.aiProcess_Triangulate | 
+			Assimp.aiProcess_FixInfacingNormals | 
+			Assimp.aiProcess_CalcTangentSpace | 
+			Assimp.aiProcess_LimitBoneWeights |
+			Assimp.aiProcess_PreTransformVertices |
+			Assimp.aiProcess_JoinIdenticalVertices
+		)));
 		
 		Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player.fbx"), (
 			Assimp.aiProcess_GenSmoothNormals |

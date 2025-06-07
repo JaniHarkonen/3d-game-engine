@@ -31,8 +31,15 @@ public class Scene implements IScene {
 	}
 
 	
+	/*public void setup() {
+		Logger.setSystem(Engine.SYSTEM_PHYSICS);
+		
+	}*/
+	
 	@Override
 	public void tick(float deltaTime) {
+		this.physicsScene.tick(deltaTime);
+		
 		for( IGameObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
@@ -54,8 +61,8 @@ public class Scene implements IScene {
 	}
 	
 	public void addObject(IPhysicsObject object) {
-		this.addObject(object);
-		this.physicsScene
+		this.addObject((IGameObject) object);
+		this.physicsScene.addObject(object);
 	}
 	
 	public void setActiveCamera(Camera camera) {

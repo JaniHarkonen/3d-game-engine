@@ -277,6 +277,10 @@ public class Mesh implements IAsset {
 		return this.submeshes.length;
 	}
 	
+	public Submesh getSubmesh(int index) {
+		return this.submeshes[index];
+	}
+	
 	public Skeleton getSkeleton() {
 		return this.skeleton;
 	}

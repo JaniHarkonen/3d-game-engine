@@ -1,17 +1,34 @@
 package gameengine.engine.physics;
 
 import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 
 public class Physics {
 
-	private RigidBody body;
+	private final Transform controlledTransform;
+	private RigidBody rigidBody;
+	private Collider collider;
 	
-	public Physics() {
-		this.body = null;
+	public Physics(Transform controlledTransform, RigidBodyConstructionInfo info, Collider collider) {
+		this.controlledTransform = controlledTransform;
+		this.rigidBody = new RigidBody(info);
+		this.collider = collider;
 	}
 	
 	
-	public RigidBody getBody() {
-		return this.body;
+	void update() {
+		this.collider.clearCollisions();
+	}
+	
+	public Transform getTransform() {
+		return this.controlledTransform;
+	}
+	
+	public RigidBody getRigidBody() {
+		return this.rigidBody;
+	}
+	
+	public Collider getCollider() {
+		return this.collider;
 	}
 }

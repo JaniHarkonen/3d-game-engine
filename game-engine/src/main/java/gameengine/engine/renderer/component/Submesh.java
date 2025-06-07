@@ -13,8 +13,8 @@ public class Submesh {
 		
 		public static int[] facesToIndices(Face[] faces) {
 			int[] indices = new int[faces.length * INDICES_PER_FACE];
-			
 			int index = 0;
+			
 			for( Face f : faces ) {
 				indices[index++] = f.get1();
 				indices[index++] = f.get2();
@@ -115,6 +115,19 @@ public class Submesh {
     	return this.vertices;
     }
     
+    public float[] getVerticesAsFloatArray() {
+    	float[] vertices = new float[this.vertices.length * 3];
+    	int index = 0;
+    	
+    	for( Vector3f vertex : this.vertices ) {
+    		vertices[index++] = vertex.x;
+    		vertices[index++] = vertex.y;
+    		vertices[index++] = vertex.z;
+    	}
+    	
+    	return vertices;
+    }
+    
     public Vector3f[] getNormals() {
     	return this.normals;
     }
@@ -125,6 +138,19 @@ public class Submesh {
     
     public Face[] getFaces() {
     	return this.faces;
+    }
+    
+    public int[] getIndices() {
+    	int[] indices = new int[this.faces.length * Face.INDICES_PER_FACE];
+    	int index = 0;
+    	
+    	for( Face face : this.faces ) {
+    		indices[index++] = face.get1();
+    		indices[index++] = face.get2();
+    		indices[index++] = face.get3();
+    	}
+    	
+    	return indices;
     }
     
     public int[] getBones() {
