@@ -4,7 +4,7 @@ package gameengine.test;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import com.bulletphysics.collision.shapes.CapsuleShape;
+import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
@@ -44,9 +44,14 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
     
 	@Override
 	public void onCreate() {
-		//CollisionShape collision = new BoxShape(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(4, 0.1f, 8f)));
+		CollisionShape collision = new BoxShape(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(2.2f, 1.6f, 4.7f)));
 		//CollisionShape collision = new SphereShape(1f);
-		CollisionShape collision = new CapsuleShape(1, 2);
+		//CollisionShape collision = new CapsuleShape(1, 2);
+		/*CompoundShape collision = new CompoundShape();
+		com.bulletphysics.linearmath.Transform t = new com.bulletphysics.linearmath.Transform();
+		t.setIdentity();
+		collision.addChildShape(t, new BoxShape(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(2.2f, 1.6f, 4.7f))));*/
+		
 		/*Vector3f[] vertices = Mesh.class.cast(Engine.getGame().getAssets().get("mesh-car-test")).getSubmesh(0).getVertices();
 		ObjectArrayList<javax.vecmath.Vector3f> objectArrayList = new ObjectArrayList<>(vertices.length);
 		for( Vector3f v : vertices ) {
@@ -65,20 +70,15 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 		Collider collider = new Collider(collision);
 		this.physics = new Physics(this.transform, bodyInfo, collider);
 		RigidBody body = this.physics.getRigidBody();
-		body.setAngularFactor(0f);
+		body.setAngularFactor(0.2f);
 		body.setFriction(0.2f);
 	}
 
 	@Override
 	public void tick(float deltaTime) {
 		this.animator.tick(deltaTime);
-		Logger.debug(this, Math.toDegrees(this.transform.getRotator().getAsEulerAngles().x),Math.toDegrees(this.transform.getRotator().getAsEulerAngles().y),Math.toDegrees(this.transform.getRotator().getAsEulerAngles().z));
 		
-		//Vector3f pos = PhysicsScene.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).origin;
-		//Quat4f rot = PhysicsScene.targetBody.getWorldTransform(new com.bulletphysics.linearmath.Transform()).getRotation(new Quat4f());
-		//this.transform.setPosition(pos.x, pos.y, pos.z);
-		//this.transform.getRotator().setQuaternion(new Quaternionf(rot.x, rot.y, rot.z, rot.w));
-		
+		Logger.debug(this, this.transform.getRotator().getAsEulerAngles());
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_R).hashCode(), (e) -> {
 			this.getTransform().getRotator().rotateX(deltaTime);
 		});
@@ -142,7 +142,7 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_UP).hashCode(), (e) -> {
 			targetBody.activate(true);
 			Vector3f forward = this.transform.getRotator().getForwardVector(new Vector3f());
-			targetBody.setLinearVelocity(GeometryUtils.vector3fToJavaxVector3f(forward.mul(2)));
+			//targetBody.setLinearVelocity(GeometryUtils.vector3fToJavaxVector3f(forward.mul(2)));
 			targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(forward.mul(force)), GeometryUtils.vector3fToJavaxVector3f(forward.mul(3f).add(new Vector3f(4,0,0))));
 			//targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getForwardVector(new Vector3f()).mul(force)));
 		});

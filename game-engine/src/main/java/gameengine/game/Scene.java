@@ -29,12 +29,7 @@ public class Scene implements IScene {
 		this.directionalLight = new DirectionalLight(new Vector3f(1, 1, 1), 1.0f);
 		this.directionalLight.getTransform().setPosition(100, 100, 100);
 	}
-
 	
-	/*public void setup() {
-		Logger.setSystem(Engine.SYSTEM_PHYSICS);
-		
-	}*/
 	
 	@Override
 	public void tick(float deltaTime) {

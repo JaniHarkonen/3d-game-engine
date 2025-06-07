@@ -31,10 +31,6 @@ public class Engine {
 		instance = new Engine();
 	}
 	
-	/*public static PhysicsScene getPhysics() {
-		return instance.physics;
-	}*/
-	
 	public static void start() {
 		instance.startEngine();
 	}
@@ -63,7 +59,6 @@ public class Engine {
 	private Window window;
 	private Renderer renderer;
 	private Game game;
-	//private PhysicsScene physics;
 	private float tickRate;
 	private int tickRateRealized;
 	
@@ -72,7 +67,6 @@ public class Engine {
 		this.window = null;
 		this.renderer = null;
 		this.game = null;
-		//this.physics = null;
 		this.tickRate = DEFAULT_TICK_RATE;
 		this.tickRateRealized = 0;
 	}
@@ -92,9 +86,6 @@ public class Engine {
 		this.renderer = new Renderer();
 		Logger.setSystem(SYSTEM_RENDERER);
 		this.renderer.setup();
-		
-		//this.physics = new PhysicsScene();
-		//Logger.setSystem(SYSTEM_PHYSICS);
 
 		this.game = new Game();
 		Logger.setSystem(SYSTEM_GAME);
@@ -112,9 +103,6 @@ public class Engine {
 					
 					Logger.setSystem(SYSTEM_WINDOW);
 					this.window.pollEvents();
-					
-					//Logger.setSystem(SYSTEM_PHYSICS);
-					//this.physics.tick(1 / this.tickRate);
 					
 					Logger.setSystem(SYSTEM_GAME);
 					this.game.tick(1 / this.tickRate);

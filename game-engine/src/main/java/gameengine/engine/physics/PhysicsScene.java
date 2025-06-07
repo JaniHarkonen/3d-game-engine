@@ -96,31 +96,6 @@ public class PhysicsScene implements ITickable {
 				physics1.getPhysics().getCollider().reportCollision(physics0, manifold);
 			}
 		}
-		/*
-		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_SPACE).hashCode(), (e) -> {
-			targetBody.activate(true);
-			targetBody.applyCentralForce(new Vector3f(0,1000,0));
-		});
-		
-		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_UP).hashCode(), (e) -> {
-			targetBody.activate(true);
-			targetBody.applyCentralForce(new Vector3f(0,0,-force));
-		});
-		
-		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_DOWN).hashCode(), (e) -> {
-			targetBody.activate(true);
-			targetBody.applyCentralForce(new Vector3f(0,0,force));
-		});
-		
-		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_LEFT).hashCode(), (e) -> {
-			targetBody.activate(true);
-			targetBody.applyCentralForce(new Vector3f(-force,0,0));
-		});
-		
-		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_RIGHT).hashCode(), (e) -> {
-			targetBody.activate(true);
-			targetBody.applyCentralForce(new Vector3f(force,0,0));
-		});*/
 	}
 	
 	public void addObject(IPhysicsObject object) {

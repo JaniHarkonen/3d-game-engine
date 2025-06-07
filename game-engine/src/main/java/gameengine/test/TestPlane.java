@@ -41,7 +41,7 @@ public class TestPlane implements IGameObject, IPhysicsObject {
 	@Override
 	public void onCreate() {
 		//CollisionShape collision = new StaticPlaneShape(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(0.5f, 1, 0)), 0.25f);
-		Submesh mesh = Mesh.class.cast(Engine.getGame().getAssets().get("mesh-outside")).getSubmesh(0);
+		/*Submesh mesh = Mesh.class.cast(Engine.getGame().getAssets().get("mesh-outside")).getSubmesh(0);
 		int[] indices = mesh.getIndices();
 		ByteBuffer bufferIndices = (ByteBuffer) ByteBuffer.allocate(indices.length * Integer.BYTES);
 		bufferIndices.asIntBuffer().put(indices).flip();
@@ -55,9 +55,10 @@ public class TestPlane implements IGameObject, IPhysicsObject {
 			mesh.getVertexCount(), 
 			bufferVertices, 
 			3 * Float.BYTES
-		);
+		);*/
 		
-		CollisionShape collision = new BvhTriangleMeshShape(vert, true);
+		//CollisionShape collision = new BvhTriangleMeshShape(vert, true);
+		CollisionShape collision = Mesh.class.cast(Engine.getGame().getAssets().get("mesh-road-test")).getCollisionMesh();
 		//Vector3f inertia = new Vector3f(0, 0, 0);
 		//Logger.debug(this, this.transform.getPosition().x, this.transform.getPosition().y, this.transform.getPosition().z);
 		RigidBodyConstructionInfo bodyInfo = new RigidBodyConstructionInfo(0, this.transform, collision, GeometryUtils.vector3fToJavaxVector3f(new Vector3f(0, 0, 0)));
