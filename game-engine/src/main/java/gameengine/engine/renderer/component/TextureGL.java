@@ -41,7 +41,7 @@ public class TextureGL implements ITexture {
     		0, 
     		this.pixelFormat, 
     		this.type, 
-    		this.image.getBuffer()
+    		this.image.getPixels()
 		);
         
         if( this.hasMipmap ) {

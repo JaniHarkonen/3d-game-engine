@@ -29,6 +29,30 @@ import gameengine.util.ArrayUtils;
 import gameengine.util.GeometryUtils;
 
 public class Mesh implements IAsset {
+	public static Mesh asMesh(IAsset asset, boolean allowDefault) {
+		if( asset == null || !(asset instanceof Mesh) ) {
+			return allowDefault ? new Mesh() : null;
+		}
+		
+		return (Mesh) asset;
+	}
+	
+	public static Mesh asMesh(IAsset asset) {
+		return asMesh(asset, true);
+	}
+	
+	public static final int DEFAULT_IMPORT_FLAGS = (
+		Assimp.aiProcess_GenSmoothNormals |
+		Assimp.aiProcess_Triangulate | 
+		Assimp.aiProcess_FixInfacingNormals | 
+		Assimp.aiProcess_CalcTangentSpace | 
+		Assimp.aiProcess_LimitBoneWeights |
+		Assimp.aiProcess_PreTransformVertices
+	);
+	
+	public static final int MAX_WEIGHT_COUNT = 4;
+	public static final int MAX_BONE_COUNT = 150;
+	
 	private class VertexWeight {
 
 		private int boneID;
@@ -55,18 +79,6 @@ public class Mesh implements IAsset {
 		}
 	}
 	
-	public static final int DEFAULT_IMPORT_FLAGS = (
-		Assimp.aiProcess_GenSmoothNormals |
-		Assimp.aiProcess_Triangulate | 
-		Assimp.aiProcess_FixInfacingNormals | 
-		Assimp.aiProcess_CalcTangentSpace | 
-		Assimp.aiProcess_LimitBoneWeights |
-		Assimp.aiProcess_PreTransformVertices
-	);
-	
-	public static final int MAX_WEIGHT_COUNT = 4;
-	public static final int MAX_BONE_COUNT = 150;
-	
 	private final String name;
 	private String path;
     private Submesh[] submeshes;
@@ -78,11 +90,11 @@ public class Mesh implements IAsset {
     public Mesh(String name, String path, boolean generateCollision, int importFlags) {
     	this.name = name;
     	this.path = path;
-    	this.submeshes = new Submesh[0];
     	this.skeleton = new Skeleton();
     	this.collisionMesh = null;
     	this.generateCollision = generateCollision;
         this.importFlags = importFlags;
+        this.resetSubmeshes();
     }
     
     public Mesh(String name, String path, boolean generateCollision) {
@@ -93,12 +105,22 @@ public class Mesh implements IAsset {
     	this(name, path, false);
     }
     
+    	// For generating a default mesh
+    private Mesh() {
+    	this(null, null, false, 0);
+    	this.resetSubmeshes();
+    }
+    
 	
 	@Override
 	public void load() {
 		Logger.info(this, "Loading mesh '" + this.name + "' from: ", this.path);
 		
-        AIScene aiScene = Assimp.aiImportFile(this.path, this.importFlags);
+        AIScene aiScene = null;
+        
+        if( this.path != null ) {
+        	aiScene = Assimp.aiImportFile(this.path, this.importFlags);
+        }
         
         if( aiScene == null ) {
         	Logger.error(
@@ -222,6 +244,10 @@ public class Mesh implements IAsset {
 		Logger.info(this, "Mesh loaded.");
 	}
 	
+
+	private void resetSubmeshes() {
+		this.submeshes = new Submesh[] {Defaults.SUBMESH};
+	}
 	
 	private Map<Integer, List<VertexWeight>> generateWeightSet(
 		List<Skeleton.Bone> boneList, PointerBuffer aiBoneBuffer
@@ -292,7 +318,7 @@ public class Mesh implements IAsset {
 			s.dipose();
 		}
 		
-		this.submeshes = new Submesh[0];
+		this.resetSubmeshes();
 		Logger.info(this, "Mesh deloaded.");
 	}
 	

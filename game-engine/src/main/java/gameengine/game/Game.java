@@ -49,7 +49,7 @@ public class Game implements ITickable {
 		AssetManager.Group assets = this.getAssets();
 		
 			// Outside scene
-		Model model = new Model((Mesh) assets.get("mesh-road-test"));
+		Model model = new Model(Mesh.asMesh(assets.get("mesh-road-test")));
 		model.setMaterial(Material.create((Texture) assets.get("tex-road-test")));
 		/*Model model = new Model((Mesh) assets.get("mesh-outside"));
         model.setMaterial(
@@ -92,7 +92,7 @@ public class Game implements ITickable {
 		
 			// Player
 		//model = new Model((Mesh) assets.get("mesh-player-skinned"));
-		model = new Model((Mesh) assets.get("mesh-car-test"));
+		model = new Model(Mesh.asMesh(assets.get("mesh-car-test")));
 		model.setMaterial(Material.create((Texture) assets.get("tex-car-test")));
 		
 		TestPlayer testPlayer = new TestPlayer(model);
@@ -149,18 +149,16 @@ public class Game implements ITickable {
 			
 				///////////////// MESHES
 			preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx"), true));
-			//preload.put(new Mesh("mesh-road-test", FileUtils.getResourcePath("model/RoadTest.fbx"), true));
 			preload.put(new Mesh("mesh-road-test", FileUtils.getResourcePath("model/RoadTestScale.fbx"), true, (
-					Assimp.aiProcess_GenSmoothNormals |
-					Assimp.aiProcess_Triangulate | 
-					Assimp.aiProcess_FixInfacingNormals | 
-					Assimp.aiProcess_CalcTangentSpace | 
-					Assimp.aiProcess_LimitBoneWeights |
-					Assimp.aiProcess_JoinIdenticalVertices |
-					Assimp.aiProcess_PreTransformVertices
-				)));
-			//preload.put(new Mesh("mesh-car-test", FileUtils.getResourcePath("model/CarTest.fbx")));
-			preload.put(new Mesh("mesh-car-test", FileUtils.getResourcePath("model/CarTestScale.fbx")));
+				Assimp.aiProcess_GenSmoothNormals |
+				Assimp.aiProcess_Triangulate | 
+				Assimp.aiProcess_FixInfacingNormals | 
+				Assimp.aiProcess_CalcTangentSpace | 
+				Assimp.aiProcess_LimitBoneWeights |
+				Assimp.aiProcess_JoinIdenticalVertices |
+				Assimp.aiProcess_PreTransformVertices
+			)));
+			preload.put(new Mesh("mesh-car-test", FileUtils.getResourcePath("model/CarOriginFix.fbx")));
 			
 			Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/PlayerNoAnimScale.fbx"), false, (
 				Assimp.aiProcess_GenSmoothNormals |
@@ -171,22 +169,13 @@ public class Game implements ITickable {
 			));
 			preload.put(meshPlayerSkinned);
 			
-			/*
-			Mesh meshPlayerSkinned = new Mesh("mesh-player-skinned", FileUtils.getResourcePath("model/player.fbx"), false, (
-				Assimp.aiProcess_GenSmoothNormals |
-				Assimp.aiProcess_Triangulate | 
-				Assimp.aiProcess_FixInfacingNormals | 
-				Assimp.aiProcess_CalcTangentSpace | 
-				Assimp.aiProcess_LimitBoneWeights
-			));
-			preload.put(meshPlayerSkinned);*/
 			
 				///////////////// ANIMATIONS
-			Animation animPlayerIdle = new Animation("anim-player-idle", FileUtils.getResourcePath("anim/IdleAnim.fbx"));
+			Animation animPlayerIdle = new Animation("anim-player-idle", FileUtils.getResourcePath("anim/IdleNormalAnim.fbx"));
 			animPlayerIdle.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
 			preload.put(animPlayerIdle);
 			
-			Animation animPlayerRun = new Animation("anim-player-run", FileUtils.getResourcePath("anim/RunAnim.fbx"));
+			Animation animPlayerRun = new Animation("anim-player-run", FileUtils.getResourcePath("anim/RunNormalAnim.fbx"));
 			animPlayerRun.DEBUGsetSkeleton(meshPlayerSkinned.getSkeleton());
 			preload.put(animPlayerRun);
 			

@@ -40,7 +40,7 @@ public final class FileUtils {
 		URL url = Main.class.getResource("/" + relativePath);
 		
 		if( url == null ) {
-			Logger.error("FileUtils.getResourcePath()", "Unable to resolve relative resource path:\n", relativePath);
+			Logger.error("FileUtils.getResourcePath()", "Unable to resolve relative resource path:", relativePath);
 			return null;
 		}
 		

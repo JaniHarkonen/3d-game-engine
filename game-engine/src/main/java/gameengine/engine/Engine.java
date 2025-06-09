@@ -1,5 +1,6 @@
 package gameengine.engine;
 
+import gameengine.engine.asset.Defaults;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.window.Window;
 import gameengine.game.Game;
@@ -86,6 +87,9 @@ public class Engine {
 		this.renderer = new Renderer();
 		Logger.setSystem(SYSTEM_RENDERER);
 		this.renderer.setup();
+		
+		Logger.setSystem(SYSTEM_ENGINE);
+		Defaults.init();
 
 		this.game = new Game();
 		Logger.setSystem(SYSTEM_GAME);

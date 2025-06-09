@@ -35,42 +35,6 @@ public class PhysicsScene implements ITickable {
 			new DefaultCollisionConfiguration()
 		);
 		this.physicsWorld.setGravity(new Vector3f(0, -10, 0));
-		/*CollisionShape ground = new StaticPlaneShape(new Vector3f(0, 1, 0), 0.25f);
-		CollisionShape ball = new SphereShape(1f);
-		MotionState groundMotion = new DefaultMotionState(new Transform(new Matrix4f(new Quat4f(0, 0, 0, 1), new Vector3f(0, 0, 0), 1f)));
-		RigidBodyConstructionInfo groundConstructionInfo = new RigidBodyConstructionInfo(0, groundMotion, ground, new Vector3f(0, 0, 0));
-		groundConstructionInfo.restitution = 0.0f;
-		groundBody = new RigidBody(groundConstructionInfo);
-		groundBody.setFriction(0.5f);
-		this.physicsWorld.addCollisionObject(groundBody);*/
-		
-		//RigidBody first = null;
-		/*
-		for( int i = 0; i < 1; i++ ) {
-			com.bulletphysics.linearmath.Transform ballTransform = new Transform(new Matrix4f(new Quat4f(0, 0, 0, 1), new Vector3f(0, 20+i*5, 0), 1f));
-			MotionState ballMotion = new DefaultMotionState(ballTransform);
-			Vector3f ballInertia = new Vector3f(0, 0, 0);
-			ball.calculateLocalInertia(2.5f, ballInertia);
-			RigidBodyConstructionInfo ballConstructionInfo = new RigidBodyConstructionInfo(2000.5f, ballMotion, ball, ballInertia);
-			ballConstructionInfo.restitution = 0.0f;
-			ballConstructionInfo.angularDamping = 0.95f;
-			targetBody = new RigidBody(ballConstructionInfo);
-			targetBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
-			targetBody.setAngularFactor(1);
-			targetBody.setFriction(0.2f);
-			this.physicsWorld.addRigidBody(targetBody);
-			
-			if( first == null ) {
-				first = targetBody;
-			}
-		}*/
-		
-		//this.physicsWorld.addCollisionObject(collisionObject);
-		//this.physicsWorld.addRigidBody(targetBody);
-		
-		//targetBody = first;
-		//targetBody.activate(true);
-		//this.physicsWorld.removeRigidBody(body);
 	}
 	
 	

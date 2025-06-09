@@ -10,6 +10,7 @@ import org.lwjgl.assimp.AIVector3D;
 import gameengine.engine.renderer.component.Submesh;
 
 public final class GeometryUtils {
+	public static final float PI = (float) Math.PI;
 
 	public static Matrix4f aiMatrix4ToMatrix4f(AIMatrix4x4 aiMatrix) {
         Matrix4f result = new Matrix4f();
@@ -65,6 +66,10 @@ public final class GeometryUtils {
 	public static javax.vecmath.Vector3f vector3fToJavaxVector3f(Vector3f vector3f, javax.vecmath.Vector3f dest) {
 		dest.set(vector3f.x, vector3f.y, vector3f.z);
 		return dest;
+	}
+	
+	public static Vector3f javaxVector3fToVector3f(javax.vecmath.Vector3f vector3f) {
+		return new Vector3f(vector3f.x, vector3f.y, vector3f.z);
 	}
 	
 	public static Vector3f[] aiVector3DBufferToVector3fArray(AIVector3D.Buffer buffer) {
@@ -162,5 +167,35 @@ public final class GeometryUtils {
         eulerZ = (float) Math.atan2(siny_cosp, cosy_cosp);
         
         return dest.set(eulerX, eulerY, eulerZ);
+	}
+	
+	public static Vector3f[] copyVector3fArray(Vector3f[] array) {
+		Vector3f[] result = new Vector3f[array.length];
+		
+		for( int i = 0; i < array.length; i++ ) {
+			result[i] = new Vector3f(array[i]);
+		}
+		
+		return result;
+	}
+	
+	public static Vector2f[] copyVector2fArray(Vector2f[] array) {
+		Vector2f[] result = new Vector2f[array.length];
+		
+		for( int i = 0; i < array.length; i++ ) {
+			result[i] = new Vector2f(array[i]);
+		}
+		
+		return result;
+	}
+	
+	public static Submesh.Face[] copyFaceArray(Submesh.Face[] array) {
+		Submesh.Face[] result = new Submesh.Face[array.length];
+		
+		for( int i = 0; i < array.length; i++ ) {
+			result[i] = new Submesh.Face(array[i]);
+		}
+		
+		return result;
 	}
 }

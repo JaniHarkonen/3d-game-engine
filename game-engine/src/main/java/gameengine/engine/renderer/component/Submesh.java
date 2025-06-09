@@ -1,10 +1,15 @@
 package gameengine.engine.renderer.component;
 
+import java.util.Arrays;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
 
+import gameengine.engine.asset.Defaults;
+import gameengine.engine.asset.Mesh;
 import gameengine.engine.renderer.vo.VAO;
+import gameengine.util.GeometryUtils;
 
 public class Submesh {
 	
@@ -35,6 +40,10 @@ public class Submesh {
 		
 		public Face(int[] indices) {
 			this.indices = indices;
+		}
+		
+		public Face(Face face) {
+			this(face.indices);
 		}
 		
 		
@@ -73,6 +82,17 @@ public class Submesh {
         this.boneWeights = new float[0];
     }
     
+    public Submesh(Submesh src) {
+    	this.populate(
+			GeometryUtils.copyVector3fArray(src.vertices), 
+			GeometryUtils.copyVector3fArray(src.normals), 
+			GeometryUtils.copyVector2fArray(src.UVs),
+			GeometryUtils.copyFaceArray(src.faces), 
+			Arrays.copyOf(src.bones, src.bones.length), 
+			Arrays.copyOf(src.boneWeights, src.boneWeights.length)
+		);
+    }
+    
     public void populate(
 		Vector3f[] vertices, 
 		Vector3f[] normals, 
@@ -90,6 +110,39 @@ public class Submesh {
     	
     	this.vao = new VAO(this);
     	this.vao.generate();
+    }
+    
+    public void populate(
+		float[] positions,
+		int[] indices
+	) {
+    	Vector3f[] vertices = new Vector3f[positions.length / 3];
+    	int index = 0;
+    	for( int i = 0; i < vertices.length; i++ ) {
+    		vertices[i] = new Vector3f(positions[index++], positions[index++], positions[index++]);
+    	}
+    	
+    	Vector3f[] normals = new Vector3f[vertices.length];
+    	for( int i = 0; i < vertices.length; i++ ) {
+    		normals[i] = new Vector3f((float) Math.random(), (float) Math.random(), 0);
+    	}
+    	
+    	Vector2f[] UVs = new Vector2f[vertices.length];
+    	for( int i = 0; i < vertices.length; i++ ) {
+    		UVs[i] = new Vector2f(0);
+    	}
+    	
+    	Face[] faces = new Face[indices.length / 3];
+    	index = 0;
+    	
+    	for( int i = 0; i < faces.length; i++ ) {
+    		faces[i] = new Face(indices[index++], indices[index++], indices[index++]);
+    	}
+    	
+    	int[] bones = new int[vertices.length * Mesh.MAX_WEIGHT_COUNT];
+    	float[] boneWeights = new float[vertices.length * Mesh.MAX_WEIGHT_COUNT];
+    	
+    	this.populate(vertices, normals, UVs, faces, bones, boneWeights);
     }
 
     
@@ -159,5 +212,9 @@ public class Submesh {
     
     public float[] getBoneWeights() {
     	return this.boneWeights;
+    }
+    
+    public boolean isNull() {
+    	return this == Defaults.SUBMESH;
     }
 }
