@@ -148,8 +148,8 @@ public class Game implements ITickable {
 			
 			
 				///////////////// MESHES
-			preload.put(new Mesh("mesh-outside", FileUtils.getResourcePath("model/Outside.fbx"), true));
-			preload.put(new Mesh("mesh-road-test", FileUtils.getResourcePath("model/RoadTestScale.fbx"), true, (
+			//preload.put(new Mesh("mesh-road-test", FileUtils.getResourcePath("model/RoadTest.fbx"), true, (
+			preload.put(new Mesh("mesh-road-test", FileUtils.getResourcePath("extra/RoadTest.fbx"), true, (
 				Assimp.aiProcess_GenSmoothNormals |
 				Assimp.aiProcess_Triangulate | 
 				Assimp.aiProcess_FixInfacingNormals | 

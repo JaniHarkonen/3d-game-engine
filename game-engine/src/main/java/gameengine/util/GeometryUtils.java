@@ -11,6 +11,16 @@ import gameengine.engine.renderer.component.Submesh;
 
 public final class GeometryUtils {
 	public static final float PI = (float) Math.PI;
+	public static final float DEGREE_IN_RADIAN = PI / 180;
+	public static final float RADIAN_IN_DEGREE = 180 / PI;
+	
+	public static float toRadians(float angdeg) {
+		return DEGREE_IN_RADIAN * angdeg;
+	}
+	
+	public static float toDegrees(float angrad) {
+		return RADIAN_IN_DEGREE * angrad;
+	}
 
 	public static Matrix4f aiMatrix4ToMatrix4f(AIMatrix4x4 aiMatrix) {
         Matrix4f result = new Matrix4f();
@@ -55,6 +65,28 @@ public final class GeometryUtils {
 		result.m31 = matrix4f.m13();
 		result.m32 = matrix4f.m23();
 		result.m33 = matrix4f.m33();
+		
+        return result;
+	}
+	
+	public static Matrix4f javaxMatrix4fToMatrix4(javax.vecmath.Matrix4f matrix4f) {
+		Matrix4f result = new Matrix4f();
+		result.m00(matrix4f.m00);
+		result.m10(matrix4f.m01);
+		result.m20(matrix4f.m02);
+		result.m30(matrix4f.m03);
+		result.m01(matrix4f.m10);
+		result.m11(matrix4f.m11);
+		result.m21(matrix4f.m12);
+		result.m31(matrix4f.m13);
+		result.m02(matrix4f.m20);
+		result.m12(matrix4f.m21);
+		result.m22(matrix4f.m22);
+		result.m32(matrix4f.m23);
+		result.m03(matrix4f.m30);
+		result.m13(matrix4f.m31);
+		result.m23(matrix4f.m32);
+		result.m33(matrix4f.m33);
 		
         return result;
 	}
@@ -169,6 +201,10 @@ public final class GeometryUtils {
         return dest.set(eulerX, eulerY, eulerZ);
 	}
 	
+	public static Quaternionf quaternionfFromEulerDegreeAngles(float xAngle, float yAngle, float zAngle) {
+		return new Quaternionf().rotationXYZ(toRadians(xAngle), toRadians(yAngle), toRadians(zAngle));
+	}
+	
 	public static Vector3f[] copyVector3fArray(Vector3f[] array) {
 		Vector3f[] result = new Vector3f[array.length];
 		
@@ -197,5 +233,25 @@ public final class GeometryUtils {
 		}
 		
 		return result;
+	}
+	
+	public static String vector3fToString(Vector3f vector3f) {
+		return "(" + vector3f.x + ", " + vector3f.y + ", " + vector3f.z + ")";
+	}
+	
+	public static String quaternionfToString(Quaternionf quaternionf) {
+		return "(" + quaternionf.x + ", " + quaternionf.y + ", " + quaternionf.z + ", " + quaternionf.w + ")";
+	}
+	
+	public static float abs(float a) {
+		return (float) Math.abs(a);
+	}
+	
+	public static float sin(float a) {
+		return (float) Math.sin(a);
+	}
+	
+	public static float cos(float a) {
+		return (float) Math.cos(a);
 	}
 }

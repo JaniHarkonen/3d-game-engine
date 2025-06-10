@@ -51,22 +51,24 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 		CollisionShape collision = new BoxShape(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(2.2f/2, 1.6f/2, 4.7f/2)));
 		this.debbuger = new CollisionDebugger(collision, this.transform);
 		
-		Vector3f inertia = new Vector3f(0, 0, 0);
+		Vector3f inertia = new Vector3f(1, 1, 1);
+		//RigidBodyConstructionInfo bodyInfo = new RigidBodyConstructionInfo(2000.5f, new Transform(), collision);
 		RigidBodyConstructionInfo bodyInfo = new RigidBodyConstructionInfo(2000.5f, this.transform, collision);
 		collision.calculateLocalInertia(2000.5f, GeometryUtils.vector3fToJavaxVector3f(inertia, bodyInfo.localInertia));
 		bodyInfo.restitution = 0.0f;
-		bodyInfo.angularDamping = 0.55f;
+		bodyInfo.angularDamping = 0.3f;
 		Collider collider = new Collider(collision);
+		//this.physics = new Physics(new Transform(), bodyInfo, collider);
 		this.physics = new Physics(this.transform, bodyInfo, collider);
 		RigidBody body = this.physics.getRigidBody();
-		body.setAngularFactor(0.5f);
+		body.setAngularFactor(0.7f);
 		body.setFriction(0.2f);
 	}
 
 	@Override
 	public void tick(float deltaTime) {
 		this.animator.tick(deltaTime);
-		
+		/*
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_R).hashCode(), (e) -> {
 			this.getTransform().getRotator().rotateX(deltaTime);
 		});
@@ -90,7 +92,7 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_H).hashCode(), (e) -> {
 			this.getTransform().getRotator().rotateZ(-deltaTime);
 		});
-		
+		*/
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_PRESS, GLFW.GLFW_KEY_1).hashCode(), (e) -> {
 			this.getAnimator().setAnimation((Animation) Engine.getGame().getAssets().get("anim-player-idle"));
 			this.getAnimator().restart();
@@ -127,30 +129,41 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 			targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(0,1000,0)));
 		});
 		
+		
+		Vector3f forwards = this.transform.getRotator().getForwardVector(new Vector3f());
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_UP).hashCode(), (e) -> {
 			targetBody.activate(true);
-			Vector3f forward = this.transform.getRotator().getForwardVector(new Vector3f());
+			//Vector3f forward = this.transform.getRotator().getForwardVector(new Vector3f());
 			//targetBody.setLinearVelocity(GeometryUtils.vector3fToJavaxVector3f(forward.mul(2)));
 			//targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(forward.mul(force)), GeometryUtils.vector3fToJavaxVector3f(forward.mul(3f).add(new Vector3f(4,0,0))));
-			//targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getForwardVector(new Vector3f()).mul(force)));
-			targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getForwardVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
+			targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getForwardVector(new Vector3f()).mul(force).mul(new Vector3f(-1,1,1))));
+			//targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getForwardVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
+			//targetBody.setLinearVelocity(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(0,0,-20)));
+			
+			//Vector3f forward = this.transform.getRotator().getForwardVector(new Vector3f()).mul(20).mul(new Vector3f(-1,1,1));
+			//this.transform.shift(forward.x, forward.y, forward.z);
 		});
 		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_DOWN).hashCode(), (e) -> {
-			targetBody.activate(true);
-			targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getBackwardVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
+			//targetBody.activate(true);
+			//targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getBackwardVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
 			//targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getBackwardVector(new Vector3f()).mul(force)));
+			targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getBackwardVector(new Vector3f()).mul(force).mul(new Vector3f(-1,1,1))));
 		});
 		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_LEFT).hashCode(), (e) -> {
-			targetBody.activate(true);
-			targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getLeftVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
+			//targetBody.activate(true);
+			//targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getLeftVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
 			//targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getLeftVector(new Vector3f()).mul(force)));
+			targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getLeftVector(new Vector3f()).mul(force).mul(new Vector3f(1,1,-1))));
+			//targetBody.setLinearVelocity(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(-20,0,0)));
+			//this.transform.shift(-20, 0, 0);
 		});
 		
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_RIGHT).hashCode(), (e) -> {
 			targetBody.activate(true);
-			targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getRightVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
+			//targetBody.applyForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getRightVector(new Vector3f()).mul(force)), GeometryUtils.vector3fToJavaxVector3f(new Vector3f()));
+			targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getRightVector(new Vector3f()).mul(force).mul(new Vector3f(1,1,-1))));
 			//targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getRightVector(new Vector3f()).mul(force)));
 		});
 		
@@ -165,6 +178,7 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 		
 		if( !this.possessCamera ) {
 			cam.getTransform().setPosition(me.x + v.x, me.y + v.y + 3f, me.z + v.z);
+			//cam.getTransform().setPosition(me.x, me.y + 3f, me.z);
 			//cam.getTransform().getRotator().setQuaternion(this.transform.getRotator().getAsQuaternion());
 		} else {
 			cam.getTransform().possess(this);

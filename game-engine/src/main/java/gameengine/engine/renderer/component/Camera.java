@@ -1,14 +1,80 @@
 package gameengine.engine.renderer.component;
 
-import gameengine.engine.physics.Transform;
+import org.joml.Quaternionf;
+
+import gameengine.engine.physics.IHasTransform;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
-import gameengine.game.component.CameraTransform;
+import gameengine.util.GeometryUtils;
 
 public class Camera implements IRenderable {
+	/**
+	 * This is a special transform class derived from the generic Transform.
+	 * This transform should only be used by the camera, as its transform
+	 * matrix is calculated slightly different to account for the fact, that
+	 * the camera perspective exists inverse to the viewed scene.
+	 */
+	public static class Transform extends gameengine.engine.physics.Transform {
+		
+		public Transform() {
+			super();
+			this.rotator = new Rotator();
+		}
+		
+		
+		@Override
+		protected void recalculate() {
+			this.transformMatrix.identity()
+			.rotate(this.rotator.getAsQuaternion())
+			.translate(-this.position.x, -this.position.y, -this.position.z);
+		}
+		
+		@Override
+		public void possess(IHasTransform possessor) {
+			gameengine.engine.physics.Transform transform = possessor.getTransform();
+			this.position = transform.getPosition();
+			this.scale = transform.getScale();
+			
+			if( transform instanceof Transform ) {
+				this.rotator = transform.getRotator();
+			}
+		}
+	}
+	
+	/**
+	 * This is a special rotator class derived from the generic Rotator.
+	 * This rotator should only be used by the camera, as the camera
+	 * rotations have to be applied slightly different. In the generic
+	 * case, the rotation quaternion is derived calculating:
+	 * <code>qYaw * qCurrent * qPitch</code>
+	 * where:
+	 * <b>qYaw</b> is a quaternion representing the object's yaw
+	 * <b>qCurrent</b> is the quaternion representing the object's 
+	 * current rotation
+	 * <b>qPitch</b> is a quaternion representing the object's pitch
+	 * 
+	 * Camera objects, however, must be rotated slightly different.
+	 * Camera rotation is derived by calculating:
+	 * <code>qPitch * qCurrent * qYaw</code>
+	 */
+	public static class Rotator extends gameengine.engine.physics.Rotator {
+
+		public Rotator() {
+			super();
+		}
+		
+		
+		@Override
+		public void rotate(float x, float y) {
+			Quaternionf rotationY = new Quaternionf().rotateAxis(GeometryUtils.toRadians(y), 0, 1, 0);
+			Quaternionf rotationX = new Quaternionf().rotateAxis(GeometryUtils.toRadians(x), 1, 0, 0);
+			this.setQuaternion(rotationX.mul(this.getAsQuaternion()).mul(rotationY));
+		}
+	}
+	
 	private class SceneRenderer implements IRenderStrategy<ScenePass> {
 
 		@Override
@@ -33,7 +99,7 @@ public class Camera implements IRenderable {
 
     public Camera(Projection projection) {
     		// Special transform whose matrix is translated and rotated slightly different
-        this.transform = new CameraTransform();
+        this.transform = new Transform();
         this.projection = projection;
         this.sceneRenderer = new SceneRenderer();
         this.cascadeShadowRenderer = new CascadeShadowRenderer();

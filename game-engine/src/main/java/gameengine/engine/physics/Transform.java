@@ -38,7 +38,7 @@ public class Transform extends MotionState {
 	
 	protected void recalculate() {
 		this.transformMatrix.translationRotateScale(
-			this.position, this.rotator.getAsQuaternion(), this.scale
+			new Vector3f(this.position.x, this.position.y, this.position.z), this.rotator.getAsQuaternion(), this.scale
 		);
 	}
 	

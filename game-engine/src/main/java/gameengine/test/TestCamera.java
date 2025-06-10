@@ -54,7 +54,7 @@ public class TestCamera implements IGameObject, IHasTransform {
     	
     	// Mouse pan
     	window.getInput().DEBUGmapInput(24000, (e) -> {
-    		this.transform.getRotator().rotate((float) Math.toRadians(e.mouseDeltaY * 0.1f), (float) Math.toRadians(e.mouseDeltaX * 0.1f), 0);
+    		this.transform.getRotator().rotate((float) e.mouseDeltaY/10, (float) e.mouseDeltaX/10);
     	});
 	}
 
@@ -71,7 +71,8 @@ public class TestCamera implements IGameObject, IHasTransform {
 		this.camera.getProjection().setFOV(70f);
 		Engine.getGame().getWorldScene().setActiveCamera(this.camera);
 		
-		this.transform = new Transform();
+		//this.transform = new Transform();
+		this.transform = new Camera.Transform();
 		this.camera.getTransform().possess(this);
 		this.transform.setPosition(10, 10, 10);
 	}

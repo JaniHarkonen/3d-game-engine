@@ -10,24 +10,17 @@ public class Rotator {
 	public static final Vector3f Y_AXIS = new Vector3f(0.0f, 1.0f, 0.0f);
 	public static final Vector3f Z_AXIS = new Vector3f(0.0f, 0.0f, 1.0f);
 
-	private Vector3f angles;
 	private Quaternionf rotationQuaternion;
-	private Quaternionf rotationQuaternionTempY;
-	private Quaternionf rotationQuaternionTempZ;
 	
 	public Rotator() {
-		this.angles = new Vector3f(0.0f);
 		this.rotationQuaternion = new Quaternionf();
-		this.rotationQuaternionTempY = new Quaternionf();
-		this.rotationQuaternionTempZ = new Quaternionf();
 	}
 	
 	public Rotator(Rotator src) {
-		this.angles = new Vector3f(src.angles);
 		this.rotationQuaternion = new Quaternionf(src.rotationQuaternion);
 	}
 	
-	
+	/*
 	private void recalculate() {
 		this.rotationQuaternion.fromAxisAngleRad(X_AXIS, this.angles.x)
 		.mul(
@@ -35,70 +28,39 @@ public class Rotator {
 		).mul(
 			this.rotationQuaternionTempZ.fromAxisAngleRad(Z_AXIS, this.angles.z)
 		);
+	}*/
+	
+	public void rotate(float x, float y) {
+		Quaternionf rotationY = new Quaternionf().rotateAxis(GeometryUtils.toRadians(y), 0, 1, 0);
+		Quaternionf rotationX = new Quaternionf().rotateAxis(GeometryUtils.toRadians(x), 1, 0, 0);
+		this.rotationQuaternion = rotationY.mul(this.rotationQuaternion).mul(rotationX);
 	}
 	
-	public void rotate(float xAngle, float yAngle, float zAngle) {
-		this.setEulerAngles(
-			this.angles.x + xAngle, this.angles.y + yAngle, this.angles.z + zAngle
-		);
-	}
-	
-	public void rotateX(float xAngle) {
-		this.rotate(xAngle, 0, 0);
-	}
-	
-	public void rotateY(float yAngle) {
-		this.rotate(0, yAngle, 0);
-	}
-	
-	public void rotateZ(float zAngle) {
-		this.rotate(0, 0, zAngle);
-	}
-	
-	public void setEulerAngles(float xAngle, float yAngle, float zAngle) {
-		this.angles.set(xAngle, yAngle, zAngle);
-	}
-	
-	public void setXAngle(float xAngle) {
-		this.setEulerAngles(xAngle, this.angles.y, this.angles.z);
-	}
-	
-	public void setYAngle(float yAngle) {
-		this.setEulerAngles(this.angles.x, yAngle, this.angles.z);
-	}
-	
-	public void setZAngle(float zAngle) {
-		this.setEulerAngles(this.angles.x, this.angles.y, zAngle);
-	}
+	/*public void rotate(float xDegree, float yDegree, float zDegree) {
+		float x = GeometryUtils.toRadians(this.eulers.x + xDegree);
+		float y = GeometryUtils.toRadians(this.eulers.y + yDegree);
+		float z = GeometryUtils.toRadians(this.eulers.z + zDegree);
+		
+		float absYSin = 1 - (float) Math.abs(Math.sin(y));
+		
+		float xAxis = (float) Math.cos(x) * absYSin;
+		float yAxis = (float) Math.sin(y);
+		float zAxis = (float) Math.sin(x) * absYSin;
+		
+		Quaternionf q = new Quaternionf().lookAlong(new Vector3f(xAxis, yAxis, zAxis), Y_AXIS);
+		this.rotationQuaternion = q;
+		this.eulers.add(xDegree, yDegree, zDegree);
+	}*/
 	
 	public void setQuaternion(Quaternionf quaternion) {
 		this.rotationQuaternion = quaternion;
-		GeometryUtils.quaternionfToEulerAnglesf(quaternion, this.angles);
 	}
 	
 	public void setQuaternion(float x, float y, float z, float w) {
 		this.rotationQuaternion.set(x, y, z, w);
-		GeometryUtils.quaternionfToEulerAnglesf(this.rotationQuaternion, this.angles);
-	}
-	
-	public float getXAngle() {
-		return this.angles.x;
-	}
-	
-	public float getYAngle() {
-		return this.angles.y;
-	}
-	
-	public float getZAngle() {
-		return this.angles.z;
-	}
-	
-	public Vector3f getAsEulerAngles() {
-		return this.angles;
 	}
 	
 	public Quaternionf getAsQuaternion() {
-		this.recalculate();
 		return this.rotationQuaternion;
 	}
 	
@@ -133,15 +95,5 @@ public class Rotator {
 		this.getDownVector(result);
 		result.negate();
 		return result;
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if( !(o instanceof Rotator) ) {
-			return false;
-		}
-		
-		Rotator r = (Rotator) o;
-		return this.angles.equals(r.angles);
 	}
 }

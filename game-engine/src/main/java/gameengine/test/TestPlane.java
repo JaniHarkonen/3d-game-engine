@@ -41,6 +41,7 @@ public class TestPlane implements IGameObject, IPhysicsObject {
 	public void onCreate() {
 		BvhTriangleMeshShape collision = (BvhTriangleMeshShape) Mesh.class.cast(Engine.getGame().getAssets().get("mesh-road-test")).getCollisionMesh();
 		this.debugger = new CollisionDebugger(collision, this.transform);
+		collision.setMargin(.05f);
 		
 		RigidBodyConstructionInfo bodyInfo = new RigidBodyConstructionInfo(0, this.transform, collision, GeometryUtils.vector3fToJavaxVector3f(new Vector3f(0, 0, 0)));
 		bodyInfo.restitution = 0.0f;
@@ -61,6 +62,7 @@ public class TestPlane implements IGameObject, IPhysicsObject {
 	public void submitToRenderer(Renderer renderer) {
 		//this.debugger.submitToRenderer(renderer);
 		//renderer.getScenePass().submit(this.sceneRenderer);
+		
 	}
 	
 	@Override

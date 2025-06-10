@@ -10,3 +10,4 @@
 	-> use up less memory
 	-> could be converted into objects when need be
 - implement debug coloring for collisions
+- input events should hold mouse coordinates and deltas in float format
