@@ -2,7 +2,6 @@ package gameengine.engine.renderer.component;
 
 import org.joml.Quaternionf;
 
-import gameengine.engine.physics.IHasTransform;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
@@ -21,17 +20,17 @@ public class Camera implements IRenderable {
 		
 		public Transform() {
 			super();
-			this.rotator = new Rotator();
 		}
 		
 		
 		@Override
 		protected void recalculate() {
 			this.transformMatrix.identity()
-			.rotate(this.rotator.getAsQuaternion())
-			.translate(-this.position.x, -this.position.y, -this.position.z);
+			.rotate(this.rotator.getAsQuaternion(new Quaternionf()))
+			.translate(-this.position.x - this.origin.x, -this.position.y - this.origin.y, -this.position.z - this.origin.z);
 		}
 		
+		/*
 		@Override
 		public void possess(IHasTransform possessor) {
 			gameengine.engine.physics.Transform transform = possessor.getTransform();
@@ -41,7 +40,7 @@ public class Camera implements IRenderable {
 			if( transform instanceof Transform ) {
 				this.rotator = transform.getRotator();
 			}
-		}
+		}*/
 	}
 	
 	/**
@@ -62,18 +61,19 @@ public class Camera implements IRenderable {
 	 */
 	public static class Rotator extends gameengine.engine.physics.Rotator {
 
-		public Rotator() {
-			super();
+		public Rotator(Transform transform) {
+			super(transform);
 		}
 		
 		
 		@Override
 		public void rotate(float x, float y) {
-			Quaternionf rotationY = new Quaternionf().rotateAxis(GeometryUtils.toRadians(y), 0, 1, 0);
 			Quaternionf rotationX = new Quaternionf().rotateAxis(GeometryUtils.toRadians(x), 1, 0, 0);
-			this.setQuaternion(rotationX.mul(this.getAsQuaternion()).mul(rotationY));
+			Quaternionf rotationY = new Quaternionf().rotateAxis(GeometryUtils.toRadians(y), 0, 1, 0);
+			this.setQuaternion(rotationX.mul(this.rotation).mul(rotationY));
 		}
 	}
+	
 	
 	private class SceneRenderer implements IRenderStrategy<ScenePass> {
 
@@ -92,10 +92,10 @@ public class Camera implements IRenderable {
 		}
 	}
 	
-	private Transform transform;
-	private Projection projection;
-	private SceneRenderer sceneRenderer;
-	private CascadeShadowRenderer cascadeShadowRenderer;
+	protected Transform transform;
+	protected Projection projection;
+	protected SceneRenderer sceneRenderer;
+	protected CascadeShadowRenderer cascadeShadowRenderer;
 
     public Camera(Projection projection) {
     		// Special transform whose matrix is translated and rotated slightly different

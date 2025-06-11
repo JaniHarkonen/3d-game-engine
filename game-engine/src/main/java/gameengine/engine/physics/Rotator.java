@@ -3,21 +3,30 @@ package gameengine.engine.physics;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import gameengine.logger.Logger;
 import gameengine.util.GeometryUtils;
 
 public class Rotator {
 	public static final Vector3f X_AXIS = new Vector3f(1.0f, 0.0f, 0.0f);
 	public static final Vector3f Y_AXIS = new Vector3f(0.0f, 1.0f, 0.0f);
 	public static final Vector3f Z_AXIS = new Vector3f(0.0f, 0.0f, 1.0f);
+	
+	protected Transform transform;
 
-	private Quaternionf rotationQuaternion;
+	protected Quaternionf rotation;
+	
+	public Rotator(Transform transform) {
+		this.transform = transform;
+		this.rotation = new Quaternionf();
+	}
 	
 	public Rotator() {
-		this.rotationQuaternion = new Quaternionf();
+		this((Transform) null);
 	}
 	
 	public Rotator(Rotator src) {
-		this.rotationQuaternion = new Quaternionf(src.rotationQuaternion);
+		this.transform = src.transform;
+		this.rotation = new Quaternionf(src.rotation);
 	}
 	
 	/*
@@ -31,9 +40,13 @@ public class Rotator {
 	}*/
 	
 	public void rotate(float x, float y) {
-		Quaternionf rotationY = new Quaternionf().rotateAxis(GeometryUtils.toRadians(y), 0, 1, 0);
-		Quaternionf rotationX = new Quaternionf().rotateAxis(GeometryUtils.toRadians(x), 1, 0, 0);
-		this.rotationQuaternion = rotationY.mul(this.rotationQuaternion).mul(rotationX);
+		Quaternionf rotationY = new Quaternionf().rotateAxis(GeometryUtils.toRadians(y), Y_AXIS);
+		Quaternionf rotationX = new Quaternionf().rotateAxis(GeometryUtils.toRadians(x), X_AXIS);
+		this.rotation = rotationY.mul(this.rotation).mul(rotationX);
+	}
+	
+	public void rotate(Quaternionf rotation) {
+		this.rotation = rotation.mul(this.rotation);
 	}
 	
 	/*public void rotate(float xDegree, float yDegree, float zDegree) {
@@ -53,15 +66,15 @@ public class Rotator {
 	}*/
 	
 	public void setQuaternion(Quaternionf quaternion) {
-		this.rotationQuaternion = quaternion;
+		this.rotation = quaternion;
 	}
 	
 	public void setQuaternion(float x, float y, float z, float w) {
-		this.rotationQuaternion.set(x, y, z, w);
+		this.rotation.set(x, y, z, w);
 	}
 	
-	public Quaternionf getAsQuaternion() {
-		return this.rotationQuaternion;
+	public Quaternionf getAsQuaternion(Quaternionf dest) {
+		return dest.set(this.rotation);
 	}
 	
 	public Vector3f getForwardVector(Vector3f result) {
@@ -71,7 +84,7 @@ public class Rotator {
 	}
 	
 	public Vector3f getBackwardVector(Vector3f result) {
-		this.rotationQuaternion.positiveZ(result);
+		this.rotation.positiveZ(result);
 		return result;
 	}
 	
@@ -82,12 +95,12 @@ public class Rotator {
 	}
 	
 	public Vector3f getRightVector(Vector3f result) {
-		this.rotationQuaternion.positiveX(result);
+		this.rotation.positiveX(result);
 		return result;
 	}
 	
 	public Vector3f getDownVector(Vector3f result) {
-		this.rotationQuaternion.positiveY(result);
+		this.rotation.positiveY(result);
 		return result;
 	}
 	

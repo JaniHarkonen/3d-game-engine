@@ -1,6 +1,7 @@
 package gameengine.test;
 
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
@@ -19,7 +20,8 @@ import gameengine.engine.physics.IPhysicsObject;
 import gameengine.engine.physics.Physics;
 import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.Renderer;
-import gameengine.engine.renderer.component.Camera;
+import gameengine.engine.renderer.component.Projection;
+import gameengine.engine.renderer.component.ThirdPersonCamera;
 import gameengine.engine.window.Input;
 import gameengine.game.component.Animator;
 import gameengine.game.component.Model;
@@ -34,15 +36,27 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 	private Physics physics;
 	private CollisionDebugger debbuger;
 	private boolean possessCamera;
+	private ThirdPersonCamera camera;
 
     public TestPlayer(Model model) {
+    	this.model = model;
     	this.transform = new Transform();
-    	model.getTransform().possess(this);
+    	this.transform.setOrigin(0, 0, 0);
+    	this.model.getTransform().bind(this.transform);
+    	//model.getTransform().possess(this);
     	this.animator = new Animator(model);
     	this.cameraMode = 6f;
     	this.physics = null;
     	this.debbuger = null;
     	this.possessCamera = false;
+    	
+    	Projection projection = new Projection();
+    	this.camera = new ThirdPersonCamera(projection);
+		this.camera.getProjection().setAspectRatio(1 / 1);
+		this.camera.getProjection().setFOV(70f);
+		Engine.getGame().getWorldScene().setActiveCamera(this.camera);
+		this.camera.bind(this.transform);
+		this.camera.getTransform().setOrigin(0, 2, 0);
     }
 
     
@@ -68,6 +82,8 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 	@Override
 	public void tick(float deltaTime) {
 		this.animator.tick(deltaTime);
+		ThirdPersonCamera cam = (ThirdPersonCamera) Engine.getGame().getWorldScene().getActiveCamera();
+		cam.bind(this.transform);
 		/*
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_R).hashCode(), (e) -> {
 			this.getTransform().getRotator().rotateX(deltaTime);
@@ -129,7 +145,6 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 			targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(new Vector3f(0,1000,0)));
 		});
 		
-		
 		Vector3f forwards = this.transform.getRotator().getForwardVector(new Vector3f());
 		Engine.getWindow().getInput().DEBUGmapInput(new Input.Event(Input.DEVICE_KEYBOARD, Input.EVENT_HOLD, GLFW.GLFW_KEY_UP).hashCode(), (e) -> {
 			targetBody.activate(true);
@@ -172,24 +187,24 @@ public class TestPlayer implements IGameObject, IHasTransform, IPhysicsObject {
 			//targetBody.applyCentralForce(GeometryUtils.vector3fToJavaxVector3f(this.transform.getRotator().getRightVector(new Vector3f()).mul(force)));
 		});
 		
-		Camera cam = Engine.getGame().getWorldScene().getActiveCamera();
-		org.joml.Vector3f v = cam.getTransform().getRotator().getForwardVector(new org.joml.Vector3f()).mul(this.cameraMode).negate();
-		org.joml.Vector3f me = this.transform.getPosition();
+		Engine.getWindow().getInput().DEBUGmapInput(24000, (e) -> {
+    		this.camera.getTransform().getRotator().rotate((float) e.mouseDeltaY/10, (float) e.mouseDeltaX/10);
+    		//this.transform.getRotator().rotate((float) e.mouseDeltaY/10, (float) e.mouseDeltaX/10);
+    	});
 		
-		if( !this.possessCamera ) {
-			cam.getTransform().setPosition(me.x + v.x, me.y + v.y + 3f, me.z + v.z);
-			//cam.getTransform().setPosition(me.x, me.y + 3f, me.z);
-			//cam.getTransform().getRotator().setQuaternion(this.transform.getRotator().getAsQuaternion());
-		} else {
-			cam.getTransform().possess(this);
-		}
 		
-		//cam.getTransform().setPosition(me.x, me.y, me.z);
-		//cam.getTransform().getRotator().set
+		/*Camera cam = Engine.getGame().getWorldScene().getActiveCamera();
+		org.joml.Vector3f v = cam.getTransform().getRotator().getForwardVector(new org.joml.Vector3f()).mul(this.cameraMode).negate();*/
+		/*org.joml.Vector3f me = this.transform.getPosition();
+		this.model.getTransform().setPosition(me.x, me.y, me.z);
+		this.model.getTransform().getRotator().setQuaternion(this.transform.getRotator().getAsQuaternion(new Quaternionf()));*/
+		
+		this.camera.tick(deltaTime);
 	}
 	
 	@Override
 	public void submitToRenderer(Renderer renderer) {
+		this.camera.submitToRenderer(renderer);
 		this.animator.submitToRenderer(renderer);
 		//this.debbuger.submitToRenderer(renderer);
 	}

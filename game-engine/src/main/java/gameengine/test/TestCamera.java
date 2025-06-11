@@ -9,6 +9,7 @@ import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.component.Camera;
 import gameengine.engine.renderer.component.Projection;
+import gameengine.engine.renderer.component.ThirdPersonCamera;
 import gameengine.engine.window.Window;
 
 public class TestCamera implements IGameObject, IHasTransform {	
@@ -55,7 +56,11 @@ public class TestCamera implements IGameObject, IHasTransform {
     	// Mouse pan
     	window.getInput().DEBUGmapInput(24000, (e) -> {
     		this.transform.getRotator().rotate((float) e.mouseDeltaY/10, (float) e.mouseDeltaX/10);
+    		//this.transform.getRotator().rotate((float) e.mouseDeltaY/10, (float) e.mouseDeltaX/10);
     	});
+    	
+    	//this.camera.getTransform().setPosition(this.transform.getPosition().x, this.transform.getPosition().y, this.transform.getPosition().z);
+    	//this.camera.getTransform().getRotator().setQuaternion(this.transform.getRotator().getAsQuaternion(new Quaternionf()));
 	}
 
 	@Override
@@ -65,16 +70,16 @@ public class TestCamera implements IGameObject, IHasTransform {
 
 	@Override
 	public void onCreate() {
-		Projection projection = new Projection();
-		this.camera = new Camera(projection);
+		/*Projection projection = new Projection();
+		this.camera = new ThirdPersonCamera(projection);
 		this.camera.getProjection().setAspectRatio(1 / 1);
 		this.camera.getProjection().setFOV(70f);
 		Engine.getGame().getWorldScene().setActiveCamera(this.camera);
 		
 		//this.transform = new Transform();
-		this.transform = new Camera.Transform();
-		this.camera.getTransform().possess(this);
-		this.transform.setPosition(10, 10, 10);
+		this.transform = new Camera.Transform();*/
+		//this.camera.getTransform().possess(this);
+		//this.transform.setPosition(10, 10, 10);
 	}
 
 	@Override

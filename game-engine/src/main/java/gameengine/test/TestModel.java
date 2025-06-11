@@ -19,7 +19,9 @@ public class TestModel implements IGameObject, IHasTransform {
     
 	@Override
 	public void onCreate() {
-		this.model.getTransform().possess(this);
+		//this.model.getTransform().bind(this.transform);
+		this.model.setTransform(this.transform);
+		//this.model.getTransform().possess(this);
 	}
 
 	@Override

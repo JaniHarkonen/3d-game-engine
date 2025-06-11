@@ -16,7 +16,6 @@ import gameengine.engine.window.Window;
 import gameengine.game.component.Model;
 import gameengine.game.component.light.PointLight;
 import gameengine.logger.Logger;
-import gameengine.test.TestCamera;
 import gameengine.test.TestModel;
 import gameengine.test.TestPlane;
 import gameengine.test.TestPlayer;
@@ -26,6 +25,7 @@ public class Game implements ITickable {
 
 	private AssetManager assetManager;
 	private Scene worldScene;
+	private TestModel testHuman;
 	
 	public Game() {
 		this.assetManager = new AssetManager();
@@ -36,7 +36,7 @@ public class Game implements ITickable {
 	public void setup() {
 		this.preloadAssets();
 		this.worldScene = new Scene();
-		this.worldScene.addObject(new TestCamera());
+		//this.worldScene.addObject(new TestCamera());
 		
 		PointLight testPointLight = new PointLight(new Vector3f(1, 1, 1), 1.0f, 0);
 		testPointLight.getTransform().setPosition(13, 1f, 0);
@@ -102,6 +102,13 @@ public class Game implements ITickable {
 		testPlayer.getAnimator().setSpeed(1/30f);
 		testPlayer.getAnimator().setAnimation((Animation) assets.get("anim-player-idle"));
 		this.worldScene.addObject((IPhysicsObject) testPlayer);
+		
+		model = new Model(Mesh.asMesh(assets.get("mesh-player-skinned")));
+		model.setMaterial(Material.create((Texture) assets.get("tex-car-test")));
+		testHuman = new TestModel(model);
+		testHuman.getTransform().bindPosition(testPlayer.getTransform());
+		testHuman.getTransform().setOrigin(5, 0, 0);
+		this.worldScene.addObject(testHuman);
 		
 		TestPlane testPlane = new TestPlane();
 		this.worldScene.addObject((IPhysicsObject) testPlane); 
