@@ -5,6 +5,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import gameengine.engine.Engine;
+import gameengine.engine.physics.IHasTransform;
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
@@ -12,8 +14,6 @@ import gameengine.engine.renderer.Renderer;
 import gameengine.engine.renderer.ScenePass;
 import gameengine.engine.renderer.uniform.object.IHasStruct;
 import gameengine.engine.renderer.uniform.object.drlight.SSDirectionalLight;
-import gameengine.game.component.IHasTransform;
-import gameengine.game.component.Transform;
 
 public class DirectionalLight implements IRenderable, IHasStruct, IHasTransform {
 	private class SceneRenderer implements IRenderStrategy<ScenePass> {

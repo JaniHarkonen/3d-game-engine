@@ -12,7 +12,7 @@ public class Main {
 			Logger.LOG_SYSTEM | 
 			Logger.LOG_CALLER | 
 			Logger.LOG_SEVERITY, 
-			Logger.ERROR
+			Logger.WARN
 		);
 		
 		Logger.registerTarget(new ConsoleRecorder());

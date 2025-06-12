@@ -11,6 +11,18 @@ import gameengine.engine.renderer.component.TextureGL;
 import gameengine.logger.Logger;
 
 public class Texture implements ITexture, IAsset {
+	public static Texture asTexture(IAsset asset, boolean allowDefault) {
+		if( asset == null || !(asset instanceof Texture) ) {
+			return allowDefault ? new Texture() : null;
+		}
+		
+		return (Texture) asset;
+	}
+	
+	public static Texture asMesh(IAsset asset) {
+		return asTexture(asset, true);
+	}
+	
     private final String name;
     private String path;
     private Image image;
@@ -20,7 +32,13 @@ public class Texture implements ITexture, IAsset {
         this.name = name;
         this.path = path;
         this.image = null;
-        this.graphics = null;
+        this.resetGraphics();
+    }
+    
+    	// Will be used to generate the default, null texture
+    private Texture() {
+    	this(null, null);
+    	this.resetGraphics();
     }
     
     
@@ -34,10 +52,15 @@ public class Texture implements ITexture, IAsset {
             IntBuffer bufferHeight = stack.mallocInt(1);
             IntBuffer bufferComponents = stack.mallocInt(1);
 
-            ByteBuffer bufferImage = STBImage.stbi_load(path, bufferWidth, bufferHeight, bufferComponents, 4);
+            ByteBuffer bufferImage = null;
+            
+            if( this.path != null ) {
+            	bufferImage = STBImage.stbi_load(path, bufferWidth, bufferHeight, bufferComponents, 4);
+            }
             
             if( bufferImage == null ) {
             	System.out.println("Failed to load texture from path '" + path + "'!\n" + STBImage.stbi_failure_reason());
+            	this.resetGraphics();
             	return;
             }
             
@@ -54,6 +77,7 @@ public class Texture implements ITexture, IAsset {
 		this.graphics.dispose();
 		this.image.dispose();
     	this.image = null;
+    	this.resetGraphics();
     	Logger.info(this, "Deloaded texture '" + this.name + "'.");
 	}
     
@@ -67,6 +91,10 @@ public class Texture implements ITexture, IAsset {
 		this.graphics.active(index);
 	}
     
+	private void resetGraphics() {
+		this.graphics = Defaults.TEXTURE_GL;
+	}
+	
     @Override
     public String getName() {
     	return this.name;

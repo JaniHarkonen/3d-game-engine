@@ -1,10 +1,10 @@
 package gameengine.test;
 
 import gameengine.engine.IGameObject;
+import gameengine.engine.physics.IHasTransform;
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.Renderer;
-import gameengine.game.component.IHasTransform;
 import gameengine.game.component.Model;
-import gameengine.game.component.Transform;
 
 public class TestModel implements IGameObject, IHasTransform {
 	
@@ -19,7 +19,9 @@ public class TestModel implements IGameObject, IHasTransform {
     
 	@Override
 	public void onCreate() {
-		this.model.getTransform().possess(this);
+		//this.model.getTransform().bind(this.transform);
+		this.model.setTransform(this.transform);
+		//this.model.getTransform().possess(this);
 	}
 
 	@Override

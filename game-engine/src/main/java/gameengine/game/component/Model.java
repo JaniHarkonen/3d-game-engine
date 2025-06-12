@@ -1,6 +1,7 @@
 package gameengine.game.component;
 
 import gameengine.engine.asset.Mesh;
+import gameengine.engine.physics.Transform;
 import gameengine.engine.renderer.CascadeShadowPass;
 import gameengine.engine.renderer.IRenderStrategy;
 import gameengine.engine.renderer.IRenderable;
@@ -103,5 +104,9 @@ public class Model implements IRenderable {
 	
 	public Transform getTransform() {
 		return this.transform;
+	}
+	
+	public void setTransform(Transform transform) {
+		this.transform = transform;
 	}
 }

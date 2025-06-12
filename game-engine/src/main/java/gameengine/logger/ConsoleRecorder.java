@@ -6,10 +6,12 @@ public class ConsoleRecorder implements ILogRecorder {
 	@Override
 	public void log(int logFlags, LoggerMessage loggerMessage) {
 		List<Object> messages = loggerMessage.getMessages();
-		String messageString = messages.get(0).toString();
+		Object message = messages.get(0);
+		String messageString = messages.get(0) == null ? message + "" : message.toString();
 		
 		for( int i = 1; i < messages.size(); i++ ) {
-			messageString += "\n" + messages.get(i).toString();
+			message = messages.get(i);
+			messageString += "\n" + (message == null ? message + "" : message.toString());
 		}
 		
 		String signTimestamp = Logger.createSignifierIfLogged(

@@ -1,5 +1,6 @@
 package gameengine.engine.asset;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +18,41 @@ import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
+import com.bulletphysics.collision.shapes.BvhTriangleMeshShape;
+import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.IndexedMesh;
+import com.bulletphysics.collision.shapes.TriangleIndexVertexArray;
+
 import gameengine.engine.renderer.component.Submesh;
 import gameengine.logger.Logger;
 import gameengine.util.ArrayUtils;
 import gameengine.util.GeometryUtils;
 
 public class Mesh implements IAsset {
+	public static Mesh asMesh(IAsset asset, boolean allowDefault) {
+		if( asset == null || !(asset instanceof Mesh) ) {
+			return allowDefault ? new Mesh() : null;
+		}
+		
+		return (Mesh) asset;
+	}
+	
+	public static Mesh asMesh(IAsset asset) {
+		return asMesh(asset, true);
+	}
+	
+	public static final int DEFAULT_IMPORT_FLAGS = (
+		Assimp.aiProcess_GenSmoothNormals |
+		Assimp.aiProcess_Triangulate | 
+		Assimp.aiProcess_FixInfacingNormals | 
+		Assimp.aiProcess_CalcTangentSpace | 
+		Assimp.aiProcess_LimitBoneWeights |
+		Assimp.aiProcess_PreTransformVertices
+	);
+	
+	public static final int MAX_WEIGHT_COUNT = 4;
+	public static final int MAX_BONE_COUNT = 150;
+	
 	private class VertexWeight {
 
 		private int boneID;
@@ -49,36 +79,36 @@ public class Mesh implements IAsset {
 		}
 	}
 	
-	public static final int DEFAULT_IMPORT_FLAGS = (
-		Assimp.aiProcess_GenSmoothNormals |
-		Assimp.aiProcess_Triangulate | 
-		Assimp.aiProcess_FixInfacingNormals | 
-		Assimp.aiProcess_CalcTangentSpace | 
-		Assimp.aiProcess_LimitBoneWeights |
-		Assimp.aiProcess_PreTransformVertices
-	);
-	
-	public static final int MAX_WEIGHT_COUNT = 4;
-	public static final int MAX_BONE_COUNT = 150;
-	
 	private final String name;
 	private String path;
     private Submesh[] submeshes;
+    private Skeleton skeleton;	// If a skeleton is found, it will be placed in this field, otherwise null
+    private CollisionShape collisionMesh;
+    private boolean generateCollision;
     private int importFlags;
-    
-    	// If a skeleton is found, it will be placed in this field, otherwise null
-    private Skeleton skeleton;
 
-    public Mesh(String name, String path, int importFlags) {
+    public Mesh(String name, String path, boolean generateCollision, int importFlags) {
     	this.name = name;
     	this.path = path;
-    	this.submeshes = new Submesh[0];
+    	this.skeleton = new Skeleton();
+    	this.collisionMesh = null;
+    	this.generateCollision = generateCollision;
         this.importFlags = importFlags;
-        this.skeleton = new Skeleton();
+        this.resetSubmeshes();
+    }
+    
+    public Mesh(String name, String path, boolean generateCollision) {
+    	this(name, path, generateCollision, DEFAULT_IMPORT_FLAGS);
     }
     
     public Mesh(String name, String path) {
-    	this(name, path, DEFAULT_IMPORT_FLAGS);
+    	this(name, path, false);
+    }
+    
+    	// For generating a default mesh
+    private Mesh() {
+    	this(null, null, false, 0);
+    	this.resetSubmeshes();
     }
     
 	
@@ -86,7 +116,11 @@ public class Mesh implements IAsset {
 	public void load() {
 		Logger.info(this, "Loading mesh '" + this.name + "' from: ", this.path);
 		
-        AIScene aiScene = Assimp.aiImportFile(this.path, this.importFlags);
+        AIScene aiScene = null;
+        
+        if( this.path != null ) {
+        	aiScene = Assimp.aiImportFile(this.path, this.importFlags);
+        }
         
         if( aiScene == null ) {
         	Logger.error(
@@ -100,12 +134,12 @@ public class Mesh implements IAsset {
         }
 		
 		int submeshCount = aiScene.mNumMeshes();
+		PointerBuffer aiMeshBuffer = aiScene.mMeshes();
+		IndexedMesh[] collisionSubmeshes = new IndexedMesh[submeshCount];
+		List<Skeleton.Bone> boneList = new ArrayList<>();
 		this.submeshes = new Submesh[submeshCount];
 		
 		Logger.info(this, "Found " + submeshCount + " submeshes.");
-		
-		List<Skeleton.Bone> boneList = new ArrayList<>();
-		PointerBuffer aiMeshBuffer = aiScene.mMeshes();
 		
 		for( int i = 0; i < submeshCount; i++ ) {
 			AIMesh aiMesh = AIMesh.create(aiMeshBuffer.get(i));
@@ -113,23 +147,7 @@ public class Mesh implements IAsset {
 			Logger.spam(this, "Found submesh '" + aiMesh.mName().dataString() + "' (" + i + 1 + " / " + submeshCount + ").");
 			
 			Vector3f[] normals = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mNormals());
-			//Vector3f[] tangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTangents());
-			//Vector3f[] bitangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mBitangents());
 			Vector2f[] UVs = GeometryUtils.aiVector3DBufferToVector2fArray(aiMesh.mTextureCoords(0));
-
-				// By default, set tangents array should be the same length as the normals array
-			/*if( tangents.length == 0 ) {
-				tangents = new Vector3f[normals.length];
-				Arrays.fill(tangents, new Vector3f(0.0f));
-				Logger.warn(this, "Submesh '" + aiMesh.mName().dataString() + "' of mesh '" + this.name + "' contains no tangents!");
-			}
-			
-				// By default, set bitangents array should be the same length as the normals array
-			if( bitangents.length == 0 ) {
-				bitangents = new Vector3f[normals.length];
-				Arrays.fill(bitangents, new Vector3f(0.0f));
-				Logger.warn(this, "Submesh '" + aiMesh.mName().dataString() + "' of mesh '" + this.name + "' contains no bitangents!");
-			}*/
 			
 				// Fix UV-coordinates
 			for( Vector2f uv : UVs ) {
@@ -141,17 +159,23 @@ public class Mesh implements IAsset {
 			Submesh.Face[] faces = new Submesh.Face[faceCount];
 			AIFace.Buffer aiFaceBuffer = aiMesh.mFaces();
 			
+				// Indices for possible collision generation (may not be used)
+			int[] collisionIndices = new int[faceCount * Submesh.Face.INDICES_PER_FACE];
+			int index = 0;
+			
 			for( int j = 0; j < faceCount; j++ ) {
 				AIFace aiFace = aiFaceBuffer.get(j);
 				IntBuffer indexBuffer = aiFace.mIndices();
-				int[] indices = new int[Submesh.Face.INDICES_PER_FACE];
-				int index = 0;
+				int[] faceIndices = new int[Submesh.Face.INDICES_PER_FACE];
+				int k = 0;
 				
 				while( indexBuffer.remaining() > 0 ) {
-					indices[index++] = indexBuffer.get();
+					int gotIndex = indexBuffer.get();
+					faceIndices[k++] = gotIndex;
+					collisionIndices[index++] = gotIndex;	// For collision
 				}
 				
-				faces[j] = new Submesh.Face(indices);
+				faces[j] = new Submesh.Face(faceIndices);
 			}
 			
 				// Extract vertices and the bones that affect them
@@ -162,9 +186,18 @@ public class Mesh implements IAsset {
 			AIVector3D.Buffer buffer = aiMesh.mVertices();
 			Vector3f[] vertices = new Vector3f[buffer.remaining()];
 			
+				// Extract vertex positions for possible collision generation (may not be used)
+			float[] collisionPositions = new float[vertexCount * 3];
+			index = 0;
+			
 			for( int j = 0; buffer.remaining() > 0; j++ ) {
 				AIVector3D aiVector = buffer.get();
 				vertices[j] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());
+				
+				collisionPositions[index++] = aiVector.x();
+				collisionPositions[index++] = aiVector.y();
+				collisionPositions[index++] = aiVector.z();
+				
 				this.extractBoneIndicesAndWeights(weights, boneIDs, weightSet, j);
 			}
 			
@@ -172,14 +205,49 @@ public class Mesh implements IAsset {
 			submesh.populate(vertices, normals, UVs, faces, boneIDs, weights);
 			this.submeshes[i] = submesh;
 			
+				// Generate collision submesh aka indexed mesh
+			if( this.generateCollision ) {
+				ByteBuffer bufferIndices = (ByteBuffer) ByteBuffer.allocate(collisionIndices.length * Integer.BYTES);
+				bufferIndices.asIntBuffer().put(collisionIndices).flip();
+				ByteBuffer bufferVertices = (ByteBuffer) ByteBuffer.allocate(collisionPositions.length * Float.BYTES);
+				bufferVertices.asFloatBuffer().put(collisionPositions).flip();
+				
+				IndexedMesh collisionSubmesh = new IndexedMesh();
+				collisionSubmesh.numTriangles = faces.length;
+				collisionSubmesh.triangleIndexBase = bufferIndices; 
+				collisionSubmesh.triangleIndexStride = 3 * Integer.BYTES;
+				collisionSubmesh.numVertices = vertices.length; 
+				collisionSubmesh.vertexBase = bufferVertices; 
+				collisionSubmesh.vertexStride = 3 * Float.BYTES;
+				
+				collisionSubmeshes[i] = collisionSubmesh;
+			}
+			
 			Logger.spam(this, "Vertex count: " + vertices.length, "UV count: " + UVs.length, "Face count: " + faces.length);
 		}
 		
 		this.skeleton.populate(boneList);
+		
+			// Generate collision mesh
+		if( this.generateCollision ) {
+			TriangleIndexVertexArray collisionGeometry = new TriangleIndexVertexArray();
+			
+			for( IndexedMesh collisionSubmesh : collisionSubmeshes ) {
+				collisionGeometry.addIndexedMesh(collisionSubmesh);
+			}
+			
+			this.collisionMesh = new BvhTriangleMeshShape(collisionGeometry, true);
+			this.collisionMesh.setMargin(0.05f);
+		}
+		
 		Assimp.aiReleaseImport(aiScene);
 		Logger.info(this, "Mesh loaded.");
 	}
 	
+
+	private void resetSubmeshes() {
+		this.submeshes = new Submesh[] {Defaults.SUBMESH};
+	}
 	
 	private Map<Integer, List<VertexWeight>> generateWeightSet(
 		List<Skeleton.Bone> boneList, PointerBuffer aiBoneBuffer
@@ -250,7 +318,7 @@ public class Mesh implements IAsset {
 			s.dipose();
 		}
 		
-		this.submeshes = new Submesh[0];
+		this.resetSubmeshes();
 		Logger.info(this, "Mesh deloaded.");
 	}
 	
@@ -277,7 +345,15 @@ public class Mesh implements IAsset {
 		return this.submeshes.length;
 	}
 	
+	public Submesh getSubmesh(int index) {
+		return this.submeshes[index];
+	}
+	
 	public Skeleton getSkeleton() {
 		return this.skeleton;
+	}
+	
+	public CollisionShape getCollisionMesh() {
+		return this.collisionMesh;
 	}
 }

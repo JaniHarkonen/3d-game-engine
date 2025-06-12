@@ -5,23 +5,33 @@ import java.nio.ByteBuffer;
 import org.lwjgl.stb.STBImage;
 
 public class Image {
-	private ByteBuffer buffer;
+	private ByteBuffer pixels;
 	private int width;
     private int height;
     
-    public Image(ByteBuffer buffer, int width, int height) {
-    	this.buffer = buffer;
+    public Image(ByteBuffer pixels, int width, int height) {
+    	this.pixels = pixels;
     	this.width = width;
     	this.height = height;
     }
     
-    
-    public void dispose() {
-    	STBImage.stbi_image_free(this.buffer);
+    Image() {
+    	this(null, -1, -1);
     }
     
-    public ByteBuffer getBuffer() {
-    	return this.buffer;
+    
+    public void dispose() {
+    	STBImage.stbi_image_free(this.pixels);
+    }
+    
+    void setPixels(ByteBuffer pixels, int width, int height) {
+    	this.pixels = pixels;
+    	this.width = width;
+    	this.height = height;
+    }
+    
+    public ByteBuffer getPixels() {
+    	return this.pixels;
     }
     
     public int getWidth() {

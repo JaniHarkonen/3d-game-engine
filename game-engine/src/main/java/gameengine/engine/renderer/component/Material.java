@@ -3,6 +3,7 @@ package gameengine.engine.renderer.component;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
+import gameengine.engine.asset.Defaults;
 import gameengine.engine.asset.ITexture;
 import gameengine.engine.asset.Texture;
 import gameengine.engine.renderer.Renderer;
@@ -22,8 +23,8 @@ public class Material {
 	
 	public static Material create(Texture texture) {
 		if( texture == null ) {
-			Logger.error("Material.create()", "Trying to create a material based on a null texture!");
-			return null;
+			Logger.warn("Material.create()", "Trying to create a material based on a null texture! (using default texture)");
+			return new Material(new ITexture[] {null});
 		}
 		
 		Material material = new Material();
@@ -79,11 +80,13 @@ public class Material {
 			ITexture texture = textures[i];
 			
 			if( texture == null ) {
-				if( i == 0 ) {
-					Logger.spam(this, "Warning: Binding a material with no textures! Material index: " + i + ".");
+				if( i > 0 ) {
+					break;
 				}
 				
-				break;
+				Logger.spam(this, "Warning: Binding a material with no textures! Material index: " + i + ".");
+				texture = Defaults.TEXTURE_GL;
+				
 			}
 			
 			texture.active(GL46.GL_TEXTURE0 + samplerOffset + i);

@@ -1,4 +1,4 @@
-package gameengine.game.component;
+package gameengine.engine.physics;
 
 public interface IHasTransform {
 

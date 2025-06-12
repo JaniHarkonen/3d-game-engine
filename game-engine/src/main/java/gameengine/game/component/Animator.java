@@ -50,6 +50,10 @@ public class Animator implements ITickable, IRenderable {
 	
 	@Override
 	public void tick(float deltaTime) {
+		if( this.animation == null ) {
+			return;
+		}
+		
 		if( this.isPaused ) {
 			return;
 		}
@@ -73,8 +77,11 @@ public class Animator implements ITickable, IRenderable {
 	
 	@Override
 	public void submitToRenderer(Renderer renderer) {
-		renderer.getCascadeShadowPass().submit(this.cascadeShadowRenderer);
-		renderer.getScenePass().submit(this.sceneRenderer);
+		if( this.animation != null ) {
+			renderer.getCascadeShadowPass().submit(this.cascadeShadowRenderer);
+			renderer.getScenePass().submit(this.sceneRenderer);
+		}
+		
 		this.animatedModel.submitToRenderer(renderer);
 	}
 	
