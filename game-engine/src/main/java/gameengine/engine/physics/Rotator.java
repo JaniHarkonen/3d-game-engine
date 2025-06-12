@@ -3,7 +3,6 @@ package gameengine.engine.physics;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import gameengine.logger.Logger;
 import gameengine.util.GeometryUtils;
 
 public class Rotator {

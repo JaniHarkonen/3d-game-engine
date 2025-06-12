@@ -34,7 +34,7 @@ public class PhysicsScene implements ITickable {
 			new SequentialImpulseConstraintSolver(), 
 			new DefaultCollisionConfiguration()
 		);
-		this.physicsWorld.setGravity(new Vector3f(0, -10, 0));
+		this.physicsWorld.setGravity(new Vector3f(0, -10, 0)); 
 	}
 	
 	
@@ -63,6 +63,8 @@ public class PhysicsScene implements ITickable {
 	}
 	
 	public void addObject(IPhysicsObject object) {
+		object.onPhysicsCreate(this);
+		
 		RigidBody rigidBody = object.getPhysics().getRigidBody();
 		this.physicsWorld.addRigidBody(rigidBody);
 		this.objects.put(rigidBody, object);

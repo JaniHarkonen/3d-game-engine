@@ -9,7 +9,6 @@ import org.joml.Vector3f;
 
 import com.bulletphysics.linearmath.MotionState;
 
-import gameengine.logger.Logger;
 import gameengine.util.GeometryUtils;
 import gameengine.util.PhysicsUtils;
 
@@ -72,7 +71,11 @@ public class Transform extends MotionState {
 	protected Matrix4f transformMatrix;
 	
 	public Transform() {
-		this.position = new Vector3f(0.0f);
+		this(0, 0, 0);
+	}
+	
+	public Transform(float x, float y, float z) {
+		this.position = new Vector3f(x, y, z);
 		this.rotator = new Rotator();
 		this.scale = new Vector3f(1.0f);
 		this.origin = new Vector3f(0.0f);
@@ -149,6 +152,10 @@ public class Transform extends MotionState {
 	
 	public void setOrigin(float x, float y, float z) {
 		this.origin.set(x, y, z);
+	}
+	
+	public void setWorldTransform(Transform transform) {
+		this.setWorldTransform(PhysicsUtils.transformToBulletphysicsTransform(transform));
 	}
 	
 	@Override

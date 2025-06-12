@@ -13,3 +13,5 @@
 - input events should hold mouse coordinates and deltas in float format
 - all Vector, Quaternionf, Matrix getters should require a destination object whose values will be set instead of returning the actual target object to avoid data overwrites
 - remove Transform and Rotator from Camera-class, make separate instead to improve code clarity and solve namespace issues
+- improve object addition to scene and physics world
+	-> currently two methods with the same name are used, which requires casting the argument
